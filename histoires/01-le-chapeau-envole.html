@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le chapeau envolé</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+lancerHistoire({
+  numero: 1,
+  titre: "Poupou et le chapeau envolé",
+  morale: "Ensemble, on est plus forts !",
+  couverture: () => decor('jour') + u('soleil', 610, 26, 140) + u('nuage', 60, 50, 180) + u('nuage', 380, 30, 130) +
+    vent(430, 120, .8) + u('chapeau', 470, 90, 190, { rot: -18 }) +
+    u('arbre', 40, 175, 170) + u('fleur', 560, 420, 44) + u('fleur', 640, 450, 38) + u('fleur', 120, 450, 40) +
+    u('poupou', 250, 250, 270),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 620, 26, 130) + u('nuage', 70, 50, 170) + u('nuage', 380, 36, 120, { op: .9 }) +
+        u('grange', 40, 150, 250) + u('arbre', 610, 188, 160) + u('barriere', 300, 322, 300) +
+        u('fleur', 110, 430, 40) + u('fleur', 660, 440, 44) + u('fleur', 230, 470, 36) +
+        u('poupou', 330, 290, 210),
+      texte: "Il était une fois, dans une jolie ferme, une petite poule rousse qui s’appelait <b>Poupou</b>. Elle portait toujours son foulard bleu… et elle était très, très curieuse !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 500, 40, 160) + vent(330, 80, 1) +
+        u('chapeau', 500, 70, 170, { rot: -22 }) + u('grange', 600, 160, 200, { op: .95 }) +
+        u('hamid', 70, 180, 150) + u('poupou', 300, 320, 170) +
+        `<g fill="#6B3A1E" font-family="Fredoka, sans-serif" font-weight="700" font-size="40"><text x="250" y="200" transform="rotate(-8 250 200)">Whoooosh !</text></g>`,
+      texte: "Ce matin-là, le vent soufflait très fort. <b>Whoooosh !</b> Le chapeau de Papi Hamid, le fermier, s’envola dans le ciel !"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 110) + u('arbre', 620, 190, 150) +
+        `<g stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".9"><path d="M120 380 H230 M90 420 H210 M140 460 H240"/></g>` +
+        `<g fill="#F3E6C9" opacity=".9"><circle cx="250" cy="485" r="14"/><circle cx="226" cy="494" r="10"/><circle cx="270" cy="496" r="9"/></g>` +
+        u('poupou', 250, 290, 200, { rot: 10 }) + vent(470, 90, .6) + u('chapeau', 560, 130, 150, { rot: 18 }) +
+        `<g fill="#6B3A1E" font-family="Fredoka, sans-serif" font-weight="600" font-size="30"><text x="90" y="300">tic-tac-tic-tac !</text></g>`,
+      texte: "« Je vais le rattraper ! » cria Poupou. Elle courut, courut, courut sur ses petites pattes : tic-tac-tic-tac !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 70, 40, 150) + u('nuage', 560, 60, 140) +
+        u('marguerite', 250, 186, 330) + u('chapeau', 472, 176, 120, { rot: 8 }) +
+        u('poupou', 60, 330, 150) + bulle(430, 70, 'Meuh ?', 140) +
+        u('fleur', 660, 460, 40) + u('fleur', 220, 470, 36),
+      texte: "Le chapeau se posa… sur la tête de <b>Marguerite la vache</b> ! « Meuh ? Qu’est-ce que c’est ? » dit Marguerite. Mais <b>pouf</b> ! le vent souffla encore."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 620, 30, 120) + u('nuage', 250, 50, 150) +
+        u('mare', 200, 360, 460) +
+        `<g fill="none" stroke="#fff" stroke-width="3" opacity=".8"><ellipse cx="430" cy="455" rx="85" ry="16"/><ellipse cx="430" cy="455" rx="120" ry="24"/></g>` +
+        u('chapeau', 370, 412, 120, { rot: 6 }) +
+        `<g fill="#3E9B43"><rect x="190" y="330" width="6" height="70" rx="3"/><rect x="204" y="320" width="6" height="80" rx="3"/><rect x="640" y="340" width="6" height="60" rx="3"/></g>` +
+        `<g fill="#7A4A2A"><ellipse cx="193" cy="330" rx="7" ry="16"/><ellipse cx="207" cy="320" rx="7" ry="16"/><ellipse cx="643" cy="340" rx="7" ry="15"/></g>` +
+        u('poupou', 30, 296, 160) + `<path d="M168 352 q-7 12 0 16 q7 -4 0 -16Z" fill="#7CC8F5" stroke="#2F7FB0" stroke-width="2"/>`,
+      texte: "Cette fois, le chapeau atterrit au milieu de la mare. Plouf ! « Oh non… les poules ne savent pas nager ! » soupira Poupou."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 520, 40, 160) +
+        u('mare', 250, 372, 470) + u('chapeau', 385, 418, 110, { rot: -6 }) +
+        u('coincoin', 480, 396, 90, { flip: true }) +
+        u('caramel', 60, 276, 250) + u('poupou', 108, 196, 140) +
+        bulle(240, 120, 'Monte !', 140),
+      texte: "Alors <b>Caramel le petit cochon</b> eut une idée : « Monte sur mon dos, Poupou ! » Et <b>Coin-Coin le caneton</b> poussa le chapeau avec son bec, jusqu’au bord."
+    },
+    {
+      scene: () => decor('jour') + confettis(30) + u('soleil', 640, 24, 120) +
+        u('caramel', 30, 310, 220) + u('marguerite', 520, 200, 260, { flip: true }) +
+        u('coincoin', 470, 410, 90, { flip: true }) +
+        u('poupou', 270, 250, 220, { rot: -6 }) + u('chapeau', 300, 180, 160, { rot: -10 }) +
+        `<g fill="#E63B3B" font-family="Fredoka, sans-serif" font-weight="700" font-size="54"><text x="400" y="100" text-anchor="middle">Hourra !</text></g>`,
+      texte: "Poupou attrapa le chapeau ! « <b>Hourra !</b> » crièrent tous les amis de la ferme."
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 540, 230, 190)) + u('nuage', 60, 40, 150, { op: .8 }) +
+        u('hamid', 300, 170, 150) + u('chapeau', 314, 150, 122) +
+        u('poupou', 450, 318, 150, { flip: true }) + u('coeur', 470, 250, 56, { rot: 12 }) +
+        u('caramel', 60, 330, 200) + u('coincoin', 640, 420, 74, { flip: true }) +
+        u('graines', 470, 476, 120) + u('graines', 220, 480, 100),
+      texte: "Papi Hamid était si content qu’il fit un gros câlin à Poupou. « Merci, mes amis ! » Et tout le monde picora de bonnes graines au coucher du soleil."
+    }
+  ]
+});
+</script>
+</body>
+</html>

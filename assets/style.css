@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+:root {
+  --creme: #FFF6E6;
+  --papier: #FFFDF8;
+  --brun: #5A3420;
+  --brun-doux: #8A5A3C;
+  --rousse: #F2A65A;
+  --rouge: #E63B3B;
+  --bleu: #3F8EDB;
+  --vert: #7CC24F;
+  --ombre: 0 10px 30px rgba(90, 52, 32, .14);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh;
+  font-family: 'Fredoka', 'Comic Sans MS', system-ui, sans-serif;
+  color: var(--brun);
+  background: var(--creme) radial-gradient(circle at 12px 12px, #F7E3C4 2px, transparent 2.5px) 0 0 / 28px 28px;
+}
+a { color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ---------- Le livre ---------- */
+.barre {
+  max-width: 920px; margin: 0 auto; padding: 14px 16px 6px;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+.retour, .lire {
+  font-size: 1rem; font-weight: 600; text-decoration: none; color: var(--brun);
+  background: var(--papier); border: 3px solid var(--brun); border-radius: 999px; padding: 8px 16px;
+  box-shadow: 0 3px 0 var(--brun);
+}
+.lire.actif { background: #FFE38A; }
+.retour:active, .lire:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--brun); }
+
+.page {
+  max-width: 920px; margin: 8px auto 0; padding: 0 16px;
+  animation: tourne .45s ease;
+}
+@keyframes tourne { from { opacity: 0; transform: translateX(24px) rotate(.6deg); } to { opacity: 1; transform: none; } }
+.illu {
+  background: var(--papier); border: 4px solid var(--brun); border-radius: 28px; overflow: hidden;
+  box-shadow: var(--ombre);
+}
+.illu svg { display: block; width: 100%; height: auto; }
+.texte {
+  background: var(--papier); border: 4px solid var(--brun); border-radius: 24px;
+  margin-top: 14px; padding: 18px 22px; box-shadow: var(--ombre);
+  font-size: clamp(1.25rem, 4.2vw, 1.75rem); line-height: 1.5; font-weight: 500; text-align: center;
+}
+.texte p { margin: 0; }
+.texte h1 { margin: 0 0 4px; font-size: clamp(1.8rem, 6vw, 2.8rem); color: var(--rouge); line-height: 1.15; }
+.texte h2 { margin: 0; font-size: clamp(2.2rem, 7vw, 3.2rem); color: var(--rouge); }
+.texte .sous { font-size: .7em; color: var(--brun-doux); }
+.texte .morale { font-size: 1.1em; margin: 6px 0 14px; }
+.fin-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.bouton {
+  font-size: 1.05rem; font-weight: 600; text-decoration: none; color: var(--brun);
+  background: #FFE38A; border: 3px solid var(--brun); border-radius: 999px; padding: 10px 20px; box-shadow: 0 4px 0 var(--brun);
+}
+.bouton.bleu { background: #BFE0FF; }
+
+.nav {
+  max-width: 920px; margin: 14px auto 30px; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.fleche {
+  width: 72px; height: 72px; border-radius: 50%; font-size: 1.9rem; color: #fff;
+  background: var(--rousse); border: 4px solid var(--brun); box-shadow: 0 5px 0 var(--brun);
+}
+.fleche:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--brun); }
+.fleche:disabled { opacity: .3; cursor: default; }
+.points { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.points span { width: 14px; height: 14px; border-radius: 50%; background: #EAD3B4; border: 2px solid var(--brun-doux); }
+.points span.on { background: var(--rouge); border-color: var(--brun); transform: scale(1.25); }
+
+/* ---------- La bibliothèque ---------- */
+.accueil { max-width: 1040px; margin: 0 auto; padding: 22px 16px 50px; }
+.entete { text-align: center; }
+.entete svg { width: min(300px, 70vw); height: auto; display: block; margin: 0 auto -6px; }
+.entete h1 { margin: 0; font-size: clamp(2rem, 7vw, 3.4rem); color: var(--rouge); line-height: 1.08; text-shadow: 0 3px 0 #FFD9A8; }
+.entete p { margin: 8px 0 0; font-size: 1.15rem; color: var(--brun-doux); }
+.titre-section { margin: 34px 4px 14px; font-size: 1.4rem; }
+.grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.carte {
+  position: relative; display: block; text-decoration: none; background: var(--papier);
+  border: 4px solid var(--brun); border-radius: 26px; overflow: hidden; box-shadow: 0 6px 0 var(--brun);
+  transition: transform .15s;
+}
+.carte:hover { transform: translateY(-4px) rotate(-.6deg); }
+.carte svg { display: block; width: 100%; height: auto; border-bottom: 4px solid var(--brun); }
+.carte .infos { padding: 12px 16px 16px; }
+.carte .num { font-size: .9rem; font-weight: 600; color: var(--brun-doux); }
+.carte h3 { margin: 2px 0 4px; font-size: 1.3rem; line-height: 1.2; }
+.carte .resume { margin: 0; font-size: .98rem; color: var(--brun-doux); }
+.badge {
+  position: absolute; top: 12px; right: 12px; background: var(--rouge); color: #fff; font-weight: 700;
+  padding: 4px 12px; border-radius: 999px; border: 3px solid var(--brun); font-size: .9rem; transform: rotate(6deg);
+}
+.vide { text-align: center; font-size: 1.1rem; color: var(--brun-doux); }
+.pied { text-align: center; margin-top: 40px; color: var(--brun-doux); font-size: .95rem; }

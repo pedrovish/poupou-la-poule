@@ -7,5 +7,15 @@
     "fichier": "/histoires/01-le-chapeau-envole.html",
     "couleur": "#BFE6FF",
     "objet": "chapeau"
+  },
+  {
+    "numero": 2,
+    "titre": "Poupou et la petite luciole",
+    "resume": "Une nuit, Lumi la luciole a perdu sa famille… Poupou et ses amis partent la retrouver.",
+    "date": "2026-10-29",
+    "fichier": "/histoires/02-la-petite-luciole.html",
+    "couleur": "#2E3D78",
+    "objet": "luciole",
+    "nuit": true
   }
 ]

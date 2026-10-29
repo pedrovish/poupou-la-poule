@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la petite luciole</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// petits points de lumière dans la nuit
+const lumieres = (pts, r = 6) => pts.map(([x, y], i) =>
+  `<circle cx="${x}" cy="${y}" r="${r * 2.4}" fill="#FFF27A" opacity=".25"/><circle cx="${x}" cy="${y}" r="${i % 2 ? r : r * .8}" fill="#FFF27A"/>`).join('');
+const famille = [[470, 300], [520, 250], [580, 290], [640, 240], [690, 300], [560, 200], [430, 230], [740, 220], [610, 330]];
+
+lancerHistoire({
+  numero: 2,
+  titre: "Poupou et la petite luciole",
+  morale: "Quand on aide un ami, même la nuit devient lumineuse.",
+  couverture: () => decor('nuit') + u('lune', 600, 40, 120) + u('grange', 30, 170, 210, { op: .95 }) +
+    lumieres([[300, 150], [380, 110], [700, 230], [250, 260]], 5) +
+    u('buisson', 560, 350, 220) + u('poupou', 290, 270, 240) + u('luciole', 480, 210, 90, { flip: true }),
+  fin: () => decor('nuit') + u('lune', 590, 40, 120) +
+    lumieres([[120, 120], [220, 80], [330, 140], [460, 90], [540, 160], [680, 220], [160, 230]], 6) +
+    u('coeur', 90, 80, 70, { rot: -12 }) + u('luciole', 470, 220, 80, { flip: true }) + u('poupou', 290, 280, 220),
+  pages: [
+    {
+      scene: () => decor('nuit') + u('lune', 590, 40, 130) + u('grange', 40, 150, 250) + u('arbre', 620, 196, 150) +
+        `<g fill="#FFF6C8" font-family="Fredoka, sans-serif" font-weight="600" font-size="34"><text x="440" y="250">Zzz…</text><text x="490" y="210" font-size="26">Zzz…</text></g>` +
+        u('poupou', 330, 300, 190),
+      texte: "C’était la nuit à la ferme. Tout le monde dormait… sauf <b>Poupou</b>. Elle regardait les étoiles et n’avait pas du tout sommeil."
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 60, 40, 100) + u('buisson', 430, 330, 300) +
+        u('luciole', 520, 270, 100, { flip: true }) +
+        `<g fill="#9BD8F5"><path d="M528 330 q-5 10 0 13 q5 -3 0 -13Z"/><path d="M546 336 q-4 9 0 12 q4 -3 0 -12Z"/></g>` +
+        u('poupou', 160, 300, 200),
+      texte: "Soudain, près du buisson, une toute petite lumière clignota. C’était <b>Lumi</b>, une petite luciole. Elle pleurait : « J’ai perdu ma famille ! »"
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 600, 36, 110) + u('grange', 30, 160, 200, { op: .9 }) +
+        u('caramel', 260, 320, 230) + bulle(500, 200, 'Hmm… ?', 150) +
+        u('poupou', 520, 330, 160, { flip: true }) + u('luciole', 600, 270, 70, { flip: true }),
+      texte: "« Ne pleure pas, Lumi. Je vais t’aider ! » dit Poupou. Elle réveilla doucement <b>Caramel</b>. « Hmm… On part à l’aventure ? » bâilla le petit cochon."
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 50, 40, 100) + u('barriere', 20, 330, 260) +
+        u('marguerite', 420, 196, 330, { flip: true }) + bulle(160, 90, 'Par là !', 150) +
+        u('poupou', 230, 330, 150) + u('luciole', 330, 280, 64) +
+        `<path d="M620 230 Q700 180 770 250" fill="none" stroke="#FFF6C8" stroke-width="5" stroke-dasharray="4 14" stroke-linecap="round"/>`,
+      texte: "<b>Marguerite la vache</b> ouvrit un œil. « Meuh… J’ai vu des petites lumières danser près de la mare. C’est par là ! »"
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 600, 40, 110) + u('arbre', 10, 196, 150) +
+        u('hamid', 300, 170, 150) + u('lanterne', 420, 250, 70) + u('chapeau', 312, 150, 126) +
+        u('poupou', 480, 330, 150, { flip: true }) + u('caramel', 600, 360, 170, { flip: true }) +
+        u('luciole', 520, 250, 64, { flip: true }),
+      texte: "Le chemin était un peu sombre. Mais voilà <b>Papi Hamid</b> avec sa lanterne ! « Je vous accompagne, mes petits. »"
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 60, 40, 100) + u('mare', 300, 400, 460) +
+        lumieres(famille, 6) + u('luciole', 560, 230, 70) + u('luciole', 650, 270, 60, { flip: true }) +
+        u('poupou', 70, 310, 170) + u('luciole', 240, 280, 70),
+      texte: "Au bord de la mare, des dizaines de petites lumières brillaient. « Maman ! Papa ! » cria Lumi. C’était sa famille !"
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 600, 30, 110) +
+        lumieres([[120, 140], [200, 90], [280, 160], [360, 80], [440, 150], [520, 100], [100, 250], [700, 180], [640, 260], [380, 230], [250, 230]], 6) +
+        u('luciole', 300, 120, 70) + u('luciole', 450, 180, 60, { flip: true }) +
+        u('caramel', 40, 330, 210) + u('poupou', 290, 300, 190) + u('marguerite', 500, 210, 260, { flip: true }) +
+        `<g fill="#FFF27A" font-family="Fredoka, sans-serif" font-weight="700" font-size="44"><text x="400" y="60" text-anchor="middle">Ohhh !</text></g>`,
+      texte: "Pour dire merci, toutes les lucioles s’envolèrent et dansèrent dans le ciel. « Ohhh ! Que c’est beau ! » dirent les amis."
+    },
+    {
+      scene: () => decor('nuit') + u('lune', 580, 36, 120) + u('grange', 40, 150, 250) +
+        lumieres([[330, 140], [400, 110], [470, 150], [520, 220]], 5) + u('luciole', 420, 200, 64, { flip: true }) +
+        `<g fill="#FFF6C8" font-family="Fredoka, sans-serif" font-weight="600" font-size="30"><text x="560" y="300">Bonne nuit !</text></g>` +
+        u('poupou', 330, 300, 190) + u('coeur', 520, 330, 46, { rot: 10 }),
+      texte: "Lumi fit un bisou lumineux à Poupou. « Bonne nuit, Poupou ! » Et la petite poule s’endormit enfin, avec plein d’étoiles dans les yeux."
+    }
+  ]
+});
+</script>
+</body>
+</html>

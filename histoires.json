@@ -17,5 +17,14 @@
     "couleur": "#2E3D78",
     "objet": "luciole",
     "nuit": true
+  },
+  {
+    "numero": 3,
+    "titre": "Poupou et la grosse citrouille",
+    "resume": "C’est la fête de l’automne ! Mais la citrouille de Poupou est bien trop lourde… Qui aura la bonne idée ?",
+    "date": "2026-10-30",
+    "fichier": "/histoires/03-la-grosse-citrouille.html",
+    "couleur": "#FFD9A0",
+    "objet": "citrouille"
   }
 ]

@@ -16,7 +16,7 @@ Une histoire illustrée par jour pour une petite fille de 5 ans, en français.
 - **Marguerite** (`marguerite`) : la vache, douce et un peu rêveuse, une marguerite sur la tête. Dit « Meuh ».
 - **Coin-Coin** (`coincoin`) : le caneton jaune, petit, rigolo, bon nageur.
 - **Papi Hamid** (`hamid`) : le fermier, moustache grise, salopette bleue, très gentil. Son chapeau : `chapeau`.
-Décor disponible : `grange, soleil, nuage, arbre, fleur, mare, barriere, graines, coeur, etoile, lune, luciole, lanterne, buisson`.
+Décor disponible : `grange, soleil, nuage, arbre, fleur, mare, barriere, graines, coeur, etoile, lune, luciole, lanterne, buisson, citrouille, citrouillesourire, feuille, feuillerouge, tasfeuilles, arbreautomne, brouette, soupe`.
 Amie récurrente : **Lumi** (`luciole`), la petite luciole (histoire n°2).
 Tous les animaux regardent vers la droite ; `{flip:true}` les retourne.
 

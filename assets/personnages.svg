@@ -251,5 +251,87 @@
   <g fill="#FF7BAC"><circle cx="70" cy="40" r="6"/><circle cx="130" cy="34" r="6"/><circle cx="160" cy="70" r="5"/><circle cx="40" cy="74" r="5"/></g>
 </symbol>
 
+<!-- CITROUILLE : grosse citrouille ronde (histoire n°3) -->
+<symbol id="citrouille" viewBox="0 0 200 170">
+  <path d="M104 34 C112 18 128 12 140 16" fill="none" stroke="#3E9B43" stroke-width="4" stroke-linecap="round"/>
+  <path d="M120 22 C134 4 162 8 166 22 C150 32 132 32 120 22Z" fill="#4CAF50" stroke="#2E7D32" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M124 22 Q144 18 160 20" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+  <g fill="#FF9A3C" stroke="#A8521A" stroke-width="4">
+    <ellipse cx="52" cy="104" rx="44" ry="58"/><ellipse cx="148" cy="104" rx="44" ry="58"/>
+    <ellipse cx="76" cy="102" rx="42" ry="62"/><ellipse cx="124" cy="102" rx="42" ry="62"/>
+    <ellipse cx="100" cy="100" rx="38" ry="64" fill="#FFAA4E"/>
+  </g>
+  <path d="M86 46 C90 70 90 130 86 156 M114 46 C110 70 110 130 114 156" fill="none" stroke="#E07B1A" stroke-width="2.5" opacity=".6"/>
+  <ellipse cx="74" cy="72" rx="9" ry="18" fill="#FFD08A" opacity=".7" transform="rotate(14 74 72)"/>
+  <path d="M90 44 C88 30 92 20 100 16 C106 16 110 20 108 26 C104 30 106 38 110 44Z" fill="#7A9A3A" stroke="#4A5E1E" stroke-width="3" stroke-linejoin="round"/>
+</symbol>
+
+<!-- CITROUILLE SOURIRE : la citrouille décorée d'un sourire peint (gentille) -->
+<symbol id="citrouillesourire" viewBox="0 0 200 170">
+  <use href="#citrouille" x="0" y="0" width="200" height="170"/>
+  <ellipse cx="78" cy="94" rx="9" ry="11" fill="#5A2E12"/><circle cx="81" cy="90" r="3.4" fill="#fff"/>
+  <ellipse cx="122" cy="94" rx="9" ry="11" fill="#5A2E12"/><circle cx="125" cy="90" r="3.4" fill="#fff"/>
+  <path d="M74 120 Q100 142 126 120" fill="none" stroke="#5A2E12" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="62" cy="118" r="9" fill="#FF7D9B" opacity=".6"/><circle cx="138" cy="118" r="9" fill="#FF7D9B" opacity=".6"/>
+</symbol>
+
+<!-- FEUILLE : feuille d'automne orange -->
+<symbol id="feuille" viewBox="0 0 100 100">
+  <path d="M50 92 L50 74" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M50 76 C30 78 18 66 22 58 C10 56 6 44 14 38 C8 28 18 20 28 24 C30 12 42 8 50 8 C58 8 70 12 72 24 C82 20 92 28 86 38 C94 44 90 56 78 58 C82 66 70 78 50 76Z" fill="#FF9F1C" stroke="#A8521A" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M50 74 V20 M50 52 L30 36 M50 52 L70 36 M50 64 L32 58 M50 64 L68 58" fill="none" stroke="#C4651A" stroke-width="2.5" stroke-linecap="round"/>
+</symbol>
+
+<!-- FEUILLE ROUGE : feuille d'automne rouge -->
+<symbol id="feuillerouge" viewBox="0 0 100 100">
+  <path d="M50 92 L50 74" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M50 76 C30 78 18 66 22 58 C10 56 6 44 14 38 C8 28 18 20 28 24 C30 12 42 8 50 8 C58 8 70 12 72 24 C82 20 92 28 86 38 C94 44 90 56 78 58 C82 66 70 78 50 76Z" fill="#E8553E" stroke="#8A2A22" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M50 74 V20 M50 52 L30 36 M50 52 L70 36 M50 64 L32 58 M50 64 L68 58" fill="none" stroke="#B8382F" stroke-width="2.5" stroke-linecap="round"/>
+</symbol>
+
+<!-- TAS DE FEUILLES : un gros tas de feuilles mortes tout doux -->
+<symbol id="tasfeuilles" viewBox="0 0 240 110">
+  <path d="M10 104 C14 60 60 22 120 20 C180 22 226 60 230 104Z" fill="#E8893A" stroke="#A8521A" stroke-width="4" stroke-linejoin="round"/>
+  <g stroke-width="2.5" stroke-linejoin="round">
+    <ellipse cx="60" cy="74" rx="22" ry="11" transform="rotate(-20 60 74)" fill="#FFD43B" stroke="#B38F00"/>
+    <ellipse cx="112" cy="46" rx="22" ry="11" transform="rotate(15 112 46)" fill="#E8553E" stroke="#8A2A22"/>
+    <ellipse cx="164" cy="70" rx="22" ry="11" transform="rotate(30 164 70)" fill="#FFB020" stroke="#B36B00"/>
+    <ellipse cx="96" cy="88" rx="20" ry="10" transform="rotate(-8 96 88)" fill="#C9502E" stroke="#7A2A18"/>
+    <ellipse cx="142" cy="94" rx="20" ry="10" transform="rotate(-25 142 94)" fill="#FFD43B" stroke="#B38F00"/>
+    <ellipse cx="196" cy="94" rx="18" ry="9" transform="rotate(10 196 94)" fill="#E8553E" stroke="#8A2A22"/>
+    <ellipse cx="38" cy="96" rx="18" ry="9" transform="rotate(12 38 96)" fill="#FFB020" stroke="#B36B00"/>
+    <ellipse cx="134" cy="30" rx="16" ry="8" transform="rotate(-30 134 30)" fill="#FFD43B" stroke="#B38F00"/>
+  </g>
+</symbol>
+
+<!-- ARBRE D'AUTOMNE : feuillage orange et doré -->
+<symbol id="arbreautomne" viewBox="0 0 200 240">
+  <path d="M86 240 L90 130 H110 L114 240Z" fill="#8B5A2B" stroke="#5A3A1A" stroke-width="4"/>
+  <g fill="#FF9F1C" stroke="#B3611A" stroke-width="4"><circle cx="64" cy="96" r="46"/><circle cx="136" cy="96" r="46"/><circle cx="100" cy="58" r="52"/><circle cx="100" cy="112" r="42"/></g>
+  <g fill="#FFD43B" opacity=".85"><circle cx="76" cy="62" r="16"/><circle cx="132" cy="84" r="14"/><circle cx="96" cy="118" r="13"/></g>
+  <g fill="#E8553E" stroke="#8A2A22" stroke-width="2"><ellipse cx="60" cy="100" rx="8" ry="5" transform="rotate(30 60 100)"/><ellipse cx="150" cy="60" rx="8" ry="5" transform="rotate(-20 150 60)"/><ellipse cx="116" cy="40" rx="8" ry="5"/><ellipse cx="140" cy="122" rx="8" ry="5" transform="rotate(40 140 122)"/></g>
+</symbol>
+
+<!-- BROUETTE : la brouette en bois de Papi Hamid (roue à droite) -->
+<symbol id="brouette" viewBox="0 0 240 130">
+  <path d="M6 54 L60 70" stroke="#8B5A2B" stroke-width="9" stroke-linecap="round"/>
+  <path d="M70 92 L58 126 M110 96 L104 126" stroke="#5A3A1A" stroke-width="7" stroke-linecap="round"/>
+  <path d="M44 40 H206 L178 100 H76Z" fill="#E34B3F" stroke="#8A2A22" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M56 54 H196 M66 72 H188 M72 88 H182" stroke="#B8382F" stroke-width="2.5" opacity=".7"/>
+  <rect x="38" y="34" width="174" height="12" rx="6" fill="#C9813E" stroke="#6B3A1E" stroke-width="3"/>
+  <path d="M150 98 L196 106" stroke="#5A3A1A" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="200" cy="106" r="20" fill="#5A4636" stroke="#2B1B10" stroke-width="4"/>
+  <circle cx="200" cy="106" r="7" fill="#FFD43B" stroke="#8A6400" stroke-width="2"/>
+</symbol>
+
+<!-- SOUPE : un bol de soupe de citrouille bien chaude -->
+<symbol id="soupe" viewBox="0 0 100 80">
+  <g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".9"><path d="M36 26 q-6 -8 0 -14 q6 -6 0 -12"/><path d="M56 26 q-6 -8 0 -14 q6 -6 0 -12"/></g>
+  <ellipse cx="50" cy="40" rx="42" ry="10" fill="#FF9A3C" stroke="#6B3A1E" stroke-width="3"/>
+  <path d="M8 40 C10 64 30 74 50 74 C70 74 90 64 92 40 C80 48 20 48 8 40Z" fill="#3F8EDB" stroke="#1F4F85" stroke-width="3" stroke-linejoin="round"/>
+  <g fill="#fff"><circle cx="30" cy="58" r="3"/><circle cx="50" cy="62" r="3"/><circle cx="70" cy="58" r="3"/></g>
+  <circle cx="58" cy="38" r="3" fill="#fff" opacity=".8"/>
+</symbol>
+
 </defs>
 </svg>

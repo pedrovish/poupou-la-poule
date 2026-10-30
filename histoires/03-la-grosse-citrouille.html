@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la grosse citrouille</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// feuilles d'automne qui tombent : [x, y, largeur, rotation, rouge ?]
+const feuilles = pts => pts.map(([x, y, w, r, rouge]) => u(rouge ? 'feuillerouge' : 'feuille', x, y, w, { rot: r })).join('');
+const titre = (txt, x, y, taille = 40, couleur = '#6B3A1E', rot = 0) =>
+  `<g fill="${couleur}" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"><text x="${x}" y="${y}" text-anchor="middle"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text></g>`;
+
+lancerHistoire({
+  numero: 3,
+  titre: "Poupou et la grosse citrouille",
+  morale: "Même le plus petit des amis peut avoir une très grande idée !",
+  couverture: () => decor('jour') + u('soleil', 630, 26, 120) + u('nuage', 60, 46, 170) +
+    u('arbreautomne', 20, 160, 190) + feuilles([[300, 90, 44, 20], [420, 150, 36, -30, 1], [560, 60, 40, 50], [700, 200, 34, -10, 1], [240, 200, 30, 70, 1]]) +
+    u('citrouillesourire', 420, 250, 270) + u('poupou', 230, 290, 210) +
+    feuilles([[120, 470, 40, 30, 1], [640, 480, 42, -40], [380, 500, 34, 10]]),
+  fin: () => decor('coucher', u('soleil', 520, 240, 180)) + feuilles([[90, 70, 44, 20], [230, 130, 36, -30, 1], [600, 70, 40, 50], [700, 170, 36, -20, 1]]) +
+    u('coeur', 120, 160, 64, { rot: -12 }) + u('citrouillesourire', 420, 290, 230) + u('lanterne', 650, 330, 64) +
+    u('poupou', 230, 290, 200) + u('coeur', 380, 230, 44, { rot: 14 }),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 630, 26, 120) + u('nuage', 300, 40, 150) +
+        u('arbreautomne', 30, 150, 200) + u('arbreautomne', 600, 180, 160) +
+        feuilles([[260, 120, 40, 20], [380, 70, 34, -40, 1], [520, 110, 40, 60], [580, 300, 30, 10, 1], [250, 250, 30, -20]]) +
+        u('tasfeuilles', 250, 380, 320) + u('poupou', 320, 240, 180, { rot: -8 }) +
+        feuilles([[280, 330, 34, 40, 1], [520, 320, 34, -30], [300, 380, 28, 80]]) +
+        titre('Crouch ! Crouch !', 470, 210, 34, '#A8521A', -6),
+      texte: "C’était l’<b>automne</b> à la ferme. Les feuilles devenaient rouges et dorées. <b>Poupou</b> adorait sauter dedans : crouch ! crouch !"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 100) + u('nuage', 500, 40, 150) +
+        u('grange', 520, 150, 240) + u('hamid', 300, 170, 150) + u('chapeau', 314, 150, 122) +
+        bulle(150, 80, 'C’est la fête !', 190) +
+        u('poupou', 90, 320, 150) + u('caramel', 470, 360, 170, { flip: true }) + u('coincoin', 650, 430, 80, { flip: true }) +
+        feuilles([[200, 470, 34, 30, 1], [620, 380, 30, -20]]),
+      texte: "Papi Hamid appela tout le monde : « Ce soir, c’est la <b>fête de l’automne</b> ! Qui va trouver la plus belle citrouille pour la décorer ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 80, 50, 150) + u('nuage', 520, 30, 130) +
+        u('barriere', 0, 330, 240) +
+        `<g fill="none" stroke="#3E9B43" stroke-width="6" stroke-linecap="round"><path d="M40 480 C120 440 180 500 260 460 C340 420 420 470 500 440"/></g>` +
+        u('citrouille', 40, 420, 110) + u('citrouille', 600, 440, 90) + u('citrouille', 700, 400, 70) +
+        u('citrouille', 320, 170, 330) + u('poupou', 160, 340, 140) +
+        titre('Waouh !', 210, 300, 44, '#E07B1A', -8),
+      texte: "Dans le potager, Poupou trouva une citrouille <b>énorme</b>, plus grosse qu’elle ! « Waouh ! Elle est parfaite pour la fête ! »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 640, 26, 110) + u('nuage', 260, 40, 140) +
+        u('citrouille', 420, 190, 310) + u('poupou', 290, 320, 150) + u('caramel', 80, 350, 220) +
+        titre('Ho… hisse !', 220, 230, 44, '#6B3A1E', -6) +
+        `<g fill="#9BD8F5" stroke="#2F7FB0" stroke-width="2"><path d="M300 330 q-6 11 0 14 q6 -3 0 -14Z"/><path d="M110 360 q-6 11 0 14 q6 -3 0 -14Z"/></g>`,
+      texte: "Poupou poussa très fort. Caramel vint l’aider : « <b>Ho… hisse !</b> » Mais la citrouille ne bougea pas d’un tout petit bout."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 150) + u('arbreautomne', 620, 170, 170) +
+        u('marguerite', 20, 210, 290) + u('tasfeuilles', 420, 360, 340) + u('citrouille', 470, 300, 210) +
+        feuilles([[430, 230, 40, 20, 1], [520, 180, 36, -40], [620, 230, 40, 60, 1], [700, 320, 34, -10], [400, 320, 34, 70], [580, 140, 30, 20, 1]]) +
+        titre('Pouf !', 580, 110, 54, '#E8553E', 6) +
+        `<g fill="none" stroke="#6B3A1E" stroke-width="5" stroke-linecap="round" opacity=".5"><path d="M330 470 q30 -14 60 0 M300 500 q40 -16 80 0"/></g>`,
+      texte: "Alors <b>Marguerite la vache</b> poussa avec sa tête. « Meuh ! » La citrouille roula, roula… et <b>pouf !</b> elle s’arrêta dans un tas de feuilles. Tout le monde éclata de rire !"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 620, 26, 110) + u('nuage', 360, 50, 140) +
+        u('grange', 20, 150, 220) + u('brouette', 230, 370, 230) +
+        u('caramel', 580, 340, 190, { flip: true }) + u('poupou', 480, 340, 120, { flip: true }) +
+        u('coincoin', 300, 300, 100) + bulle(340, 200, 'Coin ! Une idée !', 200) +
+        feuilles([[680, 470, 36, 20, 1], [120, 470, 34, -30]]),
+      texte: "Mais comment l’amener jusqu’à la grange ? Le petit <b>Coin-Coin</b> sauta sur la brouette : « Coin ! J’ai une idée ! Prenons la <b>brouette</b> de Papi Hamid ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 100, 40, 150) + u('soleil', 640, 26, 110) +
+        u('grange', 560, 150, 230) +
+        u('hamid', 90, 190, 140) + u('chapeau', 101, 171, 118) + u('brouette', 190, 350, 280) + u('citrouille', 290, 220, 200) +
+        u('poupou', 470, 360, 120) + u('coincoin', 300, 440, 76) + u('caramel', 10, 400, 150) +
+        titre('Tous ensemble !', 400, 120, 40, '#3F8EDB', -4),
+      texte: "Tous ensemble, ils roulèrent la citrouille dans la brouette. Et Papi Hamid la poussa jusqu’à la grange. « Bravo, mes petits ! »"
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 600, 230, 170)) + confettis(16) +
+        u('grange', 20, 150, 210) + u('lanterne', 225, 290, 56) + u('lanterne', 455, 290, 52) +
+        u('marguerite', 560, 250, 210, { flip: true }) +
+        u('citrouillesourire', 280, 280, 220) + u('soupe', 230, 470, 80) + u('soupe', 480, 474, 76) +
+        u('caramel', 40, 360, 170) + u('poupou', 480, 340, 120, { flip: true }) + u('coincoin', 680, 440, 74, { flip: true }),
+      texte: "Le soir, Papi Hamid peignit un grand <b>sourire</b> sur la citrouille. Il fit une bonne soupe toute chaude. « C’est la plus belle citrouille, parce qu’on l’a trouvée <b>tous ensemble</b> ! » dit Poupou."
+    }
+  ]
+});
+</script>
+</body>
+</html>

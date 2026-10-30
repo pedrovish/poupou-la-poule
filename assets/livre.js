@@ -6,7 +6,9 @@
     poupou: 1, caramel: 180 / 220, marguerite: 240 / 300, coincoin: 1, hamid: 256 / 160,
     chapeau: 0.5, grange: 240 / 260, soleil: 1, nuage: 0.55, arbre: 1.2, fleur: 1.5,
     mare: 126 / 360, barriere: 0.4, graines: 0.5, coeur: 0.9, etoile: 1, lune: 1,
-    luciole: 1, lanterne: 1.5, buisson: 0.55
+    luciole: 1, lanterne: 1.5, buisson: 0.55,
+    citrouille: 0.85, citrouillesourire: 0.85, feuille: 1, feuillerouge: 1, tasfeuilles: 110 / 240,
+    arbreautomne: 1.2, brouette: 130 / 240, soupe: 0.8
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

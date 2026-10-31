@@ -8,7 +8,8 @@
     mare: 126 / 360, barriere: 0.4, graines: 0.5, coeur: 0.9, etoile: 1, lune: 1,
     luciole: 1, lanterne: 1.5, buisson: 0.55,
     citrouille: 0.85, citrouillesourire: 0.85, feuille: 1, feuillerouge: 1, tasfeuilles: 110 / 240,
-    arbreautomne: 1.2, brouette: 130 / 240, soupe: 0.8
+    arbreautomne: 1.2, brouette: 130 / 240, soupe: 0.8,
+    herisson: 0.75, herissondort: 100 / 140, cabane: 0.9, bottefoin: 0.65, pomme: 1
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

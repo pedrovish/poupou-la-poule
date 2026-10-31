@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le petit hérisson</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// feuilles d'automne qui tombent : [x, y, largeur, rotation, rouge ?]
+const feuilles = pts => pts.map(([x, y, w, r, rouge]) => u(rouge ? 'feuillerouge' : 'feuille', x, y, w, { rot: r })).join('');
+const titre = (txt, x, y, taille = 40, couleur = '#6B3A1E', rot = 0) =>
+  `<g fill="${couleur}" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"><text x="${x}" y="${y}" text-anchor="middle"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text></g>`;
+// petite touffe de mousse verte
+const mousse = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})" stroke="#3E7A2A" stroke-width="3" stroke-linejoin="round">` +
+  `<path d="M0 30 C0 8 20 0 34 10 C44 -2 66 2 70 18 C84 16 92 28 88 34 Z" fill="#6CC04A"/>` +
+  `<g fill="#8FD86A" stroke="none"><circle cx="24" cy="16" r="5"/><circle cx="52" cy="14" r="4"/><circle cx="72" cy="26" r="3.5"/></g></g>`;
+// petits traits de frisson
+const frisson = (x, y) => `<g fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linecap="round" opacity=".7"><path d="M${x} ${y} q-8 8 0 16 q8 8 0 16"/><path d="M${x + 20} ${y - 10} q-8 8 0 16 q8 8 0 16"/></g>`;
+
+lancerHistoire({
+  numero: 4,
+  titre: "Poupou et le petit hérisson",
+  morale: "Aider un ami, c’est lui offrir un petit coin tout chaud… et beaucoup de tendresse !",
+  couverture: () => decor('jour') + u('soleil', 640, 26, 110) + u('nuage', 200, 40, 160) +
+    u('arbreautomne', 10, 150, 200) +
+    feuilles([[300, 80, 40, 20], [430, 140, 34, -30, 1], [560, 60, 38, 50], [720, 170, 32, -10, 1], [250, 210, 30, 70, 1]]) +
+    u('cabane', 500, 196, 220) + u('poupou', 200, 290, 200) + u('herisson', 380, 382, 150) + u('pomme', 560, 440, 54) +
+    feuilles([[90, 470, 40, 30, 1], [690, 470, 42, -40], [340, 505, 30, 10]]),
+  fin: () => decor('nuit', u('lune', 600, 40, 100)) +
+    u('arbreautomne', 40, 140, 220) + u('cabane', 300, 170, 240) + u('herissondort', 385, 324, 70) +
+    titre('Zzz…', 575, 215, 36, '#FFF6C8', -8) +
+    u('etoile', 120, 60, 40) + u('etoile', 480, 120, 30) + u('coeur', 230, 110, 50, { rot: -12 }) +
+    u('poupou', 560, 330, 160, { flip: true }) +
+    feuilles([[280, 460, 34, 20, 1], [520, 490, 32, -30]]),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 150) + u('nuage', 470, 60, 130) + vent(240, 60, .7) +
+        u('arbreautomne', 600, 160, 180) +
+        feuilles([[300, 150, 40, 20], [420, 100, 34, -40, 1], [520, 190, 38, 60], [180, 220, 30, -20, 1]]) +
+        u('herisson', 530, 318, 130) + u('tasfeuilles', 400, 370, 320) + u('poupou', 120, 300, 180) +
+        feuilles([[460, 340, 30, 40, 1], [650, 380, 30, -30]]) +
+        titre('Atchoum !', 430, 260, 44, '#A8521A', -6),
+      texte: "Le vent d’automne soufflait : fouuu ! <b>Poupou</b> ramassait des feuilles quand, tout à coup, le tas de feuilles fit : « <b>Atchoum !</b> »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 100) + u('nuage', 360, 40, 150) +
+        u('arbreautomne', 590, 150, 190) + u('tasfeuilles', 560, 390, 230) +
+        u('poupou', 160, 300, 190) + u('herisson', 420, 372, 170, { flip: true }) +
+        bulle(450, 250, 'Bonjour !', 160) +
+        feuilles([[300, 120, 36, 20, 1], [480, 170, 32, -30], [90, 480, 34, 40]]),
+      texte: "Un tout petit <b>hérisson</b> sortit des feuilles. « Bonjour ! Je m’appelle <b>Pic-Pic</b>. L’hiver arrive, et je cherche un lit bien douillet pour dormir jusqu’au printemps. »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 630, 26, 110) + u('nuage', 200, 40, 150) +
+        `<ellipse cx="240" cy="480" rx="190" ry="44" fill="#8B5A2B" stroke="#5A3A1A" stroke-width="4"/>` +
+        `<g fill="#A8733F"><ellipse cx="160" cy="470" rx="30" ry="8"/><ellipse cx="330" cy="492" rx="24" ry="6"/></g>` +
+        u('caramel', 110, 330, 240) + bulle(140, 230, 'C’est doux !', 180) +
+        u('herisson', 520, 400, 130, { flip: true }) + frisson(670, 400) +
+        u('poupou', 650, 330, 120, { flip: true }) +
+        titre('Brrr !', 600, 340, 46, '#3F8EDB', 6),
+      texte: "« Viens dans ma <b>flaque de boue</b>, c’est tout doux ! » dit Caramel. Pic-Pic trempa une patte… « <b>Brrr !</b> C’est bien trop mouillé ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 150) + vent(540, 30, .55) +
+        u('grange', 420, 110, 340) + u('marguerite', 20, 214, 280) + bulle(150, 120, 'Meuh !', 130) +
+        u('poupou', 270, 360, 110) + u('herisson', 390, 420, 90) +
+        u('fleur', 760, 460, 30),
+      texte: "« Meuh ! Viens dans la grande <b>grange</b> ! » dit Marguerite. Mais la grange était si grande, avec tant de courants d’air… « C’est trop grand pour un tout petit hérisson », dit Pic-Pic."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 100) + u('nuage', 300, 40, 140) +
+        u('hamid', 560, 170, 150) + u('chapeau', 574, 150, 122) +
+        u('cabane', 370, 250, 170) + u('poupou', 80, 310, 170) + bulle(160, 220, 'Une idée !', 170) +
+        u('herisson', 250, 420, 100) +
+        titre('Toc, toc, toc !', 440, 130, 40, '#A8521A', -6),
+      texte: "Pic-Pic baissa le nez. Alors Poupou eut une idée : « Construisons-lui une <b>petite maison</b> ! » Papi Hamid prit une vieille caisse en bois. Toc, toc, toc ! Il fit un toit et une porte toute ronde."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 640, 26, 100) + u('nuage', 300, 30, 140) +
+        u('marguerite', 0, 196, 250) + u('cabane', 290, 220, 200) + u('bottefoin', 50, 384, 130) +
+        u('caramel', 590, 330, 200, { flip: true }) + feuilles([[540, 486, 34, 20, 1], [600, 500, 30, -30], [700, 498, 32, 50, 1]]) +
+        u('poupou', 190, 400, 110) + u('pomme', 302, 460, 46) +
+        u('herisson', 360, 430, 100, { flip: true }) + u('coincoin', 470, 428, 82) + mousse(500, 482, .7) +
+        feuilles([[250, 110, 34, 20, 1], [560, 150, 32, -30]]),
+      texte: "Tout le monde aida ! Caramel apporta des <b>feuilles sèches</b>, Marguerite du <b>foin</b> tout doux, et Coin-Coin de la <b>mousse</b> verte. Poupou, elle, apporta une belle <b>pomme</b> rouge."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 100) + u('nuage', 560, 40, 140) +
+        u('arbreautomne', 590, 150, 180) + u('cabane', 250, 140, 280) +
+        u('herisson', 360, 322, 110) + u('pomme', 476, 362, 44) +
+        bulle(440, 180, 'C’est parfait !', 210) +
+        u('poupou', 90, 330, 160) + u('coincoin', 680, 440, 80, { flip: true }) +
+        titre('Crounch !', 580, 450, 36, '#E8483F', 6),
+      texte: "Pic-Pic entra dans sa petite maison. Il tourna une fois, deux fois, trois fois… « C’est tout doux ! C’est <b>parfait</b> ! » Et il croqua sa pomme : crounch !"
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 560, 240, 170)) +
+        u('arbreautomne', 40, 140, 210) + u('cabane', 300, 170, 240) + u('herissondort', 385, 324, 70) +
+        titre('Zzz…', 570, 215, 34, '#6B3A1E', -8) +
+        u('poupou', 160, 360, 130) + u('caramel', 560, 350, 180, { flip: true }) + u('coincoin', 470, 440, 70, { flip: true }) +
+        feuilles([[250, 120, 34, 20, 1], [640, 110, 30, -30]]),
+      texte: "Le soir tombait. Pic-Pic bâilla : « Bonne nuit, mes amis… À bientôt au <b>printemps</b> ! » Et tout bas, tous les amis chuchotèrent : « Bonne nuit, Pic-Pic ! »"
+    }
+  ]
+});
+</script>
+</body>
+</html>

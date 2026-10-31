@@ -26,5 +26,14 @@
     "fichier": "/histoires/03-la-grosse-citrouille.html",
     "couleur": "#FFD9A0",
     "objet": "citrouille"
+  },
+  {
+    "numero": 4,
+    "titre": "Poupou et le petit hérisson",
+    "resume": "Atchoum ! Un petit hérisson cherche un lit douillet pour dormir tout l’hiver… Poupou et ses amis vont l’aider.",
+    "date": "2026-10-31",
+    "fichier": "/histoires/04-le-petit-herisson.html",
+    "couleur": "#F6D9B4",
+    "objet": "herisson"
   }
 ]

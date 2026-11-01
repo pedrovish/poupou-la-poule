@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et l’arc-en-ciel</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// gouttes de pluie : n traits légers répartis dans la scène
+const pluie = (n = 40, hMax = 520) => {
+  let s = '<g stroke="#EAF6FF" stroke-width="4" stroke-linecap="round" opacity=".85">';
+  for (let i = 0; i < n; i++) {
+    const x = (i * 173) % 790 + 5, y = (i * 97) % hMax + 5;
+    s += `<path d="M${x} ${y} l-7 20"/>`;
+  }
+  return s + '</g>';
+};
+// éclaboussures autour d'un point
+const splash = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})" fill="#8EC9F0" stroke="#4A86B8" stroke-width="2.5">` +
+  `<ellipse cx="-70" cy="-40" rx="8" ry="11" transform="rotate(-30 -70 -40)"/><ellipse cx="-40" cy="-70" rx="7" ry="10" transform="rotate(-15 -40 -70)"/>` +
+  `<ellipse cx="40" cy="-72" rx="7" ry="10" transform="rotate(15 40 -72)"/><ellipse cx="72" cy="-42" rx="8" ry="11" transform="rotate(30 72 -42)"/>` +
+  `<ellipse cx="0" cy="-86" rx="6" ry="9"/></g>`;
+// une petite larme bleue
+const larme = (x, y) => `<path d="M${x} ${y} q-7 12 0 16 q7 -4 0 -16Z" fill="#8EC9F0" stroke="#4A86B8" stroke-width="2"/>`;
+// Poupou qui tient son parapluie rouge
+const poupouPara = (x, y, w, flip = false) => u('poupou', x, y, w, { flip }) +
+  u('parapluie', x + (flip ? 0.15 : 0.05) * w, y - 0.3 * w, 0.8 * w, { flip });
+const titre = (txt, x, y, taille = 40, couleur = '#6B3A1E', rot = 0) =>
+  `<g fill="${couleur}" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"><text x="${x}" y="${y}" text-anchor="middle"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text></g>`;
+// une grosse pierre grise
+const pierre = (x, y, w = 120) => `<ellipse cx="${x}" cy="${y}" rx="${w / 2}" ry="${w / 4}" fill="#B9B4AA" stroke="#6E675C" stroke-width="4"/>` +
+  `<ellipse cx="${x - w / 6}" cy="${y - w / 10}" rx="${w / 7}" ry="${w / 20}" fill="#fff" opacity=".4"/>`;
+// nappe de pique-nique à carreaux
+const nappe = (cx, cy, rx, ry) => `<defs><pattern id="carreaux" width="36" height="36" patternUnits="userSpaceOnUse"><rect width="36" height="36" fill="#fff"/><rect width="18" height="18" fill="#FF8A8A"/><rect x="18" y="18" width="18" height="18" fill="#FF8A8A"/></pattern></defs>` +
+  `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#carreaux)" stroke="#C44A4A" stroke-width="4"/>`;
+
+lancerHistoire({
+  numero: 5,
+  titre: "Poupou et l’arc-en-ciel",
+  morale: "Même un jour de pluie devient tout joli quand on s’aide les uns les autres !",
+  couverture: () => decor('jour', u('arcenciel', 150, 90, 500)) +
+    u('nuage', 90, 250, 170) + u('nuage', 560, 250, 170) + u('soleil', 660, 20, 110) +
+    u('flaque', 440, 470, 260) + u('fleur', 80, 440, 40) + u('fleur', 740, 430, 36) +
+    poupouPara(230, 270, 220) + u('escargot', 520, 420, 120, { flip: true }),
+  fin: () => decor('coucher', u('soleil', 520, 250, 170)) + confettis(14) +
+    u('coeur', 120, 90, 70, { rot: -12 }) + u('coeur', 610, 70, 60, { rot: 12 }) +
+    u('salade', 470, 400, 170) + u('escargot', 520, 360, 80, { flip: true }) +
+    u('poupou', 200, 290, 220),
+  pages: [
+    {
+      scene: () => decor('pluie') + u('nuage', 60, 30, 170, { op: .8 }) + u('nuage', 460, 50, 190, { op: .8 }) + pluie(46) +
+        u('grange', 30, 140, 280) + u('poupou', 320, 300, 170) + u('panier', 560, 390, 130) +
+        bulle(400, 210, 'Oh non…', 150) + u('flaque', 520, 480, 200),
+      texte: "Plic, ploc, plic ! Ce matin-là, il <b>pleuvait</b> sur la ferme. Poupou regarda son panier et soupira : « Oh non… et notre grand <b>pique-nique</b> ? »"
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 300, 30, 190, { op: .8 }) + pluie(40) +
+        u('grange', 590, 160, 200) + u('hamid', 440, 150, 160) + u('chapeau', 455, 129, 130) +
+        poupouPara(160, 300, 180) + bulle(280, 150, 'Tiens, Poupou !', 200) +
+        u('fleur', 80, 460, 36),
+      texte: "Papi Hamid lui donna un petit <b>parapluie rouge</b>. « Tu sais, la pluie, ça peut être rigolo aussi ! »"
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 500, 30, 180, { op: .8 }) + pluie(40) +
+        u('flaque', 240, 450, 400) + u('coincoin', 380, 360, 120) + splash(440, 470, 1) +
+        poupouPara(60, 300, 170) + titre('Splatch !', 620, 280, 52, '#3F8EDB', 8),
+      texte: "Splatch ! <b>Coin-Coin</b> sautait dans les flaques. Poupou sauta aussi : splatch, splatch ! Quelle rigolade !"
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 80, 30, 170, { op: .8 }) + pluie(38) +
+        u('barriere', 440, 300, 320) + pierre(580, 470, 170) +
+        u('escargot', 520, 386, 120, { flip: true }) + larme(552, 448) +
+        poupouPara(150, 300, 180) + bulle(470, 300, 'Je suis perdue…', 200),
+      texte: "Sur une pierre, une toute petite <b>escargote</b> pleurait. « Je m’appelle <b>Lili</b>. Ma maison est sous la grande salade du potager… mais je vais si doucement ! »"
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 460, 30, 180, { op: .8 }) + pluie(36) +
+        u('caramel', 230, 300, 250) + u('escargot', 130, 400, 80, { flip: true, rot: -30 }) +
+        titre('Zioup !', 160, 330, 46, '#A8521A', -10) +
+        poupouPara(580, 300, 160, true),
+      texte: "« Monte sur mon dos ! » dit <b>Caramel</b>. Mais son dos tout mouillé glissait comme un toboggan… Zioup ! Lili atterrit dans l’herbe en riant."
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 60, 20, 160, { op: .8 }) + pluie(30, 300) +
+        u('marguerite', 160, 190, 360) + u('escargot', 408, 206, 46) +
+        bulle(250, 110, 'Meuh !', 130) +
+        poupouPara(600, 330, 150) + u('coincoin', 60, 420, 80),
+      texte: "« Meuh ! Monte sur ma tête ! » dit <b>Marguerite</b>. Lili s’installa tout près de la jolie <b>fleur</b>. Et en route pour le potager !"
+    },
+    {
+      scene: () => decor('pluie') + pluie(20, 260) +
+        u('salade', 520, 300, 190) + u('salade', 300, 340, 160) + u('salade', 640, 400, 150) +
+        u('escargot', 400, 440, 70) + u('escargot', 520, 418, 100, { flip: true }) + u('escargot', 640, 470, 56, { flip: true }) +
+        u('coeur', 500, 360, 40, { rot: 10 }) + u('coeur', 460, 380, 30, { rot: -12 }) +
+        poupouPara(80, 300, 170),
+      texte: "Voilà le <b>potager</b> ! Sous la grande salade, la famille de Lili l’attendait. « Lili ! » Et tout le monde se fit un gros <b>câlin</b>."
+    },
+    {
+      scene: () => decor('jour', u('arcenciel', 150, 90, 500)) + u('soleil', 650, 20, 110) +
+        u('nuage', 90, 250, 160) + u('nuage', 560, 250, 160) +
+        u('marguerite', 10, 240, 230) + u('poupou', 240, 310, 160) + u('parapluie', 220, 420, 60, { rot: -60 }) +
+        u('salade', 400, 380, 150) + u('escargot', 440, 350, 60, { flip: true }) +
+        bulle(470, 270, 'Merci !', 130) +
+        u('coincoin', 600, 430, 70, { flip: true }) + u('caramel', 640, 350, 150, { flip: true }),
+      texte: "Alors la pluie s’arrêta et le soleil sortit. Dans le ciel apparut un grand <b>arc-en-ciel</b> ! « Merci, mes amis ! » dit Lili."
+    },
+    {
+      scene: () => decor('jour', u('arcenciel', 150, 90, 500)) + u('soleil', 40, 20, 100) +
+        u('hamid', 40, 150, 140) + u('chapeau', 52, 131, 114) +
+        u('marguerite', 600, 190, 190, { flip: true }) +
+        nappe(400, 470, 240, 56) +
+        u('panier', 350, 380, 120) + u('pomme', 410, 498, 36) + u('soupe', 300, 462, 46) +
+        u('poupou', 140, 330, 150) + u('caramel', 520, 360, 170, { flip: true }) +
+        u('coincoin', 470, 470, 60) + u('escargot', 250, 500, 50) + u('escargot', 560, 505, 44, { flip: true }) +
+        titre('Miam !', 400, 330, 40, '#E8483F', -6),
+      texte: "Et le pique-nique eut lieu quand même, sous l’arc-en-ciel, avec de <b>nouveaux amis</b> : la famille de Lili ! Miam !"
+    }
+  ]
+});
+</script>
+</body>
+</html>

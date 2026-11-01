@@ -9,7 +9,8 @@
     luciole: 1, lanterne: 1.5, buisson: 0.55,
     citrouille: 0.85, citrouillesourire: 0.85, feuille: 1, feuillerouge: 1, tasfeuilles: 110 / 240,
     arbreautomne: 1.2, brouette: 130 / 240, soupe: 0.8,
-    herisson: 0.75, herissondort: 100 / 140, cabane: 0.9, bottefoin: 0.65, pomme: 1
+    herisson: 0.75, herissondort: 100 / 140, cabane: 0.9, bottefoin: 0.65, pomme: 1,
+    escargot: 0.75, parapluie: 140 / 120, salade: 110 / 160, arcenciel: 210 / 400, flaque: 0.25, panier: 110 / 140
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

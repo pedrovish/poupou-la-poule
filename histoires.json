@@ -35,5 +35,14 @@
     "fichier": "/histoires/04-le-petit-herisson.html",
     "couleur": "#F6D9B4",
     "objet": "herisson"
+  },
+  {
+    "numero": 5,
+    "titre": "Poupou et l’arc-en-ciel",
+    "resume": "Plic, ploc ! Il pleut sur la ferme… En chemin, Poupou rencontre Lili, une petite escargote perdue. Qui l’aidera à rentrer chez elle ?",
+    "date": "2026-11-01",
+    "fichier": "/histoires/05-l-arc-en-ciel.html",
+    "couleur": "#CFE8F7",
+    "objet": "escargot"
   }
 ]

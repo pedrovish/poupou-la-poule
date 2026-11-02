@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la pelote de laine</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// le givre : les collines deviennent toutes blanches
+const givre = () => `<path d="M0 380 C150 330 300 362 420 342 C560 316 680 350 800 330 L800 560 L0 560Z" fill="#fff" opacity=".5"/>` +
+  `<path d="M0 432 C200 402 400 442 800 412 L800 560 L0 560Z" fill="#fff" opacity=".35"/>`;
+// le fil de laine (avec un petit contour)
+const fil = d => `<path d="${d}" fill="none" stroke="#A83A5C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<path d="${d}" fill="none" stroke="#F27A9C" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+// l'écharpe rose rayée, le long d'un chemin
+const ruban = (d, e = 24) => `<path d="${d}" fill="none" stroke="#A83A5C" stroke-width="${e + 6}" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<path d="${d}" fill="none" stroke="#F27A9C" stroke-width="${e}" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<path d="${d}" fill="none" stroke="#fff" stroke-width="${e}" stroke-dasharray="7 27" opacity=".75"/>`;
+// une petite pelote posée sur l'eau, avec ses ronds
+const ronds = (x, y, r = 60) => `<g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8">` +
+  `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r / 4}"/><ellipse cx="${x}" cy="${y}" rx="${r * .65}" ry="${r / 6}"/></g>`;
+// petits traits de tremblement
+const tremble = (x, y) => `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} q-8 8 0 16 q8 8 0 16"/><path d="M${x + 150} ${y} q8 8 0 16 q-8 8 0 16"/></g>`;
+// petits flocons qui tombent
+const neige = (n = 14) => {
+  let s = '';
+  for (let i = 0; i < n; i++) s += u('flocon', (i * 149) % 760 + 10, (i * 83) % 280 + 10, 18 + (i * 7) % 16);
+  return s;
+};
+const titre = (txt, x, y, taille = 40, couleur = '#6B3A1E', rot = 0) =>
+  `<g fill="${couleur}" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"><text x="${x}" y="${y}" text-anchor="middle"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text></g>`;
+
+lancerHistoire({
+  numero: 6,
+  titre: "Poupou et la pelote de laine",
+  morale: "Quand on s’aide, on a chaud au cou… et chaud au cœur !",
+  couverture: () => decor('jour') + givre() + u('soleil', 650, 20, 110) + u('nuage', 70, 40, 170) + neige(8) +
+    u('arbreautomne', 20, 110, 200) + u('barriere', 500, 290, 280) +
+    fil('M430 470 C350 530 240 530 180 505 C130 480 170 440 220 500') +
+    u('poupou', 170, 280, 210) + u('pelote', 370, 400, 100) + u('mouton', 500, 330, 220, { flip: true }) +
+    u('coincoin', 395, 330, 86),
+  fin: () => decor('coucher', u('soleil', 300, 250, 200)) + neige(12) +
+    u('coeur', 90, 70, 70, { rot: -12 }) + u('coeur', 640, 70, 60, { rot: 12 }) +
+    u('mouton', 470, 320, 230, { flip: true }) + u('coincoin', 340, 400, 100) +
+    ruban('M388 442 C392 465 406 468 420 462', 11) + ruban('M396 462 C394 475 390 485 386 498', 11) +
+    u('poupou', 120, 300, 210),
+  pages: [
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 620, 30, 100) + u('nuage', 300, 40, 160) +
+        u('grange', 20, 130, 260) + u('mare', 470, 400, 320) +
+        u('poupou', 130, 300, 190) + u('coincoin', 340, 370, 130) + tremble(330, 390) +
+        bulle(390, 280, 'Brrr !', 130),
+      texte: "Brrr ! Ce matin-là, l’herbe de la ferme était toute <b>blanche de givre</b>. Près de la mare, <b>Coin-Coin</b> grelottait : « J’ai froid au cou ! »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 60, 40, 170) + u('grange', 580, 110, 210) +
+        u('hamid', 470, 170, 190) + u('chapeau', 488, 145, 154) +
+        u('coincoin', 50, 400, 100) + u('poupou', 150, 290, 200) +
+        bulle(470, 56, 'Il faut de la laine !', 270),
+      texte: "Poupou toucha son foulard bleu, bien chaud. « Il te faut une <b>écharpe</b> ! » Papi Hamid sourit : « Je sais tricoter ! Mais il me faut de la <b>laine</b>… »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 520, 40, 170) + u('arbreautomne', 650, 130, 150) +
+        u('barriere', 330, 290, 380) + u('buisson', 20, 340, 150) +
+        u('touffe', 370, 318, 56) + u('touffe', 470, 338, 46) + u('touffe', 610, 322, 50) + u('touffe', 50, 345, 50) +
+        u('mouton', 440, 320, 220, { flip: true }) +
+        u('poupou', 130, 300, 190) +
+        bulle(430, 236, 'Bonjour…', 150),
+      texte: "Derrière la barrière, Poupou trouva un petit mouton tout timide. « Je suis <b>Flocon</b>, je suis nouveau ici. J’ai tant de boucles qu’il m’en reste partout ! Prenez-les, je veux bien aider. »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 330, 30, 150) +
+        u('mouton', 345, 288, 130, { flip: true }) +
+        u('hamid', 560, 160, 180) + u('chapeau', 577, 137, 146) +
+        u('caramel', 50, 310, 230) +
+        u('bassine', 310, 400, 220) + u('betterave', 270, 455, 56, { rot: -15 }) + u('betterave', 520, 465, 50, { rot: 15 }) +
+        fil('M583 345 C560 360 500 370 450 412') +
+        u('pelote', 640, 450, 80) +
+        bulle(120, 225, 'J’ai une idée !', 210) + titre('Plouf !', 505, 272, 46, '#C9427F', -6),
+      texte: "Papi Hamid fit un beau fil, mais il était tout blanc. « J’ai une idée ! » dit <b>Caramel</b>. Plouf ! Dans le jus de betterave… et voilà une <b>pelote rose</b> !"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 80, 40, 170) + u('arbreautomne', 660, 150, 130) +
+        u('panier', 30, 390, 130, { rot: -25 }) +
+        fil('M150 450 C220 520 270 400 340 470 C410 540 470 410 620 485') +
+        u('poupou', 280, 310, 180) + u('pelote', 610, 440, 90) +
+        `<g stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M250 370 h-46 M240 410 h-60 M590 450 h-40 M585 490 h-30"/></g>` +
+        titre('Roule, roule !', 420, 250, 50, '#C9427F', -5),
+      texte: "Mais sur le chemin, hop ! la pelote sauta du panier. Roule, roule, roule ! Elle déroulait son fil partout. « Attends-moi ! » cria Poupou : tic-tac-tic-tac !"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 500, 30, 170) + u('soleil', 20, 20, 100) +
+        u('mare', 180, 360, 540) +
+        fil('M130 470 C220 500 340 450 400 480 C460 500 520 470 580 470') +
+        u('coincoin', 400, 390, 120) + `<ellipse cx="462" cy="498" rx="72" ry="16" fill="#5DB7E8"/>` + ronds(462, 500, 80) +
+        u('pelote', 570, 420, 74) + ronds(606, 492, 56) +
+        u('poupou', 20, 320, 170) + u('mouton', 660, 340, 130, { flip: true }) +
+        bulle(420, 280, 'Je sais nager !', 210) + titre('Plouf !', 280, 300, 50, '#3F8EDB', -8),
+      texte: "Plouf ! La pelote flotta au milieu de la <b>mare</b>. « Moi, je sais nager ! » dit Coin-Coin. Et il la rapporta, tout fier."
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 620, 40, 150) +
+        u('marguerite', 30, 170, 320) +
+        fil('M262 202 C250 190 268 184 276 198 C284 212 262 214 262 202 M300 200 C300 186 324 186 318 202 C312 214 296 212 300 200') +
+        fil('M318 202 C400 230 440 330 425 400 C422 415 420 425 418 435') +
+        u('poupou', 30, 350, 150) + u('caramel', 215, 370, 170) + u('pelote', 385, 410, 70) +
+        u('mouton', 480, 310, 270, { flip: true }) + u('coincoin', 610, 262, 96, { flip: true }) +
+        u('touffe', 590, 332, 74) + u('touffe', 650, 336, 74) + u('coeur', 530, 250, 44, { rot: -10 }) +
+        bulle(250, 80, 'Meuh !', 130),
+      texte: "« Viens te blottir dans ma <b>laine</b> ! » dit Flocon à Coin-Coin tout mouillé. Les autres enroulaient le long fil, qui était partout… même sur les cornes de <b>Marguerite</b> : « Meuh ! »"
+    },
+    {
+      scene: () => decor('nuit', u('lune', 620, 30, 90)) + u('grange', 20, 130, 240) + u('etoile', 340, 40, 34) + u('etoile', 500, 110, 26) +
+        u('lanterne', 250, 330, 70) +
+        ruban('M385 460 C400 530 500 530 560 500 C640 460 720 500 760 470 C790 450 720 420 650 440', 30) +
+        u('hamid', 320, 160, 170) + u('chapeau', 336, 138, 138) + u('tricot', 320, 320, 170) +
+        u('poupou', 90, 350, 150) + u('mouton', 520, 340, 130, { flip: true }) + u('coincoin', 460, 400, 70) +
+        titre('Clic, clic, clic !', 645, 250, 36, '#FFF6C8', -4),
+      texte: "Le soir, à la lanterne, Papi Hamid tricota : clic, clic, clic ! L’écharpe grandissait, grandissait… « Oh là là ! Elle est <b>bien trop longue</b> pour un petit caneton ! »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('nuage', 300, 30, 170) + neige(12) +
+        ruban('M200 318 C260 430 320 450 372 432 C440 470 500 440 548 392 C590 470 620 480 662 468 C690 470 720 440 752 388', 18) +
+        u('marguerite', 5, 200, 250) + u('caramel', 265, 345, 160) + u('mouton', 440, 300, 160) +
+        u('poupou', 640, 290, 150) + u('coincoin', 600, 420, 84) +
+        ruban('M166 268 C166 298 180 318 204 322', 20) +
+        ruban('M356 382 C350 410 362 432 384 438', 16) +
+        ruban('M530 345 C524 372 534 392 558 398', 16) +
+        ruban('M640 455 C644 468 656 476 672 472', 11) +
+        ruban('M730 352 C728 376 748 392 774 386 C784 410 786 430 780 452', 14) +
+        `<circle cx="568" cy="262" r="46" fill="#fff" opacity=".25"/>` + u('flocon', 536, 230, 64),
+      texte: "« Tant mieux ! » dit Poupou. L’écharpe fit le tour de <b>tous les cous</b>, et tout le monde eut bien chaud. Du ciel tomba un vrai petit flocon de neige : « Comme moi ! » rit Flocon."
+    }
+  ]
+});
+</script>
+</body>
+</html>

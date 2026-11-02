@@ -44,5 +44,14 @@
     "fichier": "/histoires/05-l-arc-en-ciel.html",
     "couleur": "#CFE8F7",
     "objet": "escargot"
+  },
+  {
+    "numero": 6,
+    "titre": "Poupou et la pelote de laine",
+    "resume": "Brrr ! Coin-Coin a froid au cou… Avec Flocon, un petit mouton tout bouclé, Poupou veut lui faire une écharpe. Mais la pelote s’échappe !",
+    "date": "2026-11-02",
+    "fichier": "/histoires/06-la-pelote-de-laine.html",
+    "couleur": "#F9D5E0",
+    "objet": "pelote"
   }
 ]

@@ -53,5 +53,14 @@
     "fichier": "/histoires/06-la-pelote-de-laine.html",
     "couleur": "#F9D5E0",
     "objet": "pelote"
+  },
+  {
+    "numero": 7,
+    "titre": "Poupou et le gâteau surprise",
+    "resume": "Chut ! C’est l’anniversaire de Papi Hamid. Avec Noisette, une petite souris maligne, Poupou prépare un gâteau en secret… mais où trouver des bougies ?",
+    "date": "2026-11-03",
+    "fichier": "/histoires/07-le-gateau-surprise.html",
+    "couleur": "#FFE3A8",
+    "objet": "gateau"
   }
 ]

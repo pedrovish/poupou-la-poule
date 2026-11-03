@@ -11,7 +11,8 @@
     arbreautomne: 1.2, brouette: 130 / 240, soupe: 0.8,
     herisson: 0.75, herissondort: 100 / 140, cabane: 0.9, bottefoin: 0.65, pomme: 1,
     escargot: 0.75, parapluie: 140 / 120, salade: 110 / 160, arcenciel: 210 / 400, flaque: 0.25, panier: 110 / 140,
-    mouton: 0.85, pelote: 1, touffe: 40 / 60, flocon: 1, betterave: 1.2, bassine: 110 / 200, tricot: 0.75
+    mouton: 0.85, pelote: 1, touffe: 40 / 60, flocon: 1, betterave: 1.2, bassine: 110 / 200, tricot: 0.75,
+    souris: 100 / 120, gateau: 160 / 200, part: 0.8, oeuf: 1.25, seau: 1, sacfarine: 140 / 120, saladier: 110 / 180, four: 170 / 200, guirlande: 70 / 400
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

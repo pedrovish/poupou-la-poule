@@ -16,8 +16,8 @@ Une histoire illustrée par jour pour une petite fille de 5 ans, en français.
 - **Marguerite** (`marguerite`) : la vache, douce et un peu rêveuse, une marguerite sur la tête. Dit « Meuh ».
 - **Coin-Coin** (`coincoin`) : le caneton jaune, petit, rigolo, bon nageur.
 - **Papi Hamid** (`hamid`) : le fermier, moustache grise, salopette bleue, très gentil. Son chapeau : `chapeau`.
-Décor disponible : `grange, soleil, nuage, arbre, fleur, mare, barriere, graines, coeur, etoile, lune, luciole, lanterne, buisson, citrouille, citrouillesourire, feuille, feuillerouge, tasfeuilles, arbreautomne, brouette, soupe, cabane, bottefoin, pomme, parapluie, salade, arcenciel, flaque, panier, pelote, touffe, flocon, betterave, bassine, tricot`.
-Amis récurrents : **Lumi** (`luciole`), la petite luciole (histoire n°2) ; **Pic-Pic** (`herisson`, `herissondort`), le petit hérisson (n°4) ; **Lili** (`escargot`), la petite escargote à la coquille rose (n°5) ; **Flocon** (`mouton`), le petit mouton timide et tout bouclé (n°6).
+Décor disponible : `grange, soleil, nuage, arbre, fleur, mare, barriere, graines, coeur, etoile, lune, luciole, lanterne, buisson, citrouille, citrouillesourire, feuille, feuillerouge, tasfeuilles, arbreautomne, brouette, soupe, cabane, bottefoin, pomme, parapluie, salade, arcenciel, flaque, panier, pelote, touffe, flocon, betterave, bassine, tricot, gateau, part, oeuf, seau, sacfarine, saladier, four, guirlande`.
+Amis récurrents : **Lumi** (`luciole`), la petite luciole (histoire n°2) ; **Pic-Pic** (`herisson`, `herissondort`), le petit hérisson (n°4) ; **Lili** (`escargot`), la petite escargote à la coquille rose (n°5) ; **Flocon** (`mouton`), le petit mouton timide et tout bouclé (n°6) ; **Noisette** (`souris`), la petite souris maligne au foulard vert (n°7).
 Tous les animaux regardent vers la droite ; `{flip:true}` les retourne.
 
 ## API de dessin (scène 800×560, sol vers y≈380)

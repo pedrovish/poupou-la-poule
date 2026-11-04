@@ -62,5 +62,15 @@
     "fichier": "/histoires/07-le-gateau-surprise.html",
     "couleur": "#FFE3A8",
     "objet": "gateau"
+  },
+  {
+    "numero": 8,
+    "titre": "Poupou et le petit hibou",
+    "resume": "Pouêt ! Plume, un petit hibou tout rond, n’arrive pas à faire « hou-hou »… Mais quand le brouillard tombe sur la ferme, son drôle de cri va tout changer !",
+    "date": "2026-11-04",
+    "fichier": "/histoires/08-le-petit-hibou.html",
+    "couleur": "#2E3D78",
+    "objet": "hibou",
+    "nuit": true
   }
 ]

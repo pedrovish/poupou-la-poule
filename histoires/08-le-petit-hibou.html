@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le petit hibou</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#C9427F', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un ciel plein d'étoiles
+const etoiles = pos => pos.map(([x, y, l]) => u('etoile', x, y, l)).join('');
+// des notes de musique qui volent
+const notes = pos => pos.map(([x, y, l, r]) => u('note', x, y, l, { rot: r || 0 })).join('');
+// le brouillard tout doux, comme du coton
+const filtreBrume = `<defs><filter id="flou" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="20"/></filter></defs>`;
+const brume = (op, liste) => `<g fill="#fff" opacity="${op}" filter="url(#flou)">` +
+  liste.map(([x, y, rx, ry]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/>`).join('') + '</g>';
+const voile = op => `<rect width="800" height="560" fill="#fff" opacity="${op}"/>`;
+// les ondes du grand POUÊT qui traversent le brouillard (vers la droite)
+const ondes = (x, y, n = 4) => {
+  let s = `<g fill="none" stroke="#FF9F1C" stroke-width="9" stroke-linecap="round">`;
+  for (let i = 1; i <= n; i++) { const r = 34 * i + 16; s += `<path d="M${x + r * .64} ${y - r * .77} A${r} ${r} 0 0 1 ${x + r * .64} ${y + r * .77}"/>`; }
+  return s + '</g>';
+};
+// Papi Hamid et son chapeau (largeur l)
+const papi = (x, y, l, flip) => u('hamid', x, y, l, { flip }) + u('chapeau', x + l * .09, y - l * .13, l * .81);
+
+lancerHistoire({
+  numero: 8,
+  titre: "Poupou et le petit hibou",
+  morale: "Ta petite différence, c’est ta petite force !",
+  couverture: () => decor('nuit', u('lune', 40, 30, 90)) + etoiles([[220, 40, 34], [350, 110, 26], [150, 170, 24], [760, 40, 24]]) +
+    u('vieilarbre', 400, 20, 350) + u('hibouchante', 640, 158, 110, { flip: true }) +
+    notes([[700, 95, 38, 12], [748, 185, 30, -10]]) +
+    u('poupou', 90, 270, 260) + u('fleur', 390, 480, 36),
+  fin: () => decor('nuit', u('lune', 660, 24, 90)) + etoiles([[60, 40, 34], [200, 90, 26], [340, 30, 30], [480, 90, 24], [590, 40, 22], [760, 170, 26]]) +
+    u('marguerite', 10, 190, 280) + u('hamid', 620, 170, 160, { flip: true }) + u('chapeau', 634, 148, 130) +
+    u('bottefoin', 300, 330, 200) + u('hibouchante', 345, 200, 130) +
+    u('caramel', 240, 395, 170) + u('poupou', 410, 370, 170) + u('coincoin', 590, 450, 96, { flip: true }) +
+    notes([[300, 130, 44, -14], [460, 150, 40, 12], [180, 110, 34, 8], [560, 200, 36, -8]]),
+  pages: [
+    {
+      scene: () => decor('nuit', u('lune', 340, 30, 80)) + etoiles([[60, 60, 30], [200, 100, 26], [290, 170, 22], [450, 110, 24], [150, 30, 20]]) +
+        u('grange', 10, 150, 210) + u('vieilarbre', 470, 40, 320) +
+        u('poupou', 255, 310, 200) + bulle(235, 225, 'Une, deux, trois…', 220) +
+        titre('POUÊT !', 650, 200, 62, '#C9427F', -6),
+      texte: "Cette nuit-là, le ciel était plein d’<b>étoiles</b>. Poupou ne dormait pas : elle les comptait ! Soudain, dans le vieil arbre… <b>POUÊT !</b>"
+    },
+    {
+      scene: () => decor('nuit', u('lune', 620, 30, 90)) + etoiles([[60, 50, 30], [220, 90, 24], [400, 40, 28], [510, 130, 20]]) +
+        u('branche', -40, 320, 880) +
+        u('poupou', 110, 200, 200) + u('hiboutriste', 440, 210, 180, { flip: true }) +
+        bulle(420, 130, 'Pouêt…', 130),
+      texte: "Sur une branche, il y avait un petit hibou tout rond. « Je m’appelle <b>Plume</b>. Les hiboux font “hou-hou”. Mais moi, je fais… pouêt. »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 660, 20, 100) + u('nuage', 340, 40, 150) +
+        u('vieilarbre', -20, 40, 320) + u('hibouchante', 200, 168, 100) +
+        u('poupou', 40, 350, 170) + u('coincoin', 240, 430, 90) +
+        u('marguerite', 420, 230, 320, { flip: true }) +
+        bulle(470, 150, 'Meuuuh !', 140) + bulle(250, 345, 'Coin-coin !', 150),
+      texte: "Le lendemain, Marguerite lui montra : « <b>Meuuuh !</b> » Coin-Coin aussi : « <b>Coin-coin !</b> » Plume essaya de toutes ses forces… Pouêt !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 170) + u('soleil', 640, 20, 100) +
+        u('arbreautomne', 640, 120, 150) + u('barriere', 60, 290, 300) +
+        u('bottefoin', 360, 330, 240) + u('hibouchante', 420, 185, 150, { flip: true }) +
+        u('caramel', 80, 370, 240) + u('pomme', 368, 298, 54) +
+        titre('POUÊT !', 440, 130, 64, '#C9427F', 6) + u('coincoin', 620, 450, 90, { flip: true }),
+      texte: "« Une pomme, ça aide toujours ! » dit Caramel. <b>Scrountch !</b> Plume croqua… et fit un <b>POUÊT</b> encore plus fort !"
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 50, 215, 150)) + u('nuage', 560, 50, 150) +
+        u('bottefoin', 260, 350, 300) +
+        u('poupou', 240, 200, 180) + u('hiboutriste', 420, 225, 140, { flip: true }) +
+        u('coeur', 395, 130, 56, { rot: -8 }) + u('coeur', 470, 100, 36, { rot: 12 }),
+      texte: "Plume baissa la tête, tout triste. Poupou vint se serrer contre lui, bien fort. « Tu sais, moi, je l’aime bien, ton <b>pouêt</b>. »"
+    },
+    {
+      scene: () => filtreBrume + decor('pluie') + u('arbre', 60, 130, 150) + u('mare', 80, 400, 330) +
+        voile(.25) + brume(.8, [[160, 240, 240, 90], [650, 200, 240, 100], [400, 300, 300, 60]]) +
+        papi(440, 190, 150) + u('lanterne', 560, 300, 62) + u('coincoin', 340, 410, 90) +
+        brume(.55, [[100, 500, 220, 50], [700, 490, 220, 50], [400, 170, 300, 40]]) +
+        bulle(320, 110, 'Par où ?', 120),
+      texte: "L’après-midi, un grand <b>brouillard</b> tout doux arriva, blanc comme du coton. Papi Hamid et Coin-Coin se promenaient à la mare. « Tiens, où est passée la ferme ? »"
+    },
+    {
+      scene: () => filtreBrume + decor('pluie') + u('grange', 520, 120, 240) +
+        voile(.2) + brume(.75, [[640, 210, 200, 100], [200, 200, 260, 90]]) +
+        u('barriere', 260, 310, 300) + u('hibou', 450, 200, 120, { flip: true }) +
+        u('poupou', 70, 300, 220) + bulle(100, 215, 'Cot-cot… ?', 150) +
+        brume(.5, [[650, 500, 240, 50], [160, 530, 200, 30]]) +
+        titre('Mais oui !', 400, 120, 56, '#C9427F', -4),
+      texte: "« Cot-cot, par ici ! » appela Poupou. Mais sa petite voix se perdait dans le coton. Alors elle eut une idée : « <b>Plume</b>, c’est toi qu’il nous faut ! »"
+    },
+    {
+      scene: () => filtreBrume + decor('pluie') +
+        u('vieilarbre', -40, 40, 320) + u('hibouchante', 176, 165, 110) +
+        voile(.15) + brume(.7, [[80, 90, 220, 70], [620, 180, 260, 90], [400, 340, 300, 50]]) +
+        u('poupou', 50, 360, 160) +
+        ondes(285, 240, 4) +
+        papi(590, 200, 130, true) + u('lanterne', 548, 305, 56) + u('coincoin', 700, 430, 80, { flip: true }) +
+        brume(.4, [[680, 200, 170, 50], [690, 500, 170, 40]]) +
+        titre('POUÊÊÊT !', 490, 85, 62, '#C9427F', -3),
+      texte: "Plume prit une grande inspiration et… <b>POUÊÊÊT !</b> Le bruit traversa tout le brouillard. « C’est par là, Coin-Coin ! » dit Papi Hamid."
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 30, 130, 130)) + u('nuage', 300, 40, 150) +
+        u('grange', 570, 130, 220) + u('barriere', 200, 300, 280) +
+        papi(390, 170, 160) + u('hibouchante', 250, 215, 110) +
+        u('poupou', 40, 340, 170) + u('coincoin', 240, 440, 90) + u('caramel', 540, 390, 170, { flip: true }) +
+        u('coeur', 320, 150, 50, { rot: -10 }) + bulle(530, 70, 'Bravo, Plume !', 200),
+      texte: "Papi Hamid et Coin-Coin étaient de retour ! « Bravo, Plume, ton pouêt nous a ramenés à la maison ! » Et le soir, sous les étoiles, toute la ferme chanta avec lui."
+    }
+  ]
+});
+</script>
+</body>
+</html>

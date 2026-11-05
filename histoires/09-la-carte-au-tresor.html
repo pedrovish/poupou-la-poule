@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la carte au trésor</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#C9427F', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// des feuilles d'automne qui tombent : [x, y, largeur, rotation]
+const feuilles = pos => pos.map(([x, y, l, r], i) => u(i % 2 ? 'feuillerouge' : 'feuille', x, y, l, { rot: r || 0 })).join('');
+// des glands un peu partout : [x, y, largeur, rotation]
+const glands = pos => pos.map(([x, y, l, r]) => u('gland', x, y, l, { rot: r || 0 })).join('');
+// la trajectoire d'une pirouette
+const elan = (d) => `<path d="${d}" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 16"/>`;
+// Papi Hamid et son chapeau (largeur l)
+const papi = (x, y, l, flip) => u('hamid', x, y, l, { flip }) + u('chapeau', x + l * .09, y - l * .13, l * .81);
+
+lancerHistoire({
+  numero: 9,
+  titre: "Poupou et la carte au trésor",
+  morale: "Quand on oublie, les amis se souviennent !",
+  couverture: () => decor('jour') + u('soleil', 30, 20, 100) + u('nuage', 250, 40, 150) +
+    u('arbreautomne', 500, 50, 290) +
+    feuilles([[200, 180, 34, 20], [440, 110, 30, -30], [120, 200, 26, 40]]) +
+    u('poupou', 40, 270, 240) + u('ecureuil', 540, 300, 190, { flip: true }) +
+    u('carte', 270, 250, 270, { rot: -4 }) + u('tasglands', 320, 470, 130),
+  fin: () => decor('jour') + u('soleil', 640, 20, 110) + u('nuage', 60, 40, 160) + u('nuage', 360, 70, 120) +
+    u('marguerite', 10, 200, 270) + papi(630, 170, 150, true) +
+    u('fleur', 322, 470, 34) + u('fleur', 590, 480, 38) + u('fleur', 170, 490, 38) +
+    u('pousse', 340, 290, 130) +
+    u('caramel', 10, 410, 150) + u('poupou', 190, 375, 140) + u('ecureuil', 490, 365, 120, { flip: true }) + u('coincoin', 650, 450, 90, { flip: true }) +
+    u('coeur', 330, 220, 56, { rot: -10 }) + u('coeur', 430, 210, 40, { rot: 12 }) +
+    titre('Coucou, le petit chêne !', 400, 165, 42),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 170) + u('soleil', 250, 20, 90) +
+        u('vieilarbre', 420, 20, 350, { flip: true }) +
+        u('ecureuil', 430, 146, 118) +
+        feuilles([[110, 200, 30, 30], [40, 300, 26, -20]]) +
+        u('poupou', 140, 320, 200) + u('gland', 272, 272, 40, { rot: 14 }) +
+        titre('TOC !', 180, 300, 56, '#C9427F', -8) + bulle(400, 72, 'Oups !', 110),
+      texte: "Les feuilles tombaient doucement sur la ferme. Soudain… <b>Toc !</b> Quelque chose tomba sur la tête de Poupou. C’était un <b>gland</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 650, 20, 100) + u('nuage', 60, 50, 150) +
+        u('arbreautomne', 20, 120, 170) + u('bottefoin', 590, 310, 190) +
+        u('tasfeuilles', 40, 400, 230) + u('buisson', 430, 340, 170) +
+        elan('M170 470 C230 290 420 200 560 300') +
+        u('ecureuil', 300, 170, 150, { rot: -28 }) +
+        glands([[250, 330, 36, 20], [500, 240, 34, -30], [420, 460, 40, 10], [640, 470, 40, -10]]) +
+        titre('Hop, hop, hop !', 400, 130, 50, '#C9427F', -3),
+      texte: "Là-haut, un petit écureuil faisait des galipettes. « Pardon ! Je suis <b>Pirouette</b> ! Je cache mes glands pour l’hiver : hop, hop, hop ! » Il allait si vite qu’il ne regardait même pas où."
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 620, 215, 140)) + u('nuage', 260, 50, 150) +
+        u('arbreautomne', 10, 140, 170) + u('tasfeuilles', 570, 430, 210) +
+        u('poupou', 130, 300, 210) + u('ecureuiltriste', 400, 320, 165, { flip: true }) +
+        bulle(390, 225, 'Où sont-ils ?', 190) +
+        u('coeur', 335, 275, 44, { rot: -10 }),
+      texte: "Le soir, Pirouette eut faim. « Oh non ! Où sont mes glands ? J’ai <b>tout oublié</b> ! » « Ne pleure pas, dit Poupou. Demain, nous les chercherons tous ensemble ! »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 20, 100) + u('nuage', 520, 40, 170) +
+        u('barriere', 480, 300, 300) + u('marguerite', 40, 200, 300) +
+        u('bottefoin', 350, 320, 220) +
+        u('ecureuil', 610, 365, 125, { flip: true }) + u('poupou', 400, 355, 170, { flip: true }) +
+        u('tasglands', 260, 470, 120) +
+        bulle(335, 170, 'Meuh… ici !', 170),
+      texte: "Le matin, Marguerite se souvint : « Meuh… j’ai vu ta grande queue près de la <b>botte de foin</b>. » Poupou gratta, gratta : cri-cri-cri ! Et hop ! Des glands !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 80, 40, 160) + u('soleil', 660, 24, 90) +
+        u('arbreautomne', 20, 110, 180) + u('tasfeuilles', 380, 340, 360) +
+        feuilles([[430, 270, 40, 20], [560, 240, 34, -30], [670, 290, 38, 40], [500, 200, 26, 60]]) +
+        u('caramel', 170, 320, 280) + u('gland', 438, 400, 44, { rot: -14 }) + u('gland', 530, 440, 44, { rot: 10 }) +
+        titre('Snif, snif, snif…', 440, 150, 50),
+      texte: "« Moi, j’ai le meilleur <b>nez</b> de la ferme ! » dit Caramel. <b>Snif, snif, snif…</b> Il plongea dans le tas de feuilles : « Trouvé ! Je peux en goûter un ? »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 20, 100) + u('nuage', 560, 50, 170) +
+        u('grange', 590, 140, 190) +
+        u('hamid', 300, 150, 170) + u('chapeau', 305, 70, 150, { rot: -14 }) +
+        glands([[345, 120, 34, 20], [410, 140, 32, -24], [290, 170, 30, 30], [440, 190, 32, 12]]) +
+        u('tasglands', 440, 450, 110) + u('coincoin', 190, 395, 110, { rot: -35 }) + u('poupou', 20, 350, 170) +
+        titre('Toc, toc, toc !', 600, 110, 44, '#C9427F', 4),
+      texte: "Papi Hamid mit son chapeau et… <b>toc, toc, toc !</b> Une pluie de glands tomba sur son nez ! « Eh bien, ça alors ! » Coin-Coin rit si fort qu’il en fit une culbute."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 500, 40, 170) + u('soleil', 30, 20, 90) +
+        u('cabane', 270, 130, 300) +
+        u('herissondort', 340, 310, 150) + u('gland', 292, 372, 40, { rot: 14 }) +
+        u('ecureuil', 140, 305, 140) + u('poupou', 590, 320, 170, { flip: true }) +
+        bulle(600, 225, 'Chuuut…', 140) +
+        titre('Zzz…', 510, 300, 40, '#3F8EDB', -8),
+      texte: "Un autre gland était dans la cabane, tout près de <b>Pic-Pic</b> qui dormait pour l’hiver. Sur la pointe des pattes, Pirouette le prit… <b>Chuuut !</b> Pic-Pic n’a rien entendu."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 660, 20, 100) + u('nuage', 40, 50, 170) +
+        u('panier', 610, 340, 160) + u('tasglands', 625, 300, 130) +
+        u('poupou', 40, 280, 220) + u('ecureuil', 470, 310, 150, { flip: true }) +
+        u('carte', 250, 200, 215, { rot: -3 }) +
+        titre('Une carte !', 400, 150, 52, '#C9427F', -3),
+      texte: "Le panier était plein ! « Et l’année prochaine ? » demanda Pirouette. Poupou eut une idée : « Dessinons une <b>carte au trésor</b> ! Comme ça, tu n’oublieras plus jamais. »"
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 210, 215, 140)) + u('nuage', 50, 50, 150) +
+        u('vieilarbre', 340, 20, 370) + u('gland', 477, 336, 26) +
+        u('ecureuil', 590, 170, 120) +
+        u('poupou', 40, 320, 190) + u('carte', 225, 385, 130, { rot: -6 }) + u('tasglands', 300, 460, 120) +
+        u('coeur', 660, 90, 44, { rot: 12 }) + titre('Hourra !', 245, 150, 50, '#C9427F', -4),
+      texte: "Pirouette rangea tout dans le creux du vieil arbre, et fit une pirouette de joie ! Et le petit gland que personne n’a trouvé ? Chut… au printemps, il deviendra un petit <b>chêne</b>."
+    }
+  ]
+});
+</script>
+</body>
+</html>

@@ -72,5 +72,14 @@
     "couleur": "#2E3D78",
     "objet": "hibou",
     "nuit": true
+  },
+  {
+    "numero": 9,
+    "titre": "Poupou et la carte au trésor",
+    "resume": "Toc ! Pirouette, un petit écureuil tête en l’air, a caché ses glands pour l’hiver… mais il a oublié où ! Poupou et ses amis partent à la chasse au trésor.",
+    "date": "2026-11-05",
+    "fichier": "/histoires/09-la-carte-au-tresor.html",
+    "couleur": "#FBE3B5",
+    "objet": "ecureuil"
   }
 ]

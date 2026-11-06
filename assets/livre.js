@@ -14,7 +14,9 @@
     mouton: 0.85, pelote: 1, touffe: 40 / 60, flocon: 1, betterave: 1.2, bassine: 110 / 200, tricot: 0.75,
     souris: 100 / 120, gateau: 160 / 200, part: 0.8, oeuf: 1.25, seau: 1, sacfarine: 140 / 120, saladier: 110 / 180, four: 170 / 200, guirlande: 70 / 400,
     hibou: 130 / 120, hibouchante: 130 / 120, hiboutriste: 130 / 120, vieilarbre: 420 / 320, branche: 120 / 400, note: 80 / 60,
-    ecureuil: 160 / 150, ecureuiltriste: 160 / 150, gland: 100 / 80, tasglands: 90 / 160, carte: 180 / 240, pousse: 140 / 120
+    ecureuil: 160 / 150, ecureuiltriste: 160 / 150, gland: 100 / 80, tasglands: 90 / 160, carte: 180 / 240, pousse: 140 / 120,
+    lapin: 180 / 150, lapintimide: 180 / 150, lapincorps: 180 / 150, lampion: 170 / 120, lampionjaune: 170 / 120, lampionbleu: 170 / 120, lampionbaton: 170 / 120,
+    bocal: 140 / 110, lanternefeuilles: 140 / 110
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

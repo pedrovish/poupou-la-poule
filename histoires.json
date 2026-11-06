@@ -81,5 +81,15 @@
     "fichier": "/histoires/09-la-carte-au-tresor.html",
     "couleur": "#FBE3B5",
     "objet": "ecureuil"
+  },
+  {
+    "numero": 10,
+    "titre": "Poupou et la fête des lanternes",
+    "resume": "Ce soir, c’est la fête des lanternes ! Mais Pompon, un petit lapin tout timide, n’a pas de lanterne… et il n’y a plus de papier. Qui aura une idée ?",
+    "date": "2026-11-06",
+    "fichier": "/histoires/10-la-fete-des-lanternes.html",
+    "couleur": "#2E3D78",
+    "objet": "lanternefeuilles",
+    "nuit": true
   }
 ]

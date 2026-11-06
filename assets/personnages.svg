@@ -831,5 +831,122 @@
   </g>
 </symbol>
 
+<!-- POMPON : le petit lapin gris au nœud turquoise (regarde vers la droite) -->
+<symbol id="lapincorps" viewBox="0 0 150 180">
+  <ellipse cx="74" cy="173" rx="58" ry="6" fill="#000" opacity=".12"/>
+  <g fill="#FFFDF8" stroke="#6B3A1E" stroke-width="3.5"><circle cx="22" cy="132" r="15"/></g>
+  <path d="M14 128 Q20 122 26 126" fill="none" stroke="#E6E1EA" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="66" cy="130" rx="46" ry="40" fill="#BDB8C8" stroke="#6B3A1E" stroke-width="4"/>
+  <path d="M40 120 C40 104 54 96 66 102" fill="none" stroke="#D3CEDC" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="84" cy="138" rx="24" ry="28" fill="#F3F0F6"/>
+  <g fill="#BDB8C8" stroke="#6B3A1E" stroke-width="3.5">
+    <ellipse cx="48" cy="164" rx="30" ry="10"/>
+    <ellipse cx="96" cy="166" rx="14" ry="8"/><ellipse cx="118" cy="166" rx="14" ry="8"/>
+  </g>
+  <g stroke="#6B3A1E" stroke-width="2" stroke-linecap="round"><path d="M70 160 v6 M76 160 v6 M110 162 v5 M126 162 v5"/></g>
+</symbol>
+
+<symbol id="lapin" viewBox="0 0 150 180">
+  <use href="#lapincorps" x="0" y="0" width="150" height="180"/>
+  <g stroke="#6B3A1E" stroke-width="4">
+    <ellipse cx="84" cy="38" rx="12" ry="30" fill="#BDB8C8" transform="rotate(-14 84 38)"/>
+    <ellipse cx="112" cy="36" rx="12" ry="30" fill="#BDB8C8" transform="rotate(12 112 36)"/>
+  </g>
+  <ellipse cx="84" cy="38" rx="5.5" ry="21" fill="#FFC6CF" transform="rotate(-14 84 38)"/>
+  <ellipse cx="112" cy="36" rx="5.5" ry="21" fill="#FFC6CF" transform="rotate(12 112 36)"/>
+  <circle cx="98" cy="82" r="33" fill="#BDB8C8" stroke="#6B3A1E" stroke-width="4"/>
+  <ellipse cx="106" cy="96" rx="19" ry="14" fill="#F3F0F6"/>
+  <circle cx="90" cy="78" r="7" fill="#2B1B10"/><circle cx="92.5" cy="75.5" r="2.5" fill="#fff"/>
+  <circle cx="117" cy="78" r="6.5" fill="#2B1B10"/><circle cx="119.3" cy="75.5" r="2.3" fill="#fff"/>
+  <circle cx="80" cy="94" r="6.5" fill="#FF9FB0" opacity=".8"/><circle cx="127" cy="93" r="6" fill="#FF9FB0" opacity=".8"/>
+  <path d="M100 88 L112 88 L106 95Z" fill="#F07C9A" stroke="#6B3A1E" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M106 95 V99 M97 99 Q101.5 105 106 99 Q110.5 105 115 99" fill="none" stroke="#6B3A1E" stroke-width="2.6" stroke-linecap="round"/>
+  <g stroke="#6B3A1E" stroke-width="1.8" stroke-linecap="round"><path d="M90 96 L76 92 M90 100 L77 103 M122 95 L136 90 M122 99 L137 101"/></g>
+  <g fill="#3FB8AF" stroke="#1F7A73" stroke-width="2.5" stroke-linejoin="round"><path d="M96 114 L80 104 L82 124Z"/><path d="M96 114 L112 104 L110 124Z"/><circle cx="96" cy="114" r="5"/></g>
+</symbol>
+
+<symbol id="lapintimide" viewBox="0 0 150 180">
+  <use href="#lapincorps" x="0" y="0" width="150" height="180"/>
+  <g stroke="#6B3A1E" stroke-width="4">
+    <ellipse cx="58" cy="62" rx="12" ry="32" fill="#BDB8C8" transform="rotate(-62 58 62)"/>
+    <ellipse cx="66" cy="78" rx="12" ry="30" fill="#BDB8C8" transform="rotate(-78 66 78)"/>
+  </g>
+  <ellipse cx="58" cy="62" rx="5.5" ry="23" fill="#FFC6CF" transform="rotate(-62 58 62)"/>
+  <circle cx="98" cy="84" r="33" fill="#BDB8C8" stroke="#6B3A1E" stroke-width="4"/>
+  <ellipse cx="106" cy="98" rx="19" ry="14" fill="#F3F0F6"/>
+  <path d="M84 82 Q90 87 96 82 M111 82 Q117 87 123 82" fill="none" stroke="#2B1B10" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="80" cy="96" r="7" fill="#FF9FB0" opacity=".9"/><circle cx="127" cy="95" r="6.5" fill="#FF9FB0" opacity=".9"/>
+  <path d="M100 90 L112 90 L106 97Z" fill="#F07C9A" stroke="#6B3A1E" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M100 104 Q106 102 112 104" fill="none" stroke="#6B3A1E" stroke-width="2.6" stroke-linecap="round"/>
+  <g stroke="#6B3A1E" stroke-width="1.8" stroke-linecap="round"><path d="M90 98 L76 95 M90 102 L77 106 M122 97 L136 93 M122 101 L137 104"/></g>
+  <g fill="#3FB8AF" stroke="#1F7A73" stroke-width="2.5" stroke-linejoin="round"><path d="M96 116 L80 106 L82 126Z"/><path d="M96 116 L112 106 L110 126Z"/><circle cx="96" cy="116" r="5"/></g>
+  <g fill="#BDB8C8" stroke="#6B3A1E" stroke-width="3.5"><ellipse cx="92" cy="134" rx="9" ry="12" transform="rotate(20 92 134)"/><ellipse cx="108" cy="134" rx="9" ry="12" transform="rotate(-20 108 134)"/></g>
+</symbol>
+
+<!-- des lampions en papier au bout d'un bâton (rouge, jaune, bleu) -->
+<symbol id="lampionbaton" viewBox="0 0 120 170">
+  <path d="M12 166 C22 100 46 40 88 12" fill="none" stroke="#6B3A1E" stroke-width="9" stroke-linecap="round"/>
+  <path d="M12 166 C22 100 46 40 88 12" fill="none" stroke="#B07A4A" stroke-width="4" stroke-linecap="round"/>
+  <path d="M88 12 V44" stroke="#6B3A1E" stroke-width="2.5"/>
+</symbol>
+<symbol id="lampion" viewBox="0 0 120 170">
+  <use href="#lampionbaton" x="0" y="0" width="120" height="170"/>
+  <rect x="73" y="42" width="30" height="9" rx="3" fill="#6B3A1E"/>
+  <ellipse cx="88" cy="86" rx="31" ry="36" fill="#E8553E" stroke="#8A2A22" stroke-width="3.5"/>
+  <ellipse cx="88" cy="86" rx="17" ry="24" fill="#FFB37A" opacity=".75"/>
+  <g fill="none" stroke="#8A2A22" stroke-width="2" opacity=".55"><path d="M60 70 Q88 78 116 70 M57 86 Q88 94 119 86 M60 102 Q88 110 116 102"/></g>
+  <path d="M88 76 l4 8 l9 1 l-7 6 l2 9 l-8 -5 l-8 5 l2 -9 l-7 -6 l9 -1Z" fill="#FFE14D" stroke="#C99A00" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="73" y="120" width="30" height="8" rx="3" fill="#6B3A1E"/>
+  <path d="M88 128 V140" stroke="#FFD43B" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+<symbol id="lampionjaune" viewBox="0 0 120 170">
+  <use href="#lampionbaton" x="0" y="0" width="120" height="170"/>
+  <rect x="73" y="42" width="30" height="9" rx="3" fill="#6B3A1E"/>
+  <ellipse cx="88" cy="86" rx="31" ry="36" fill="#FFD43B" stroke="#B3871A" stroke-width="3.5"/>
+  <ellipse cx="88" cy="86" rx="17" ry="24" fill="#FFF3B0" opacity=".85"/>
+  <g fill="none" stroke="#B3871A" stroke-width="2" opacity=".55"><path d="M60 70 Q88 78 116 70 M57 86 Q88 94 119 86 M60 102 Q88 110 116 102"/></g>
+  <path d="M94 74 C80 76 76 96 92 100 C82 94 84 80 94 74Z" fill="#FF9F1C" stroke="#C4651A" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="73" y="120" width="30" height="8" rx="3" fill="#6B3A1E"/>
+  <path d="M88 128 V140" stroke="#E8553E" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+<symbol id="lampionbleu" viewBox="0 0 120 170">
+  <use href="#lampionbaton" x="0" y="0" width="120" height="170"/>
+  <rect x="73" y="42" width="30" height="9" rx="3" fill="#6B3A1E"/>
+  <ellipse cx="88" cy="86" rx="31" ry="36" fill="#5AA9E6" stroke="#2C5F8F" stroke-width="3.5"/>
+  <ellipse cx="88" cy="86" rx="17" ry="24" fill="#CDEBFF" opacity=".8"/>
+  <g fill="none" stroke="#2C5F8F" stroke-width="2" opacity=".55"><path d="M60 70 Q88 78 116 70 M57 86 Q88 94 119 86 M60 102 Q88 110 116 102"/></g>
+  <path d="M88 96 C76 86 78 76 84 76 C87 76 88 79 88 80 C88 79 89 76 92 76 C98 76 100 86 88 96Z" fill="#FF7BAC" stroke="#C9427F" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="73" y="120" width="30" height="8" rx="3" fill="#6B3A1E"/>
+  <path d="M88 128 V140" stroke="#FFD43B" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+
+<!-- un vieux bocal vide -->
+<symbol id="bocal" viewBox="0 0 110 140">
+  <ellipse cx="55" cy="134" rx="42" ry="5" fill="#000" opacity=".12"/>
+  <rect x="16" y="40" width="78" height="92" rx="18" fill="#DFF3FA" fill-opacity=".85" stroke="#5B9BC4" stroke-width="4"/>
+  <path d="M30 56 V110" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+  <path d="M42 54 V66" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <rect x="22" y="28" width="66" height="14" rx="5" fill="#C9D3DB" stroke="#5B7387" stroke-width="3.5"/>
+  <path d="M24 34 Q55 -4 86 34" fill="none" stroke="#6B7C8A" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+
+<!-- la lanterne de feuilles de Pompon (bocal habillé de feuilles, tout lumineux) -->
+<symbol id="lanternefeuilles" viewBox="0 0 110 140">
+  <circle cx="55" cy="86" r="54" fill="#FFE38A" opacity=".28"/>
+  <rect x="16" y="40" width="78" height="92" rx="18" fill="#FFF0A8" stroke="#C99A00" stroke-width="4"/>
+  <ellipse cx="55" cy="90" rx="26" ry="32" fill="#FFF9D6"/>
+  <path d="M55 70 C44 86 48 100 55 102 C62 100 66 86 55 70Z" fill="#FF9F1C"/>
+  <path d="M55 82 C51 90 52 97 55 97 C58 97 59 90 55 82Z" fill="#FFE14D"/>
+  <g opacity=".88">
+    <use href="#feuillerouge" x="12" y="44" width="40" height="40" transform="rotate(-25 32 64)"/>
+    <use href="#feuille" x="60" y="48" width="38" height="38" transform="rotate(30 79 67)"/>
+    <use href="#feuille" x="14" y="92" width="36" height="36" transform="rotate(20 32 110)"/>
+    <use href="#feuillerouge" x="58" y="92" width="38" height="38" transform="rotate(-30 77 111)"/>
+  </g>
+  <g transform="translate(55 118)"><g fill="#fff" stroke="#C9B48A" stroke-width="1.5"><ellipse cx="0" cy="-8" rx="4" ry="7"/><ellipse cx="0" cy="8" rx="4" ry="7"/><ellipse cx="-8" cy="0" rx="7" ry="4"/><ellipse cx="8" cy="0" rx="7" ry="4"/></g><circle r="4.5" fill="#FFD43B" stroke="#C99A00" stroke-width="1.5"/></g>
+  <rect x="22" y="28" width="66" height="14" rx="5" fill="#C9D3DB" stroke="#5B7387" stroke-width="3.5"/>
+  <path d="M24 34 Q55 -4 86 34" fill="none" stroke="#6B7C8A" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+
 </defs>
 </svg>

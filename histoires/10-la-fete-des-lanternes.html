@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la fête des lanternes</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#C9427F', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// une douce lueur autour d'une lanterne (centre x, y ; rayon r)
+const lueur = (x, y, r, c = '#FFE38A') =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r * .6}" fill="${c}" opacity=".3"/>`;
+// un lampion tenu au bout d'un bâton (id, x, y, largeur) avec sa lueur la nuit
+const lampion = (id, x, y, l, nuit) =>
+  (nuit ? lueur(x + l * .733, y + l * .717, l * .75, { lampion: '#FFB37A', lampionjaune: '#FFF3B0', lampionbleu: '#CDEBFF' }[id]) : '') + u(id, x, y, l);
+// la lanterne de feuilles de Pompon (x, y, largeur) avec sa lueur la nuit
+const lanterneFeuilles = (x, y, l, nuit) => (nuit ? lueur(x + l * .5, y + l * .78, l * 1.1) : '') + u('lanternefeuilles', x, y, l);
+// des étoiles : [x, y, largeur]
+const etoiles = pos => pos.map(([x, y, l]) => u('etoile', x, y, l)).join('');
+// des feuilles d'automne : [x, y, largeur, rotation]
+const feuilles = pos => pos.map(([x, y, l, r], i) => u(i % 2 ? 'feuillerouge' : 'feuille', x, y, l, { rot: r || 0 })).join('');
+// des petits bouts de papier de couleur : [x, y, rotation, couleur]
+const papiers = pos => pos.map(([x, y, r, c]) =>
+  `<rect x="${x}" y="${y}" width="30" height="22" rx="3" fill="${c}" stroke="#6B3A1E" stroke-width="2.5" transform="rotate(${r} ${x + 15} ${y + 11})"/>`).join('');
+// Papi Hamid et son chapeau (largeur l)
+const papi = (x, y, l, flip) => u('hamid', x, y, l, { flip }) + u('chapeau', x + l * .09, y - l * .13, l * .81);
+
+lancerHistoire({
+  numero: 10,
+  titre: "Poupou et la fête des lanternes",
+  morale: "Quand chacun donne un petit peu, on fabrique une grande lumière !",
+  couverture: () => decor('nuit', u('lune', 620, 30, 100)) + etoiles([[60, 50, 32], [230, 30, 26], [420, 80, 30], [520, 30, 22]]) +
+    u('luciole', 120, 130, 60) + u('luciole', 470, 150, 54, { flip: true }) +
+    u('poupou', 60, 270, 230) + lampion('lampion', 200, 170, 120, true) +
+    u('lapin', 470, 320, 170, { flip: true }) + lanterneFeuilles(335, 330, 120, true),
+  fin: () => decor('nuit', u('lune', 60, 30, 90)) + etoiles([[220, 40, 28], [400, 30, 24], [560, 60, 30], [740, 40, 26]]) +
+    u('luciole', 300, 60, 46) + u('luciole', 620, 80, 46, { flip: true }) +
+    u('marguerite', 20, 230, 250) + papi(630, 170, 150, true) +
+    u('caramel', 170, 380, 150) + lampion('lampionjaune', 280, 280, 90, true) +
+    u('poupou', 330, 330, 160) + lampion('lampion', 410, 240, 90, true) +
+    u('lapin', 510, 380, 110) + lanterneFeuilles(612, 432, 58, true) +
+    u('coincoin', 40, 440, 90) + lampion('lampionbleu', 90, 340, 70, true) +
+    u('coeur', 470, 200, 50, { rot: 10 }) +
+    titre('Bienvenue, Pompon !', 400, 175, 46, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 640, 20, 110) + u('nuage', 60, 40, 160) + u('nuage', 380, 60, 120) +
+        u('grange', 20, 140, 230) +
+        u('caramel', 190, 330, 200) + u('poupou', 450, 300, 180) + u('coincoin', 640, 390, 100, { flip: true }) +
+        lampion('lampionjaune', 345, 280, 80) + lampion('lampion', 590, 250, 90) + lampion('lampionbleu', 700, 330, 70) +
+        papiers([[120, 470, -20, '#E8553E'], [200, 500, 15, '#FFD43B'], [480, 490, 30, '#5AA9E6'], [560, 470, -10, '#FF7BAC']]) +
+        titre('Couper, coller !', 470, 150, 50, '#C9427F', -3),
+      texte: "Ce soir, c’est la <b>fête des lanternes</b> à la ferme ! Poupou, Caramel et Coin-Coin fabriquent de jolis <b>lampions</b> : un rouge, un jaune et un bleu."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 20, 100) + u('nuage', 300, 40, 160) + u('nuage', 600, 70, 120) +
+        u('arbreautomne', 600, 110, 190) +
+        u('lapin', 440, 205, 150) + u('buisson', 380, 330, 260) +
+        u('poupou', 90, 290, 200) + lampion('lampion', 230, 210, 90) +
+        feuilles([[300, 160, 30, 20], [700, 360, 28, -30]]) +
+        titre('Coucou ?', 520, 250, 44, '#3F8EDB', 6),
+      texte: "Derrière le buisson, deux longues oreilles grises bougeaient. C’était un petit lapin tout timide. « Je m’appelle <b>Pompon</b>. Je suis arrivé hier… je ne connais personne. »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 650, 24, 100) + u('nuage', 60, 40, 170) +
+        u('barriere', 470, 300, 300) +
+        u('poupou', 60, 290, 200) + u('lapintimide', 480, 330, 150, { flip: true }) +
+        u('panier', 290, 420, 140) + papiers([[300, 520, 20, '#FFD43B']]) +
+        bulle(250, 200, 'Plus de papier !', 210),
+      texte: "« Viens à la fête avec nous ! » dit Poupou. Pompon baissa les oreilles : « Mais je n’ai pas de lanterne… » Oh non ! Il ne restait plus <b>une seule feuille</b> de papier."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 40, 20, 100) + u('nuage', 420, 40, 160) +
+        u('grange', 540, 130, 240) +
+        papi(300, 160, 160) + u('bocal', 418, 268, 70) +
+        u('poupou', 40, 330, 180) + u('lapin', 180, 360, 120) +
+        bulle(470, 120, 'Tiens !', 110),
+      texte: "Poupou eut une idée : « Allons voir <b>Papi Hamid</b> ! » Papi Hamid sortit un vieux <b>bocal</b> de la grange. « Voilà une lanterne… mais il lui faut un joli habit ! »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 660, 20, 100) + u('nuage', 300, 40, 150) +
+        u('arbreautomne', 10, 90, 220) + u('tasfeuilles', 230, 440, 260) +
+        u('marguerite', 470, 190, 280) +
+        u('caramel', 170, 360, 170) + u('feuillerouge', 310, 330, 56, { rot: 20 }) +
+        u('coincoin', 40, 430, 90) + u('feuille', 110, 400, 44, { rot: -20 }) +
+        u('lapin', 600, 380, 120, { flip: true }) + u('feuille', 560, 360, 70, { rot: -15 }) +
+        feuilles([[260, 140, 32, 30], [420, 100, 28, -20], [360, 200, 26, 50]]),
+      texte: "Alors, chacun chercha un cadeau. Caramel trouva une feuille <b>rouge</b>, Coin-Coin une feuille <b>jaune</b>. « Meuh… et moi, je donne ma fleur ! » dit Marguerite. Pompon, lui, choisit la plus belle feuille <b>orange</b>."
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 120, 230, 150)) + u('nuage', 480, 50, 150) +
+        u('bottefoin', 310, 340, 200) + lanterneFeuilles(355, 200, 110, true) +
+        papi(600, 160, 150, true) +
+        u('poupou', 40, 320, 180) + u('lapin', 190, 360, 130) +
+        titre('Oh ! Comme c’est beau !', 400, 140, 46, '#C9427F', -3),
+      texte: "Tous ensemble, ils collèrent les feuilles et la fleur autour du bocal. Papi Hamid posa une petite <b>lumière</b> dedans. Pompon ouvrit de grands yeux : « Oh ! Comme c’est beau ! »"
+    },
+    {
+      scene: () => decor('nuit', u('lune', 360, 30, 90)) + etoiles([[60, 40, 28], [200, 100, 24], [560, 50, 30], [720, 110, 22]]) +
+        u('grange', 10, 160, 170) +
+        u('marguerite', 40, 260, 210) +
+        u('coincoin', 210, 425, 90) + lampion('lampionbleu', 260, 325, 70, true) +
+        u('caramel', 290, 385, 150) + lampion('lampionjaune', 400, 275, 85, true) +
+        u('poupou', 430, 335, 150) + lampion('lampion', 520, 235, 85, true) +
+        u('lapin', 585, 385, 110) + lanterneFeuilles(700, 425, 64, true) +
+        u('note', 240, 220, 34, { rot: -12 }) + u('note', 640, 230, 30, { rot: 12 }) +
+        titre('Brille, brille !', 520, 150, 46, '#FFD43B', -3),
+      texte: "La nuit tomba. Les amis firent le tour de la ferme en chantant : « Brille, brille, ma lanterne, sous la lune et les étoiles ! » Devant, Pompon sautillait : <b>hop, hop, hop</b> !"
+    },
+    {
+      scene: () => decor('nuit', u('lune', 640, 30, 90)) + etoiles([[60, 50, 28], [250, 40, 22], [480, 70, 26]]) +
+        u('luciole', 150, 150, 60) + u('luciole', 300, 110, 56, { flip: true }) + u('luciole', 450, 170, 60) +
+        u('luciole', 560, 230, 50, { flip: true }) + u('luciole', 90, 250, 48, { flip: true }) +
+        u('poupou', 70, 320, 180) + lampion('lampion', 180, 250, 85, true) +
+        u('lapin', 320, 300, 160, { rot: -8 }) + lanterneFeuilles(480, 385, 80, true) +
+        u('caramel', 610, 390, 150, { flip: true }),
+      texte: "Soudain, de toutes petites lumières vinrent danser autour d’eux : c’était <b>Lumi</b> et sa famille ! « Votre lanterne de feuilles est la plus jolie, Pompon ! » dit Lumi."
+    },
+    {
+      scene: () => decor('nuit', u('lune', 40, 30, 90)) + etoiles([[260, 40, 26], [420, 90, 22], [600, 40, 30], [740, 120, 24]]) +
+        u('luciole', 560, 170, 50, { flip: true }) +
+        u('poupou', 80, 320, 190) + lampion('lampion', 200, 240, 90, true) +
+        u('lapin', 420, 330, 150, { flip: true }) + lanterneFeuilles(340, 380, 90, true) +
+        u('coincoin', 640, 440, 90, { flip: true }) +
+        u('coeur', 330, 230, 56, { rot: -10 }) + u('coeur', 620, 260, 40, { rot: 12 }),
+      texte: "Pompon fit un gros câlin à Poupou. « Hier, je ne connaissais personne… et ce soir, j’ai <b>plein d’amis</b> ! » Et sa lanterne brillait, brillait, de toutes les couleurs."
+    }
+  ]
+});
+</script>
+</body>
+</html>

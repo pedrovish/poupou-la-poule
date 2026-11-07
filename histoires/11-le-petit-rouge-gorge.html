@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le petit rouge-gorge</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#C9427F', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// le givre du matin : les collines toutes blanches et brillantes
+const givre = () =>
+  `<path d="M0 380 C150 330 300 362 420 342 C560 316 680 350 800 330 L800 560 L0 560Z" fill="#fff" opacity=".45"/>` +
+  `<path d="M0 432 C200 402 400 442 800 412 L800 560 L0 560Z" fill="#EAF6FF" opacity=".5"/>` +
+  [[90, 400], [250, 460], [420, 410], [600, 480], [720, 400], [160, 520], [520, 530], [340, 500]].map(([x, y], i) => {
+    const r = i % 2 ? 6 : 9;
+    return `<path d="M${x} ${y - r} L${x + r * .3} ${y - r * .3} L${x + r} ${y} L${x + r * .3} ${y + r * .3} L${x} ${y + r} L${x - r * .3} ${y + r * .3} L${x - r} ${y} L${x - r * .3} ${y - r * .3}Z" fill="#fff"/>`;
+  }).join('');
+// une flaque gelée, toute lisse
+const glace = (x, y, l) => u('flaque', x, y, l) +
+  `<path d="M${x + l * .25} ${y + l * .1} l${l * .12} 0 M${x + l * .55} ${y + l * .14} l${l * .2} 0" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`;
+// l'arbre nu avec la mangeoire pendue à sa branche (x, y, largeur de l'arbre, largeur de la mangeoire)
+const arbreMangeoire = (x, y, l, m) => u('arbrenu', x, y, l) + u('mangeoire', x + l * 200 / 240 - m / 2, y + l * 122 / 240, m);
+// des miettes de pain : [x, y]
+const miettes = pos => pos.map(([x, y], i) =>
+  `<ellipse cx="${x}" cy="${y}" rx="${7 + i % 3}" ry="5" fill="#F3C98B" stroke="#A86E38" stroke-width="2"/>`).join('');
+// des petits nuages de buée devant le bec
+const buee = (x, y) => `<g fill="#fff" opacity=".85"><circle cx="${x}" cy="${y}" r="8"/><circle cx="${x + 14}" cy="${y - 6}" r="6"/><circle cx="${x + 24}" cy="${y - 14}" r="4"/></g>`;
+// Papi Hamid et son chapeau (largeur l)
+const papi = (x, y, l, flip) => u('hamid', x, y, l, { flip }) + u('chapeau', x + l * .09, y - l * .13, l * .81);
+
+lancerHistoire({
+  numero: 11,
+  titre: "Poupou et le petit rouge-gorge",
+  morale: "Partager un petit peu, ça réchauffe beaucoup les cœurs !",
+  couverture: () => decor('jour') + givre() + u('soleil', 40, 30, 100) + u('nuage', 260, 40, 150) +
+    arbreMangeoire(430, 70, 330, 120) +
+    u('mesange', 690, 306, 56) +
+    u('poupou', 70, 270, 250) +
+    u('rougegorgechante', 330, 330, 120) + u('note', 440, 260, 34, { rot: 12 }) + u('note', 300, 250, 28, { rot: -12 }),
+  fin: () => decor('coucher', u('soleil', 320, 260, 160)) + givre() + u('nuage', 560, 60, 140) +
+    arbreMangeoire(500, 60, 290, 100) +
+    u('rougegorgechante', 700, 266, 50) +
+    u('mesange', 720, 194, 44) + u('mesange', 560, 170, 46, { rot: 10 }) +
+    u('marguerite', 10, 200, 240) +
+    u('caramel', 200, 390, 150) + u('poupou', 330, 330, 170) + papi(480, 280, 120) +
+    u('coincoin', 650, 440, 90, { flip: true }) +
+    u('coeur', 440, 150, 46, { rot: 10 }) +
+    titre('Merci, les amis !', 290, 120, 48, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 620, 26, 110) + u('nuage', 300, 40, 150) +
+        u('arbrenu', 10, 60, 260) + u('barriere', 470, 300, 320) +
+        glace(330, 450, 300) + u('coincoin', 420, 380, 110, { rot: -8 }) +
+        u('poupou', 150, 290, 190) + buee(340, 345) +
+        titre('Crac, crac !', 560, 190, 50, '#3F8EDB', -4),
+      texte: "Ce matin-là, toute la ferme était blanche et brillante : c’était le premier <b>givre</b> de l’hiver ! « Crac, crac », faisait l’herbe sous les pattes de Poupou. Coin-Coin, lui, glissait sur la flaque gelée : <b>wiiii</b> !"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 40, 26, 100) + u('nuage', 520, 40, 160) +
+        u('arbrenu', 600, 70, 220) +
+        u('barriere', 340, 300, 340) + u('rougegorgefroid', 470, 236, 90) +
+        u('poupou', 90, 300, 200) +
+        bulle(400, 150, 'Tchip… tchip…', 200),
+      texte: "Sur la barrière, Poupou vit une toute petite boule de plumes qui tremblait. « Bonjour ! Je m’appelle <b>Pépin</b>, le rouge-gorge. J’ai froid… et j’ai très faim. »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 640, 26, 100) + u('nuage', 80, 40, 150) +
+        u('arbrenu', 20, 110, 200) +
+        u('poupou', 230, 290, 200) + u('graines', 420, 470, 120) +
+        u('rougegorge', 470, 405, 90, { flip: true, rot: -10 }) +
+        bulle(450, 320, 'Et demain ?', 170),
+      texte: "Poupou partagea ses <b>graines</b> avec lui. « Miam ! Merci ! » Mais Pépin soupira : « Les baies sont toutes mangées et la terre est dure comme un caillou. Comment je vais manger <b>demain</b> ? »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 40, 26, 100) + u('nuage', 330, 50, 140) +
+        u('grange', 540, 120, 240) +
+        papi(330, 170, 150) + u('planches', 400, 430, 200) +
+        u('caramel', 60, 380, 170) + u('mangeoire', 260, 400, 90) +
+        u('rougegorge', 630, 380, 70, { flip: true }) +
+        titre('Toc, toc, toc !', 220, 170, 48, '#E8553E', -4),
+      texte: "Poupou eut une idée : « Une <b>mangeoire</b> ! Une petite maison pleine de graines, pour tout l’hiver ! » Papi Hamid sortit des planches et son marteau. <b>Toc, toc, toc</b> ! Caramel l’aidait de toutes ses forces."
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 640, 26, 100) + u('nuage', 60, 40, 150) +
+        u('bottefoin', 300, 330, 220) + u('mangeoire', 345, 195, 120) +
+        u('poupou', 40, 320, 170) + u('graines', 70, 480, 90) +
+        u('caramel', 570, 370, 170, { flip: true }) + u('pomme', 520, 445, 48, { rot: -10 }) +
+        u('coincoin', 210, 430, 90) + miettes([[300, 520], [320, 535], [285, 540]]) +
+        u('coeur', 640, 320, 40, { rot: 10 }),
+      texte: "Chacun apporta un petit cadeau : Poupou ses graines, Coin-Coin des <b>miettes de pain</b>. Caramel regarda sa belle pomme rouge… Miam ! Puis il sourit : « Allez, c’est pour Pépin ! »"
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 40, 26, 100) + u('nuage', 330, 30, 130) +
+        arbreMangeoire(460, 40, 320, 110) +
+        u('marguerite', 400, 250, 260) + u('poupou', 560, 178, 110) +
+        u('coincoin', 110, 440, 90) + u('caramel', 120, 360, 150) +
+        titre('Meuh !', 260, 220, 50, '#C9427F', -4),
+      texte: "Il fallait la pendre bien haut, dans l’arbre. « Meuh ! Je suis la plus grande, je vais vous aider ! » dit Marguerite. Poupou grimpa sur sa tête et accrocha la mangeoire à la branche."
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 620, 26, 100) + u('nuage', 60, 40, 150) +
+        arbreMangeoire(330, 40, 320, 120) +
+        u('rougegorge', 130, 120, 80, { flip: true, rot: 15 }) +
+        vent(230, 120, .45) +
+        u('poupou', 50, 300, 190) + u('coincoin', 260, 430, 90, { flip: true }) +
+        bulle(280, 345, 'Oh… il est parti ?', 230),
+      texte: "Pépin picora : « Miam, miam, c’est délicieux ! » Puis, <b>frrrt</b> ! il s’envola très loin. « Oh… il est parti ? » dit Coin-Coin, tout triste."
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 40, 26, 100) + u('nuage', 260, 40, 140) +
+        arbreMangeoire(400, 40, 340, 130) +
+        u('rougegorge', 628, 289, 60) + u('mesange', 690, 296, 50, { flip: true }) + u('mesange', 660, 199, 46) +
+        u('mesange', 470, 150, 56, { rot: 10 }) +
+        u('poupou', 60, 300, 190) + u('coincoin', 240, 430, 90) +
+        titre('Tchip ! Tchip !', 260, 200, 46, '#3F8EDB', -4),
+      texte: "Mais bientôt, Pépin revint… avec ses amies les <b>mésanges</b> ! « Tchip ! Elles avaient faim, elles aussi ! » Et toute la petite bande picora gaiement."
+    },
+    {
+      scene: () => decor('jour') + givre() + u('soleil', 40, 26, 100) + u('nuage', 230, 50, 140) +
+        arbreMangeoire(400, 40, 330, 120) +
+        u('rougegorgechante', 620, 148, 100) + u('note', 550, 120, 34, { rot: -12 }) + u('note', 740, 90, 30, { rot: 12 }) + u('note', 590, 60, 26) +
+        u('mesange', 700, 284, 50, { flip: true }) +
+        u('poupou', 40, 320, 180) + u('caramel', 200, 390, 150) + u('coincoin', 350, 440, 90) +
+        u('coeur', 330, 250, 46, { rot: -10 }),
+      texte: "Pour dire merci, Pépin chanta sa plus jolie chanson : « <b>Tirelipi, tirelipon</b> ! » Et tout l’hiver, la mangeoire de la ferme fut la maison des petits oiseaux."
+    }
+  ]
+});
+</script>
+</body>
+</html>

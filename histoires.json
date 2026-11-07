@@ -91,5 +91,14 @@
     "couleur": "#2E3D78",
     "objet": "lanternefeuilles",
     "nuit": true
+  },
+  {
+    "numero": 11,
+    "titre": "Poupou et le petit rouge-gorge",
+    "resume": "Crac, crac ! C’est le premier givre de l’hiver. Pépin, un petit rouge-gorge, a froid et très faim… Poupou et ses amis vont lui construire une jolie maison à graines.",
+    "date": "2026-11-07",
+    "fichier": "/histoires/11-le-petit-rouge-gorge.html",
+    "couleur": "#DCEBF5",
+    "objet": "rougegorge"
   }
 ]

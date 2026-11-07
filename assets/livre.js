@@ -16,7 +16,8 @@
     hibou: 130 / 120, hibouchante: 130 / 120, hiboutriste: 130 / 120, vieilarbre: 420 / 320, branche: 120 / 400, note: 80 / 60,
     ecureuil: 160 / 150, ecureuiltriste: 160 / 150, gland: 100 / 80, tasglands: 90 / 160, carte: 180 / 240, pousse: 140 / 120,
     lapin: 180 / 150, lapintimide: 180 / 150, lapincorps: 180 / 150, lampion: 170 / 120, lampionjaune: 170 / 120, lampionbleu: 170 / 120, lampionbaton: 170 / 120,
-    bocal: 140 / 110, lanternefeuilles: 140 / 110
+    bocal: 140 / 110, lanternefeuilles: 140 / 110,
+    rougegorge: 110 / 120, rougegorgefroid: 110 / 120, rougegorgechante: 110 / 120, mesange: 110 / 120, mangeoire: 180 / 140, arbrenu: 300 / 240, planches: 90 / 200
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

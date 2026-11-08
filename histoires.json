@@ -100,5 +100,14 @@
     "fichier": "/histoires/11-le-petit-rouge-gorge.html",
     "couleur": "#DCEBF5",
     "objet": "rougegorge"
+  },
+  {
+    "numero": 12,
+    "titre": "Poupou et le cerf-volant",
+    "resume": "Fiouuu ! Le vent emporte le cerf-volant de Poupou tout en haut du toit de la grange… Et si Biscotte, la petite chèvre timide, avait la solution ?",
+    "date": "2026-11-08",
+    "fichier": "/histoires/12-le-cerf-volant.html",
+    "couleur": "#FFE0D6",
+    "objet": "cerfvolant"
   }
 ]

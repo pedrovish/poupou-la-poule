@@ -1049,5 +1049,86 @@
   <rect x="168" y="2" width="16" height="26" rx="3" fill="#8A9AA8" stroke="#3E4A55" stroke-width="3" transform="rotate(-12 176 15)"/>
 </symbol>
 
+
+<!-- BISCOTTE : petite chèvre blanche à la clochette (n°12) -->
+<symbol id="chevrecorps" viewBox="0 0 170 180">
+  <ellipse cx="78" cy="172" rx="62" ry="6" fill="#000" opacity=".12"/>
+  <path d="M30 86 C18 74 18 62 26 58 C30 68 34 74 40 78Z" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="3.5" stroke-linejoin="round"/>
+  <g fill="#FFFDF6" stroke="#6B3A1E" stroke-width="3.5">
+    <rect x="40" y="118" width="15" height="46" rx="6"/><rect x="62" y="122" width="15" height="44" rx="6"/>
+    <rect x="94" y="122" width="15" height="44" rx="6"/><rect x="114" y="118" width="15" height="46" rx="6"/>
+  </g>
+  <g fill="#8A6A52" stroke="#6B3A1E" stroke-width="3"><rect x="40" y="156" width="15" height="10" rx="3"/><rect x="62" y="158" width="15" height="10" rx="3"/><rect x="94" y="158" width="15" height="10" rx="3"/><rect x="114" y="156" width="15" height="10" rx="3"/></g>
+  <path d="M100 86 C108 70 116 60 126 58 L146 66 C146 82 142 96 134 106Z" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="84" cy="102" rx="58" ry="34" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="4"/>
+  <path d="M56 82 C66 72 84 76 86 90 C88 104 70 110 60 102 C52 96 50 88 56 82Z" fill="#CFC6BC"/>
+  <ellipse cx="108" cy="118" rx="12" ry="7" fill="#CFC6BC"/>
+</symbol>
+<symbol id="chevretete" viewBox="0 0 170 180">
+  <g fill="#E8D2A8" stroke="#6B3A1E" stroke-width="3" stroke-linejoin="round">
+    <path d="M118 30 C114 16 120 6 130 4 C126 12 126 22 128 30Z"/>
+    <path d="M140 30 C140 16 148 8 158 8 C152 16 150 24 150 32Z"/>
+  </g>
+  <path d="M112 50 C96 46 88 56 92 62 C98 66 108 62 116 58Z" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M106 54 C100 54 96 58 98 60" fill="none" stroke="#FFC6CF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M120 54 C116 30 158 26 160 52 C164 64 162 78 152 86 C142 92 128 90 122 80 C118 72 118 62 120 54Z" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M140 88 C138 98 142 104 146 106 C150 100 150 94 148 88Z" fill="#E9E1D6" stroke="#6B3A1E" stroke-width="2.5" stroke-linejoin="round"/>
+  <ellipse cx="146" cy="76" rx="13" ry="9" fill="#FFE3E6"/>
+  <path d="M140 72 L152 72 L146 78Z" fill="#F07C9A" stroke="#6B3A1E" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="126" cy="72" r="6" fill="#FF9FB0" opacity=".85"/><circle cx="160" cy="70" r="4.5" fill="#FF9FB0" opacity=".85"/>
+  <path d="M118 92 Q132 100 150 92" fill="none" stroke="#E8553E" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="134" cy="104" r="8" fill="#FFD43B" stroke="#B8860B" stroke-width="2.5"/><circle cx="134" cy="107" r="2.4" fill="#8A6A1E"/>
+</symbol>
+<symbol id="chevre" viewBox="0 0 170 180">
+  <use href="#chevrecorps" x="0" y="0" width="170" height="180"/>
+  <use href="#chevretete" x="0" y="0" width="170" height="180"/>
+  <circle cx="134" cy="56" r="6" fill="#2B1B10"/><circle cx="136" cy="53.5" r="2.2" fill="#fff"/>
+  <circle cx="154" cy="55" r="5.5" fill="#2B1B10"/><circle cx="156" cy="52.5" r="2" fill="#fff"/>
+  <path d="M140 82 Q146 87 152 82" fill="none" stroke="#6B3A1E" stroke-width="2.6" stroke-linecap="round"/>
+</symbol>
+<symbol id="chevretimide" viewBox="0 0 170 180">
+  <use href="#chevrecorps" x="0" y="0" width="170" height="180"/>
+  <g transform="translate(-8 6) rotate(10 130 90)">
+    <use href="#chevretete" x="0" y="0" width="170" height="180"/>
+    <path d="M128 58 Q134 63 140 58 M148 57 Q154 62 160 57" fill="none" stroke="#2B1B10" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M141 84 Q146 82 151 84" fill="none" stroke="#6B3A1E" stroke-width="2.6" stroke-linecap="round"/>
+  </g>
+</symbol>
+<symbol id="chevresaute" viewBox="0 0 170 180">
+  <path d="M30 86 C16 70 16 56 24 52 C30 64 34 72 40 78Z" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="3.5" stroke-linejoin="round"/>
+  <g fill="#FFFDF6" stroke="#6B3A1E" stroke-width="3.5">
+    <rect x="34" y="112" width="15" height="44" rx="6" transform="rotate(38 41 116)"/><rect x="56" y="118" width="15" height="40" rx="6" transform="rotate(30 63 122)"/>
+    <rect x="98" y="118" width="15" height="40" rx="6" transform="rotate(-34 105 122)"/><rect x="118" y="112" width="15" height="44" rx="6" transform="rotate(-42 125 116)"/>
+  </g>
+  <path d="M100 86 C108 70 116 60 126 58 L146 66 C146 82 142 96 134 106Z" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="84" cy="102" rx="58" ry="34" fill="#FFFDF6" stroke="#6B3A1E" stroke-width="4"/>
+  <path d="M56 82 C66 72 84 76 86 90 C88 104 70 110 60 102 C52 96 50 88 56 82Z" fill="#CFC6BC"/>
+  <ellipse cx="108" cy="118" rx="12" ry="7" fill="#CFC6BC"/>
+  <use href="#chevretete" x="0" y="0" width="170" height="180"/>
+  <circle cx="134" cy="56" r="6" fill="#2B1B10"/><circle cx="136" cy="53.5" r="2.2" fill="#fff"/>
+  <circle cx="154" cy="55" r="5.5" fill="#2B1B10"/><circle cx="156" cy="52.5" r="2" fill="#fff"/>
+  <path d="M139 80 Q146 90 153 80Z" fill="#C9427F" stroke="#6B3A1E" stroke-width="2.4" stroke-linejoin="round"/>
+</symbol>
+
+<!-- CERF-VOLANT rouge et jaune au grand sourire, avec sa queue à nœuds (n°12) -->
+<symbol id="cerfvolant" viewBox="0 0 120 200">
+  <path d="M60 128 C40 140 76 152 54 166 C36 178 66 186 50 198" fill="none" stroke="#6B3A1E" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="#6B3A1E" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M52 140 l-12 -6 l2 12Z M52 140 l12 -6 l-2 12Z" fill="#3F8EDB"/>
+    <path d="M56 162 l-12 -6 l2 12Z M56 162 l12 -6 l-2 12Z" fill="#FFD43B"/>
+    <path d="M52 184 l-12 -6 l2 12Z M52 184 l12 -6 l-2 12Z" fill="#4CAF50"/>
+  </g>
+  <path d="M60 4 L60 62 L12 62Z" fill="#FF5C7A"/>
+  <path d="M60 4 L108 62 L60 62Z" fill="#FFD43B"/>
+  <path d="M12 62 L60 62 L60 128Z" fill="#FFD43B"/>
+  <path d="M108 62 L60 62 L60 128Z" fill="#FF5C7A"/>
+  <path d="M60 4 L108 62 L60 128 L12 62Z" fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M60 6 V126 M14 62 H106" stroke="#A86E38" stroke-width="2.5" opacity=".7"/>
+  <circle cx="48" cy="54" r="5" fill="#2B1B10"/><circle cx="49.8" cy="52" r="1.8" fill="#fff"/>
+  <circle cx="72" cy="54" r="5" fill="#2B1B10"/><circle cx="73.8" cy="52" r="1.8" fill="#fff"/>
+  <circle cx="40" cy="68" r="5" fill="#FF9FB0" opacity=".9"/><circle cx="80" cy="68" r="5" fill="#FF9FB0" opacity=".9"/>
+  <path d="M50 70 Q60 80 70 70" fill="none" stroke="#6B3A1E" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+
 </defs>
 </svg>

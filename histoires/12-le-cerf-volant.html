@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le cerf-volant</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#C9427F', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// le cerf-volant (x, y, largeur, rotation) tenu par une ficelle qui part de (hx, hy)
+const cerf = (x, y, w, rot = 0, hx, hy) => {
+  const h = w * 200 / 120, cx = x + w / 2, cy = y + h / 2, a = rot * Math.PI / 180, d = -0.317 * w;
+  const ax = cx - d * Math.sin(a), ay = cy + d * Math.cos(a);
+  const fil = hx === undefined ? '' :
+    `<path d="M${hx} ${hy} Q${(hx + ax) / 2 + 20} ${(hy + ay) / 2 + 40} ${ax} ${ay}" fill="none" stroke="#6B3A1E" stroke-width="2.5" stroke-linecap="round"/>`;
+  return fil + u('cerfvolant', x, y, w, { rot });
+};
+// le bec de Poupou et la bouche de Biscotte (pour tenir la ficelle)
+const becPoupou = (x, y, l) => [x + l * .95, y + l * .41];
+const boucheBiscotte = (x, y, l) => [x + l * .86, y + l * .49];
+// des feuilles qui volent dans le vent
+const feuilles = pos => pos.map(([x, y, r], i) => u(i % 2 ? 'feuillerouge' : 'feuille', x, y, 34, { rot: r })).join('');
+// Papi Hamid et son chapeau (largeur l)
+const papi = (x, y, l, flip) => u('hamid', x, y, l, { flip }) + u('chapeau', x + l * .09, y - l * .13, l * .81);
+
+lancerHistoire({
+  numero: 12,
+  titre: "Poupou et le cerf-volant",
+  morale: "Chacun a son petit talent… et tous ensemble, on va encore plus haut !",
+  couverture: () => decor('jour') + u('nuage', 40, 50, 150) + u('nuage', 560, 200, 130) + vent(260, 220, .6) +
+    cerf(470, 20, 130, 14, ...becPoupou(70, 290, 200)) +
+    u('poupou', 70, 290, 200) +
+    u('chevresaute', 380, 300, 180) +
+    feuilles([[300, 120, 20], [700, 330, -30], [210, 330, 50]]),
+  fin: () => decor('coucher', u('soleil', 330, 260, 150)) + u('nuage', 40, 60, 130) +
+    cerf(590, 30, 110, 10, ...boucheBiscotte(480, 300, 150)) +
+    u('marguerite', 10, 210, 230) +
+    u('caramel', 180, 390, 130) + u('poupou', 310, 330, 150) +
+    u('chevre', 480, 300, 150) + u('coincoin', 660, 440, 90, { flip: true }) +
+    u('coeur', 640, 280, 44, { rot: 10 }) +
+    titre('Bienvenue, Biscotte !', 300, 140, 46, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 420, 40, 160) + u('nuage', 60, 80, 120) + vent(470, 190, .7) +
+        u('arbrenu', 600, 90, 200) +
+        papi(110, 180, 150) + cerf(250, 230, 90, -12) +
+        u('poupou', 380, 300, 180) +
+        feuilles([[560, 160, 20], [700, 300, -20], [330, 150, 40]]) +
+        titre('Fiouuu !', 300, 120, 50, '#3F8EDB', -4),
+      texte: "Ce matin-là, le vent soufflait très fort sur la ferme : <b>fiouuu</b> ! « C’est le temps parfait pour un <b>cerf-volant</b> ! » dit Papi Hamid. Et il donna à Poupou un beau cerf-volant rouge et jaune, avec un grand sourire."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 60, 150) + vent(30, 120, .55) +
+        cerf(120, 20, 120, -10, ...becPoupou(430, 300, 180)) +
+        u('poupou', 430, 300, 180) +
+        u('caramel', 170, 360, 160, { rot: -6 }) + u('coincoin', 340, 420, 90, { rot: 8 }) +
+        feuilles([[620, 140, 30], [700, 240, -10]]) +
+        titre('Il vole !', 620, 110, 54, '#E8553E', 4),
+      texte: "Poupou courut, courut… et hop ! Le cerf-volant monta tout là-haut dans le ciel. « Il vole ! Il vole ! » criaient Caramel et Coin-Coin en sautillant."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 150) + vent(150, 120, .7) +
+        u('grange', 430, 100, 300) + cerf(470, 70, 80, -34) +
+        u('poupou', 80, 300, 180) + u('coincoin', 280, 420, 80) +
+        feuilles([[340, 90, 20], [380, 230, -40]]) +
+        bulle(150, 210, 'Oh non !', 140),
+      texte: "Mais soudain, un gros coup de vent : <b>fiouuuuu</b> ! La ficelle glissa… et le cerf-volant atterrit tout en haut du <b>toit de la grange</b>. Oh non !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 30, 50, 140) +
+        u('grange', 430, 100, 300) + cerf(470, 70, 80, -34) +
+        u('marguerite', 140, 230, 260, { rot: -8 }) +
+        u('caramel', 10, 240, 140, { rot: -12 }) + `<ellipse cx="80" cy="440" rx="50" ry="8" fill="#000" opacity=".1"/>` +
+        titre('Boing !', 90, 220, 40, '#E8553E', -8) +
+        u('poupou', 600, 380, 110, { flip: true }) +
+        titre('Meuh… trop haut !', 285, 120, 38, '#C9427F', -4),
+      texte: "Marguerite tendit le cou : « Meuh… trop haut ! » Caramel sauta : <b>boing</b> ! <b>boing</b> ! Mais le cerf-volant était encore bien trop haut."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 400, 40, 160) +
+        u('arbrenu', 20, 80, 190) +
+        u('chevretimide', 470, 240, 190) + u('barriere', 380, 330, 260) +
+        u('poupou', 160, 310, 180) +
+        bulle(470, 190, 'Bê… moi, je sais grimper.', 300),
+      texte: "Derrière la barrière, quelqu’un les regardait. C’était <b>Biscotte</b>, une petite chèvre arrivée hier à la ferme. Elle était toute timide. « Bê… moi, je sais <b>grimper</b> », chuchota-t-elle."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 150) +
+        u('grange', 430, 100, 300) + cerf(470, 70, 80, -34) +
+        u('bottefoin', 300, 290, 140) + u('bottefoin', 160, 380, 140) + u('bottefoin', 300, 380, 140) +
+        u('caramel', 10, 370, 150) + u('marguerite', 570, 320, 210, { flip: true }) +
+        u('chevre', 440, 362, 110) + u('coincoin', 160, 300, 80) + u('poupou', 40, 260, 110, { rot: -5 }) +
+        titre('Ho hisse !', 190, 200, 50, '#E8553E', -4),
+      texte: "« Super ! On va t’aider ! » dit Poupou. Tous ensemble, ils poussèrent les <b>bottes de foin</b> contre la grange pour faire un grand escalier. <b>Ho hisse !</b>"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 150) +
+        u('grange', 430, 100, 300) +
+        u('bottefoin', 300, 290, 140) + u('bottefoin', 160, 380, 140) + u('bottefoin', 300, 380, 140) +
+        u('chevresaute', 430, 80, 110, { rot: -28 }) + cerf(540, 30, 80, -20) +
+        u('poupou', 20, 330, 150) + u('caramel', 620, 400, 140, { flip: true }) +
+        titre('Hop, hop, hop !', 200, 160, 48, '#3F8EDB', -4),
+      texte: "<b>Hop, hop, hop</b> ! Biscotte sauta d’une botte à l’autre, jusqu’au toit. Elle attrapa la ficelle avec ses dents… « Je l’ai ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 60, 140) + vent(40, 120, .5) +
+        cerf(520, 20, 120, 12, ...boucheBiscotte(380, 290, 170)) +
+        u('chevresaute', 380, 290, 170) +
+        u('poupou', 160, 310, 170) + u('coincoin', 60, 430, 90) + u('caramel', 620, 400, 150, { flip: true }) +
+        u('coeur', 300, 200, 44, { rot: -10 }) +
+        feuilles([[120, 250, 20], [720, 300, -30]]),
+      texte: "Alors Poupou donna la ficelle à Biscotte : « Tiens, à toi de le faire voler ! » Et Biscotte courut dans le vent, toute fière, avec ses <b>nouveaux amis</b>."
+    }
+  ]
+});
+</script>
+</body>
+</html>

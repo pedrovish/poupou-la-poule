@@ -26,9 +26,12 @@ Tous les animaux regardent vers la droite ; `{flip:true}` les retourne.
 - `vent(x, y, echelle)`, `confettis(n)`, `bulle(x, y, 'Texte', largeur)` ; on peut aussi concaténer du SVG brut.
 - `lancerHistoire({numero, titre, morale, couverture: () => svg, fin: () => svg (optionnel, sinon coucher de soleil), pages: [{scene: () => svg, texte: "..."}]})`.
 
-## Règles d'écriture
-- 7 à 9 pages, 1 à 3 phrases courtes par page, vocabulaire de 5 ans, onomatopées, dialogues entre « ».
-- Une petite aventure à la ferme avec un problème, une entraide, une fin heureuse et une morale douce.
-- Jamais de peur forte, de violence ni de danger réel. Varier : saisons, météo, nuit, fêtes, nouveaux petits personnages (ajoutés à la planche).
+## Règles d'écriture (demande du papa, à partir de l'histoire n°14)
+- **Poupou fait des bêtises et c'est drôle.** Chaque histoire part d'une bêtise de Poupou (curiosité, gourmandise, idée farfelue, envie d'aider qui tourne mal) qui entraîne une suite de catastrophes rigolotes en cascade, chaque page un peu plus folle que la précédente.
+- Humour pour 5 ans : situations absurdes, onomatopées (SPLATCH, PATATRA, BLOUP…), répétitions comiques (« Oh oh… »), objets à l'envers, déguisements ratés, animaux tout surpris, Papi Hamid qui découvre le désordre avec de grands yeux. Les dessins montrent la bêtise (taches, plumes partout, objets renversés) et les expressions surprises.
+- Les bêtises restent gentilles et sans danger réel : pas de bêtise imitable dangereuse (feu, prises électriques, médicaments, se cacher d'un adulte, grimper très haut, s'approcher de l'eau seule). Personne n'est méchant ni puni durement.
+- À la fin, Poupou reconnaît sa bêtise, dit pardon et aide à réparer ; tout le monde rit ensemble. Morale douce et légère.
+- **Un peu plus long** : 10 à 12 pages, 2 à 4 phrases courtes par page, vocabulaire de 5 ans, dialogues entre « ».
+- Varier les bêtises d'une histoire à l'autre (ne pas répéter une intrigue de histoires.json) ; saisons, météo et amis de la planche (Caramel, Marguerite, Coin-Coin, Lumi, Papi Hamid…).
 - Mots importants en `<b>`. Apostrophes typographiques (’).
 - Vérifier le rendu de chaque page avant de publier.

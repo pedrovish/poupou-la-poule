@@ -18,7 +18,8 @@
     lapin: 180 / 150, lapintimide: 180 / 150, lapincorps: 180 / 150, lampion: 170 / 120, lampionjaune: 170 / 120, lampionbleu: 170 / 120, lampionbaton: 170 / 120,
     bocal: 140 / 110, lanternefeuilles: 140 / 110,
     rougegorge: 110 / 120, rougegorgefroid: 110 / 120, rougegorgechante: 110 / 120, mesange: 110 / 120, mangeoire: 180 / 140, arbrenu: 300 / 240, planches: 90 / 200,
-    chevre: 180 / 170, chevretimide: 180 / 170, chevresaute: 180 / 170, chevrecorps: 180 / 170, chevretete: 180 / 170, cerfvolant: 200 / 120
+    chevre: 180 / 170, chevretimide: 180 / 170, chevresaute: 180 / 170, chevrecorps: 180 / 170, chevretete: 180 / 170, cerfvolant: 200 / 120,
+    bonhommenu: 320 / 240, bonhommedeux: 320 / 240, bonhommevisage: 320 / 240, bonhommeneige: 320 / 240, bouleneige: 1, carotte: 60 / 140, cailloux: 0.5, brindilles: 60 / 140, chocolat: 1
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

@@ -109,5 +109,14 @@
     "fichier": "/histoires/12-le-cerf-volant.html",
     "couleur": "#FFE0D6",
     "objet": "cerfvolant"
+  },
+  {
+    "numero": 13,
+    "titre": "Poupou et le bonhomme de neige",
+    "resume": "Chut, chut… La première neige tombe sur la ferme ! Poupou et ses amis construisent un bonhomme de neige. Mais comment lui poser la tête… et lui trouver un nez ?",
+    "date": "2026-11-09",
+    "fichier": "/histoires/13-le-bonhomme-de-neige.html",
+    "couleur": "#DDEFFC",
+    "objet": "bonhommeneige"
   }
 ]

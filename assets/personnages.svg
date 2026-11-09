@@ -1130,5 +1130,109 @@
   <path d="M50 70 Q60 80 70 70" fill="none" stroke="#6B3A1E" stroke-width="3" stroke-linecap="round"/>
 </symbol>
 
+<!-- BONHOMME DE NEIGE (n°13) : trois boules nues, puis avec son visage, puis avec l’écharpe rose -->
+<symbol id="bonhommenu" viewBox="0 0 240 320">
+  <ellipse cx="120" cy="310" rx="84" ry="9" fill="#5C7A99" opacity=".18"/>
+  <g fill="#FFFFFF" stroke="#6B3A1E" stroke-width="4">
+    <circle cx="120" cy="246" r="66"/>
+    <circle cx="120" cy="148" r="48"/>
+    <circle cx="120" cy="72" r="36"/>
+  </g>
+  <g fill="#D6E8F5">
+    <path d="M70 280 C86 304 150 308 172 282 C150 296 96 296 70 280Z"/>
+    <path d="M84 170 C96 190 144 192 156 170 C140 182 102 182 84 170Z"/>
+    <path d="M92 88 C102 104 138 106 148 88 C136 98 104 98 92 88Z"/>
+  </g>
+  <g fill="#fff" opacity=".95"><ellipse cx="94" cy="216" rx="12" ry="8" transform="rotate(-30 94 216)"/><ellipse cx="102" cy="128" rx="8" ry="5" transform="rotate(-30 102 128)"/><ellipse cx="106" cy="56" rx="6" ry="4" transform="rotate(-30 106 56)"/></g>
+</symbol>
+<symbol id="bonhommevisage" viewBox="0 0 240 320">
+  <g fill="none" stroke="#6B3A1E" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M78 140 L22 104 M44 118 L30 94 M40 116 L16 120"/>
+    <path d="M162 140 L218 104 M196 118 L210 94 M200 116 L224 120"/>
+  </g>
+  <g fill="none" stroke="#A86E38" stroke-width="3" stroke-linecap="round">
+    <path d="M78 140 L22 104"/><path d="M162 140 L218 104"/>
+  </g>
+  <use href="#bonhommenu" x="0" y="0" width="240" height="320"/>
+  <circle cx="106" cy="64" r="6" fill="#2B1B10"/><circle cx="108" cy="61.5" r="2.2" fill="#fff"/>
+  <circle cx="134" cy="64" r="6" fill="#2B1B10"/><circle cx="136" cy="61.5" r="2.2" fill="#fff"/>
+  <circle cx="96" cy="80" r="6" fill="#FF9FB0" opacity=".85"/><circle cx="146" cy="80" r="6" fill="#FF9FB0" opacity=".85"/>
+  <path d="M120 74 L158 80 L120 84Z" fill="#FF8A2B" stroke="#B5561A" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M130 78 l4 1.2 M142 80 l4 .6" stroke="#B5561A" stroke-width="1.8" stroke-linecap="round"/>
+  <g fill="#5A5048"><circle cx="104" cy="92" r="3"/><circle cx="112" cy="97" r="3"/><circle cx="121" cy="99" r="3"/><circle cx="130" cy="97" r="3"/><circle cx="138" cy="92" r="3"/></g>
+  <g fill="#5A5048" stroke="#2B1B10" stroke-width="1.5"><circle cx="120" cy="136" r="6"/><circle cx="120" cy="160" r="6"/><circle cx="120" cy="230" r="7"/><circle cx="120" cy="258" r="7"/></g>
+</symbol>
+<symbol id="bonhommeneige" viewBox="0 0 240 320">
+  <use href="#bonhommevisage" x="0" y="0" width="240" height="320"/>
+  <path d="M146 110 C152 130 150 150 156 170 L176 166 C170 146 168 128 162 108Z" fill="#F27A9C" stroke="#A83A5C" stroke-width="3.5" stroke-linejoin="round"/>
+  <g stroke="#fff" stroke-width="4" opacity=".75"><path d="M150 128 L166 125 M153 150 L170 146"/></g>
+  <g stroke="#A83A5C" stroke-width="3" stroke-linecap="round"><path d="M158 170 l-2 8 M166 168 l0 8 M174 166 l2 8"/></g>
+  <path d="M86 104 C100 116 140 116 154 104 L158 116 C140 128 100 128 82 116Z" fill="#F27A9C" stroke="#A83A5C" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M86 110 C100 120 140 120 156 110" fill="none" stroke="#fff" stroke-width="4" opacity=".75"/>
+</symbol>
+
+<!-- deux boules seulement (le bonhomme sans sa tête) -->
+<symbol id="bonhommedeux" viewBox="0 0 240 320">
+  <ellipse cx="120" cy="310" rx="84" ry="9" fill="#5C7A99" opacity=".18"/>
+  <g fill="#FFFFFF" stroke="#6B3A1E" stroke-width="4">
+    <circle cx="120" cy="246" r="66"/>
+    <circle cx="120" cy="148" r="48"/>
+  </g>
+  <g fill="#D6E8F5">
+    <path d="M70 280 C86 304 150 308 172 282 C150 296 96 296 70 280Z"/>
+    <path d="M84 170 C96 190 144 192 156 170 C140 182 102 182 84 170Z"/>
+  </g>
+  <g fill="#fff" opacity=".95"><ellipse cx="94" cy="216" rx="12" ry="8" transform="rotate(-30 94 216)"/><ellipse cx="102" cy="128" rx="8" ry="5" transform="rotate(-30 102 128)"/></g>
+</symbol>
+
+<!-- BOULE DE NEIGE -->
+<symbol id="bouleneige" viewBox="0 0 100 100">
+  <ellipse cx="50" cy="94" rx="40" ry="5" fill="#5C7A99" opacity=".18"/>
+  <circle cx="50" cy="50" r="42" fill="#fff" stroke="#6B3A1E" stroke-width="4"/>
+  <path d="M16 62 C26 86 74 90 86 62 C72 78 30 78 16 62Z" fill="#D6E8F5"/>
+  <ellipse cx="34" cy="32" rx="9" ry="6" fill="#fff" stroke="#D6E8F5" stroke-width="2" transform="rotate(-30 34 32)"/>
+  <g fill="#D6E8F5"><circle cx="62" cy="40" r="3"/><circle cx="48" cy="56" r="2.5"/><circle cx="70" cy="60" r="2"/></g>
+</symbol>
+
+<!-- CAROTTE (pointe vers la droite) -->
+<symbol id="carotte" viewBox="0 0 140 60">
+  <g fill="#6FB84E" stroke="#3F7A2B" stroke-width="3" stroke-linejoin="round">
+    <path d="M30 30 C18 14 6 10 2 14 C8 24 18 30 30 30Z"/>
+    <path d="M30 30 C20 40 8 50 4 46 C8 36 18 30 30 30Z"/>
+    <path d="M30 30 C18 26 8 30 4 30 C10 22 22 24 30 30Z"/>
+  </g>
+  <path d="M26 18 C40 14 60 18 134 30 C60 42 40 46 26 42 C20 36 20 24 26 18Z" fill="#FF8A2B" stroke="#B5561A" stroke-width="3.5" stroke-linejoin="round"/>
+  <g stroke="#B5561A" stroke-width="2.5" stroke-linecap="round"><path d="M50 22 l2 7 M74 25 l1 6 M96 27 l1 5 M60 38 l2 -5"/></g>
+  <path d="M34 22 C46 20 60 22 80 25" fill="none" stroke="#FFC48A" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+
+<!-- CAILLOUX tout ronds -->
+<symbol id="cailloux" viewBox="0 0 100 50">
+  <g stroke="#2B1B10" stroke-width="2.5">
+    <ellipse cx="28" cy="30" rx="18" ry="14" fill="#6E6259"/>
+    <ellipse cx="68" cy="32" rx="16" ry="12" fill="#7D7068"/>
+  </g>
+  <g fill="#fff" opacity=".5"><ellipse cx="22" cy="24" rx="5" ry="3"/><ellipse cx="62" cy="27" rx="4" ry="2.5"/></g>
+</symbol>
+
+<!-- BRINDILLES pour les bras -->
+<symbol id="brindilles" viewBox="0 0 140 60">
+  <g fill="none" stroke="#6B3A1E" stroke-width="7" stroke-linecap="round">
+    <path d="M6 44 L130 20 M96 26 L116 6 M104 25 L132 34"/>
+    <path d="M10 56 L120 46 M86 49 L104 34"/>
+  </g>
+  <g fill="none" stroke="#A86E38" stroke-width="3" stroke-linecap="round"><path d="M6 44 L130 20"/><path d="M10 56 L120 46"/></g>
+</symbol>
+
+<!-- TASSE DE CHOCOLAT CHAUD -->
+<symbol id="chocolat" viewBox="0 0 100 100">
+  <g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".9"><path d="M38 34 q-6 -8 0 -14 q6 -6 0 -12"/><path d="M58 34 q-6 -8 0 -14 q6 -6 0 -12"/></g>
+  <path d="M78 52 C96 50 96 76 76 76" fill="none" stroke="#6B3A1E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M78 52 C96 50 96 76 76 76" fill="none" stroke="#FF5C7A" stroke-width="5" stroke-linecap="round"/>
+  <path d="M16 42 H84 L78 88 C76 94 24 94 22 88Z" fill="#FF5C7A" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="50" cy="42" rx="34" ry="8" fill="#8B4E2B" stroke="#6B3A1E" stroke-width="3"/>
+  <g fill="#fff"><circle cx="40" cy="64" r="4"/><circle cx="56" cy="72" r="4"/><circle cx="64" cy="58" r="3"/></g>
+</symbol>
+
 </defs>
 </svg>

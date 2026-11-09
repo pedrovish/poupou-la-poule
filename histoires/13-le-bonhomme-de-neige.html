@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le bonhomme de neige</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// les collines toutes blanches de neige (par-dessus le décor)
+const neige = () =>
+  `<path d="M0 380 C150 330 300 362 420 342 C560 316 680 350 800 330 L800 560 L0 560Z" fill="#F4FAFF"/>` +
+  `<path d="M0 380 C150 330 300 362 420 342 C560 316 680 350 800 330" fill="none" stroke="#D6E8F5" stroke-width="4"/>` +
+  `<path d="M0 432 C200 402 400 442 800 412 L800 560 L0 560Z" fill="#E6F1FA"/>` +
+  `<g fill="#C9DDEE"><ellipse cx="120" cy="490" rx="40" ry="5"/><ellipse cx="420" cy="520" rx="56" ry="6"/><ellipse cx="680" cy="480" rx="44" ry="5"/></g>`;
+// des flocons qui tombent doucement
+const flocons = (n = 22, gros = true) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = (i * 149) % 780 + 10, y = (i * 83) % 330 + 10;
+    s += `<circle cx="${x}" cy="${y}" r="${i % 3 ? 3.5 : 5}" fill="#fff" opacity=".95"/>`;
+  }
+  if (gros) s += u('flocon', 40, 230, 30, { rot: 10 }) + u('flocon', 330, 170, 26) + u('flocon', 720, 250, 28, { rot: 20 });
+  return s;
+};
+// un toit de neige sur la grange (x, y, largeur)
+const toitNeige = (x, y, w) => { const k = w / 260;
+  return `<path d="M${x + 4 * k} ${y + 92 * k} L${x + 130 * k} ${y + 2 * k} L${x + 256 * k} ${y + 92 * k} C${x + 240 * k} ${y + 102 * k} ${x + 230 * k} ${y + 86 * k} ${x + 214 * k} ${y + 84 * k} L${x + 130 * k} ${y + 22 * k} L${x + 46 * k} ${y + 84 * k} C${x + 30 * k} ${y + 90 * k} ${x + 20 * k} ${y + 102 * k} ${x + 4 * k} ${y + 92 * k}Z" fill="#fff" stroke="#C9DDEE" stroke-width="3" stroke-linejoin="round"/>`; };
+// le bonhomme (variante, x, y, largeur) avec ou sans le chapeau de Papi Hamid
+const bonhomme = (id, x, y, w, chapeau = false) => { const k = w / 240;
+  return u(id, x, y, w) + (chapeau ? u('chapeau', x + 66 * k, y - 4 * k, 108 * k, { rot: -6 }) : ''); };
+// des traits de mouvement
+const roule = (x, y) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"><path d="M${x} ${y} h-60 M${x + 10} ${y + 30} h-80 M${x} ${y + 60} h-50"/></g>`;
+
+lancerHistoire({
+  numero: 13,
+  titre: "Poupou et le bonhomme de neige",
+  morale: "Quand chacun donne un petit quelque chose, on fait une grande merveille !",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 150) + u('nuage', 560, 60, 140) + neige() + flocons(20) +
+    bonhomme('bonhommeneige', 420, 130, 240, true) +
+    u('poupou', 150, 300, 200) + u('coincoin', 340, 420, 90) + u('bouleneige', 660, 420, 80),
+  fin: () => decor('coucher', u('soleil', 40, 250, 140)) + u('nuage', 30, 40, 120) + neige() + flocons(10, false) +
+    bonhomme('bonhommeneige', 300, 170, 190, true) +
+    u('marguerite', 500, 230, 240, { flip: true }) +
+    u('poupou', 160, 330, 150) + u('caramel', 10, 380, 140) +
+    u('coincoin', 470, 440, 80, { flip: true }) + u('mouton', 660, 410, 130, { flip: true }) +
+    u('coeur', 250, 220, 40, { rot: -10 }) +
+    titre('Merci, les amis !', 400, 120, 50, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('pluie') + neige() + u('grange', 440, 110, 300) + toitNeige(440, 110, 300) + flocons(26) +
+        u('arbrenu', 40, 100, 190) +
+        u('poupou', 230, 290, 200) +
+        titre('De la neige !', 400, 90, 56, '#3F8EDB', -4),
+      texte: "Ce matin-là, Poupou sortit du poulailler… et ouvrit grand les yeux. Tout était <b>blanc</b> ! « De la <b>neige</b> ! » cria-t-elle. Les flocons tombaient tout doucement : <b>chut, chut</b>…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 150) + neige() + flocons(14, false) +
+        u('caramel', 60, 370, 170, { rot: 12 }) + roule(60, 400) +
+        u('coincoin', 330, 370, 110, { rot: -10 }) + u('flocon', 430, 320, 34) +
+        u('mouton', 540, 330, 200, { flip: true }) +
+        titre('Ziiiip !', 170, 300, 50, '#E8553E', -6),
+      texte: "Les amis accoururent ! Caramel glissa sur son ventre : <b>ziiiip</b> ! Coin-Coin attrapa un flocon sur sa langue. Et Flocon le mouton riait : « Regardez, je suis tout blanc, comme la neige ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 140) + neige() +
+        `<path d="M250 390 C360 400 440 420 560 450" fill="none" stroke="#D6E8F5" stroke-width="18" stroke-linecap="round"/>` +
+        u('caramel', 10, 268, 150, { rot: 6 }) + u('poupou', 175, 252, 130) +
+        u('bouleneige', 470, 300, 170, { rot: 30 }) + roule(470, 330) +
+        titre('Roule, roule !', 580, 120, 52, '#3F8EDB', 4),
+      texte: "« Faisons un <b>bonhomme de neige</b> ! » dit Poupou. Caramel poussa une petite boule… Elle roula, roula en bas de la colline, et devint <b>énorme</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 420, 40, 150) + neige() + flocons(8, false) +
+        u('barriere', 470, 340, 280) +
+        u('bonhommedeux', 260, 130, 240) +
+        u('bouleneige', 620, 420, 80) +
+        u('poupou', 100, 260, 140, { rot: -8 }) + `<ellipse cx="170" cy="440" rx="50" ry="8" fill="#000" opacity=".1"/>` +
+        u('coincoin', 520, 420, 80, { flip: true, rot: 10 }) +
+        bulle(60, 160, 'Trop haut !', 160),
+      texte: "Vite, encore deux boules ! Mais la <b>tête</b> était trop lourde, et le bonhomme trop grand. Poupou sauta, Coin-Coin sauta… <b>Impossible</b> de la poser là-haut !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 140) + neige() +
+        bonhomme('bonhommenu', 330, 190, 200) +
+        u('marguerite', 470, 200, 280, { flip: true }) +
+        u('poupou', 70, 330, 150) + u('coincoin', 210, 430, 80) +
+        titre('Pouf !', 200, 170, 56, '#E8553E', -6),
+      texte: "« Meuh… laissez-moi faire », dit Marguerite tout doucement. Elle prit la boule sur son grand nez, et la posa tout en haut : <b>pouf</b> ! « Hourra ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 480, 40, 150) + neige() +
+        bonhomme('bonhommenu', 220, 120, 240) +
+        u('coincoin', 40, 400, 100) + u('cailloux', 130, 450, 70) +
+        u('mouton', 600, 330, 190, { flip: true }) + u('brindilles', 470, 450, 110, { rot: -8 }) +
+        bulle(20, 60, 'Il n’a pas de visage !', 270),
+      texte: "Mais le bonhomme n’avait <b>pas de visage</b>… Coin-Coin trouva des <b>petits cailloux</b> pour les yeux et le sourire. Flocon apporta deux <b>brindilles</b> pour les bras."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 150) + neige() +
+        bonhomme('bonhommenu', 440, 120, 240) +
+        u('caramel', 130, 330, 200) + u('carotte', 300, 380, 110, { rot: -10 }) +
+        bulle(110, 220, 'Tiens, pour son nez !', 260),
+      texte: "Et le nez ? Caramel regarda sa belle <b>carotte</b>. Il avait très envie de la croquer… Miam ! Mais il sourit : « Tiens, c’est pour son <b>nez</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 150) + neige() + flocons(10, false) +
+        bonhomme('bonhommeneige', 300, 120, 240, true) +
+        u('hamid', 590, 225, 150, { flip: true }) +
+        u('coincoin', 180, 420, 90) + u('poupou', 40, 330, 150) +
+        titre('Voilà !', 160, 200, 54, '#C9427F', -6),
+      texte: "« Il a un peu froid », dit Coin-Coin. Il lui prêta sa longue <b>écharpe rose</b>. Et Papi Hamid posa son vieux <b>chapeau</b> sur sa tête. « Voilà ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 480, 30, 150) + neige() + confettis(14) +
+        bonhomme('bonhommeneige', 280, 120, 240, true) +
+        u('caramel', 0, 380, 160) + u('carotte', 150, 404, 70, { rot: -15 }) +
+        u('coincoin', 200, 450, 70) + u('chocolat', 252, 470, 36) +
+        u('poupou', 510, 320, 140, { flip: true }) + u('chocolat', 488, 400, 40) +
+        u('mouton', 650, 380, 150, { flip: true }) +
+        u('coeur', 230, 150, 44, { rot: -10 }),
+      texte: "Papi Hamid apporta du <b>chocolat chaud</b> pour tout le monde… et une grosse carotte pour Caramel ! « Bienvenue, <b>Monsieur Bonhomme</b> ! » crièrent les amis."
+    }
+  ]
+});
+</script>
+</body>
+</html>

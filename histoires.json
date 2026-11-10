@@ -118,5 +118,14 @@
     "fichier": "/histoires/13-le-bonhomme-de-neige.html",
     "couleur": "#DDEFFC",
     "objet": "bonhommeneige"
+  },
+  {
+    "numero": 14,
+    "titre": "Poupou et la grande lessive",
+    "resume": "Poupou veut faire la lessive toute seule… et verse TOUTE la boîte de savon ! BLOUP, BLOUP : une montagne de mousse, une vache en chemise, un cochon en caleçon… Que va dire Papi Hamid ?",
+    "date": "2026-11-10",
+    "fichier": "/histoires/14-la-grande-lessive.html",
+    "couleur": "#D9F0FB",
+    "objet": "boitesavon"
   }
 ]

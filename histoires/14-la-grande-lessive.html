@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la grande lessive</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// personnages avec leurs « costumes » de lessive (même x, y, largeur que le personnage)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+const poupouMousse = (x, y, w, o = {}, oups = true) => avec(oups ? 'poupououps' : 'poupou', ['poupoumousse'], x, y, w, o);
+// la bassine d’eau savonneuse (x, y, largeur), avec ou sans montagne de mousse (f = largeur relative)
+const bassine = (x, y, w, f = 0) => { const k = w / 200;
+  let s = u('bassine', x, y, w) + `<ellipse cx="${x + 100 * k}" cy="${y + 28 * k}" rx="${76 * k}" ry="${14 * k}" fill="#CFEAF7"/>` +
+    `<ellipse cx="${x + 80 * k}" cy="${y + 25 * k}" rx="${22 * k}" ry="${3.5 * k}" fill="#fff" opacity=".7"/>`;
+  if (f) { const mw = w * f, mh = mw * 160 / 280; s += u('mousse', x + w / 2 - mw / 2, y + 40 * k - mh, mw); }
+  return s; };
+// une flaque de boue (x, y, largeur) et des éclaboussures
+const boue = (x, y, w) => { const k = w / 200;
+  return `<path transform="translate(${x} ${y}) scale(${k})" d="M14 26 C6 8 52 2 92 8 C132 0 196 8 190 26 C198 44 150 50 104 46 C60 52 2 46 14 26Z" fill="#9B6A3C" stroke="#6B3A1E" stroke-width="3" stroke-linejoin="round"/>` +
+    `<g transform="translate(${x} ${y}) scale(${k})" fill="#C79A6A" opacity=".7"><ellipse cx="60" cy="20" rx="22" ry="4"/><ellipse cx="140" cy="32" rx="16" ry="3"/></g>`; };
+const gouttes = (pts, c = '#8B5A2B') => pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`).join('');
+// des traînées de savon glissant
+const glisse = (d) => `<path d="${d}" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" opacity=".85"/><path d="${d}" fill="none" stroke="#BFE1F5" stroke-width="4" stroke-linecap="round" opacity=".9"/>`;
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// la corde à linge avec le linge suspendu (x, y, largeur)
+const corde = (x, y, w, linge = true) => { const k = w / 420, L = (dx, dy) => [x + dx * k, y + dy * k];
+  let s = u('cordelinge', x, y, w);
+  if (linge) {
+    const [a, b] = L(50, 26), [c, d] = L(170, 28), [e, f] = L(278, 29), [g, h] = L(330, 28);
+    s += u('chemise', a, b, 100 * k) + u('calecon', c, d, 90 * k) + u('chaussette', e, f, 30 * k, { rot: 4 }) + u('chaussette', g, h, 30 * k, { rot: -4 });
+    const pince = (px, py) => `<rect x="${px - 3 * k}" y="${py - 8 * k}" width="${6 * k}" height="${16 * k}" rx="${2 * k}" fill="#7CC24F" stroke="#3E7A25" stroke-width="2"/>`;
+    s += [[70, 26], [130, 28], [180, 28], [250, 28], [292, 29], [344, 28]].map(([dx, dy]) => pince(...L(dx, dy))).join('');
+  }
+  return s; };
+
+lancerHistoire({
+  numero: 14,
+  titre: "Poupou et la grande lessive",
+  morale: "Pour bien aider, pas besoin de mettre tout le savon : un petit peu, c’est juste assez ! Et après une bêtise, on dit pardon… et on répare ensemble.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 140) + u('nuage', 600, 50, 130) +
+    bassine(330, 370, 230, 1.3) +
+    u('bulles', 560, 120, 160) + u('bulles', 150, 110, 120, { flip: true }) + u('bulles', 420, 70, 90) +
+    poupouMousse(90, 290, 200, {}, false) +
+    avec('coincoin', ['barbemousse'], 610, 390, 120, { flip: true }),
+  fin: () => decor('coucher', u('soleil', 20, 250, 140)) + u('nuage', 40, 50, 120) +
+    corde(110, 150, 580) +
+    u('caramel', 20, 360, 170) + u('poupou', 200, 320, 160) + u('coincoin', 360, 420, 90) +
+    u('marguerite', 470, 260, 220, { flip: true }) + u('mouton', 660, 380, 130, { flip: true }) +
+    u('bulles', 640, 30, 100) + u('coeur', 420, 330, 40, { rot: 10 }) +
+    titre('Tout propre !', 400, 110, 52, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 300, 40, 150) + u('grange', 10, 150, 230) +
+        u('poupou', 200, 300, 170) +
+        u('chemise', 385, 352, 90, { rot: -12 }) + u('chaussette', 470, 348, 30, { rot: 18 }) + u('calecon', 420, 360, 70, { rot: 6 }) +
+        u('panier', 370, 380, 150) +
+        u('hamid', 600, 190, 140, { flip: true }) + u('chapeau', 620, 194, 100) +
+        bulle(520, 110, 'Je reviens vite !', 220),
+      texte: "Ce matin-là, Papi Hamid partit au marché. « Je reviens vite ! » Poupou regarda le grand panier de <b>linge sale</b> : une chemise, des chaussettes… et un grand <b>caleçon à pois</b> ! « Je vais faire la lessive, comme une grande ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 140) +
+        u('marguerite', 570, 240, 210, { flip: true }) +
+        bassine(330, 370, 220) +
+        `<g fill="#fff" stroke="#9CC7E6" stroke-width="2">${[[372, 352, 6], [384, 368, 7], [394, 384, 6], [366, 380, 5], [404, 362, 5], [380, 396, 6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>` +
+        u('boitesavon', 336, 262, 80, { rot: 140 }) +
+        u('poupou', 120, 290, 190) +
+        u('bulles', 470, 300, 70) +
+        titre('Un peu… encore… TOUT !', 400, 110, 44, '#C9427F', -3),
+      texte: "Poupou remplit la bassine d’eau. Puis elle prit la boîte de <b>savon</b>. Un peu de savon… encore un peu… encore un peu… et hop, <b>toute la boîte</b> ! « Comme ça, ce sera <b>très, très</b> propre ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 30, 140) +
+        bassine(300, 390, 220, 1.75) +
+        u('bulles', 600, 160, 150) + u('bulles', 90, 60, 130, { flip: true }) + u('bulles', 330, 40, 110) + u('bulles', 640, 330, 100, { flip: true }) +
+        u('poupououps', 30, 300, 180) + surprise(128, 326) +
+        titre('BLOUP ! BLOUP !', 540, 110, 50, '#3F8EDB', 4) +
+        titre('Oh oh…', 110, 270, 40, '#E8553E', -6),
+      texte: "<b>BLOUP ! BLOUP !</b> La mousse se mit à gonfler, gonfler… Plus haute que la bassine ! Plus haute que Poupou ! Des bulles s’envolaient partout. « Oh oh… », fit Poupou."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 140) +
+        bassine(130, 370, 230, 1.3) +
+        u('bulles', 40, 80, 120) + u('bulles', 360, 60, 90, { flip: true }) +
+        avec('coincoin', ['barbemousse'], 430, 340, 150) +
+        u('poupou', 630, 300, 160, { flip: true }) +
+        titre('PLOUF !', 250, 190, 58, '#3F8EDB', -6) +
+        bulle(420, 230, 'Je suis Papi Coin-Coin !', 300),
+      texte: "« Chic, un bain ! » cria Coin-Coin. <b>PLOUF</b> ! Il plongea dans la mousse… et ressortit avec une grande <b>barbe blanche</b> ! « Regardez ! Je suis Papi Coin-Coin ! » Poupou rit si fort qu’elle en perdit une plume."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 140) +
+        u('mousse', -20, 250, 200) +
+        glisse('M120 470 C220 480 320 450 440 470') +
+        boue(440, 430, 320) +
+        avec('caramel', ['tachesboue'], 450, 318, 210, { rot: 8 }) +
+        gouttes([[440, 380, 9], [420, 410, 6], [690, 360, 10], [720, 400, 7], [470, 330, 6], [660, 320, 7], [700, 440, 6], [430, 450, 7]]) +
+        u('poupououps', 210, 310, 150) +
+        titre('Ziiiip…', 280, 240, 44, '#3F8EDB', -4) +
+        titre('SPLATCH !', 590, 170, 62, '#8B5A2B', 5),
+      texte: "Caramel arriva en courant : « Des bulles ! » Mais par terre, c’était tout glissant… <b>Ziiiip</b> ! Il glissa sur le ventre… et <b>SPLATCH</b> ! Tout droit dans la flaque de boue. Le voilà plus sale que le linge !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 140) + u('nuage', 600, 20, 120) +
+        u('panier', 650, 410, 130) +
+        avec('marguerite', ['margueritelinge'], 290, 186, 320) +
+        u('poupou', 50, 290, 190) +
+        bulle(500, 90, 'Meuh ?!', 140) +
+        titre('Ta-daaa !', 160, 250, 44, '#C9427F', -6),
+      texte: "Maintenant, il faut faire <b>sécher</b> le linge ! Mais la corde était bien trop haute pour une petite poule. Alors Poupou eut une idée : la chemise sur le dos de Marguerite, et les chaussettes sur ses cornes ! « <b>Meuh</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 500, 30, 150) + vent(40, 100, .7) +
+        u('poupou', 30, 300, 170) +
+        avec('caramel', ['tachesboue', 'caramelcalecon'], 270, 300, 230) +
+        avec('coincoin', ['barbemousse', 'coincoinchaussette'], 580, 380, 120) +
+        titre('Fiouuu !', 220, 80, 50, '#3F8EDB', -4) +
+        bulle(370, 190, 'Je suis un pirate !', 240),
+      texte: "Soudain, un coup de vent : <b>fiouuu</b> ! Le grand caleçon à pois s’envola… et atterrit pile sur la tête de Caramel ! « Je suis un <b>pirate</b> ! » Et Coin-Coin mit une chaussette comme bonnet. Quels drôles de déguisements !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 140) +
+        u('bulles', 300, 40, 140) + u('bulles', 620, 60, 120, { flip: true }) + u('bulles', 40, 170, 90) +
+        poupouMousse(110, 290, 200) +
+        u('mouton', 480, 300, 220, { flip: true }) +
+        bulle(410, 200, 'Bê ? Un nouveau mouton ?', 350) +
+        titre('Oh oh…', 200, 250, 40, '#E8553E', -6),
+      texte: "Des bulles, encore des bulles ! Poupou était couverte de <b>mousse</b>, de la crête jusqu’aux pattes. Flocon le petit mouton arriva : « Bê ? Un <b>nouveau mouton</b> ? » « Mais non, c’est moi, Poupou ! » Oh oh…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('mousse', 560, 200, 240) + u('bulles', 620, 60, 110) + u('bulles', 60, 120, 90, { flip: true }) +
+        u('hamidsurpris', 330, 140, 170) + surprise(395, 120) + u('chapeau', 360, 108, 110, { rot: -18 }) +
+        avec('marguerite', ['margueritelinge'], 530, 250, 250, { flip: true }) +
+        avec('caramel', ['tachesboue', 'caramelcalecon'], 10, 340, 180) +
+        poupouMousse(195, 350, 130) +
+        avec('coincoin', ['barbemousse', 'coincoinchaussette'], 560, 420, 90) +
+        titre('Mais… mais… mais ?!', 420, 70, 46, '#E8553E', -2),
+      texte: "<b>Tut tut</b> ! Papi Hamid rentrait du marché. Il vit la montagne de mousse, la vache en chemise, le cochon en caleçon et le canard barbu… Ses yeux devinrent <b>grands comme des assiettes</b> ! « Mais… mais… qu’est-ce que c’est que ce <b>bazar</b> ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) + u('bulles', 330, 50, 90) +
+        u('hamid', 460, 180, 150, { flip: true }) + u('chapeau', 482, 184, 106) +
+        poupouMousse(210, 320, 160, { rot: 10 }, false) +
+        avec('caramel', ['tachesboue', 'caramelcalecon'], 600, 340, 180, { flip: true }) +
+        bulle(60, 210, 'Pardon, Papi…', 190) +
+        titre('Ho ho ho !', 640, 110, 52, '#C9427F', 4),
+      texte: "Poupou baissa la tête. « <b>Pardon</b>, Papi… Je voulais t’aider. J’ai mis <b>toute</b> la boîte de savon… » Papi Hamid regarda Caramel, avec son caleçon sur la tête… et il éclata de rire : « <b>Ho ho ho</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        corde(100, 170, 560) +
+        u('hamid', 600, 200, 140, { flip: true }) + u('chapeau', 620, 204, 100) +
+        u('caramel', 300, 330, 180) + bassine(290, 400, 220) + u('bulles', 380, 300, 60) +
+        u('poupou', 40, 310, 160) + u('chaussette', 196, 350, 30, { rot: -20 }) +
+        u('coincoin', 530, 430, 90) +
+        titre('Frotte, frotte !', 400, 100, 46, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida à <b>réparer</b>. Caramel prit un bon bain : <b>frotte, frotte</b> ! Marguerite rendit la chemise, Coin-Coin la chaussette. Et Papi Hamid étendit le linge bien haut, pendant que Poupou lui passait les pinces."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 500, 40, 140) +
+        corde(80, 200, 380) + u('bulles', 560, 70, 150) +
+        u('hamid', 480, 200, 150) + u('chapeau', 502, 204, 106) +
+        u('marguerite', 610, 270, 190, { flip: true }) +
+        u('poupou', 250, 320, 170) + u('caramel', 20, 360, 180) + u('coincoin', 420, 420, 90) +
+        u('mouton', 650, 400, 130, { flip: true }) +
+        titre('BLOUP !', 640, 110, 44, '#3F8EDB', 6),
+      texte: "« Tu sais, Poupou, dit Papi Hamid, pour la lessive, une <b>toute petite cuillère</b> de savon, ça suffit ! » « Promis ! » dit Poupou. Et la toute dernière bulle s’envola dans le ciel… <b>BLOUP</b> ! Tout le monde éclata de rire."
+    }
+  ]
+});
+</script>
+</body>
+</html>

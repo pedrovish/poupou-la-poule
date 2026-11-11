@@ -127,5 +127,14 @@
     "fichier": "/histoires/14-la-grande-lessive.html",
     "couleur": "#D9F0FB",
     "objet": "boitesavon"
+  },
+  {
+    "numero": 15,
+    "titre": "Poupou et l’oreiller de plumes",
+    "resume": "BOING, BOING ! Poupou prend l’oreiller de Papi Hamid pour un trampoline… CRAC ! POUF ! Des plumes partout : un canard-nuage, une vache qui éternue, un cochon-poule… Que va dire Papi Hamid ?",
+    "date": "2026-11-11",
+    "fichier": "/histoires/15-l-oreiller-de-plumes.html",
+    "couleur": "#FCE3EC",
+    "objet": "oreillercrac"
   }
 ]

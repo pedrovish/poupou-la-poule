@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et l’oreiller de plumes</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// des plumes qui tombent un peu partout (n plumes, zone x0..x1, y0..y1)
+const plumesVolent = (n, x0 = 20, x1 = 780, y0 = 20, y1 = 330, d = 0) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0));
+    s += u('plume', x, y, 16 + (i % 3) * 5, { rot: ((i * 67 + d * 31) % 300) - 150 });
+  }
+  return s; };
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// des arcs de rebond sous Poupou
+const rebond = (x, y) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} q30 -40 60 0 M${x + 70} ${y - 10} q30 -40 60 0"/><path d="M${x + 20} ${y + 26} h-34 M${x + 140} ${y + 16} h34"/></g>`;
+// des ailes qui battent (traits de mouvement)
+const flap = (x, y) => `<g fill="none" stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} q-24 -30 -6 -60 M${x - 16} ${y + 10} q-34 -26 -26 -66 M${x + 4} ${y + 30} q-40 -6 -50 -40"/></g>`;
+// une flaque de miel (x, y, largeur)
+const flaqueMiel = (x, y, w) => { const k = w / 200;
+  return `<path transform="translate(${x} ${y}) scale(${k})" d="M14 24 C6 8 50 2 92 8 C134 0 196 8 188 26 C196 42 150 48 104 44 C60 50 2 44 14 24Z" fill="#F5B82E" stroke="#B36B00" stroke-width="3" stroke-linejoin="round"/>` +
+    `<ellipse cx="${x + 70 * k}" cy="${y + 18 * k}" rx="${26 * k}" ry="${4 * k}" fill="#FFE08A"/>`; };
+// du miel qui coule sur le dos de Caramel (mêmes x, y, largeur que Caramel)
+const mielDos = (x, y, w) => { const k = w / 220;
+  return `<path transform="translate(${x} ${y}) scale(${k})" d="M58 64 C80 48 130 46 150 60 C150 76 146 92 142 84 C140 74 134 76 132 92 C130 104 122 104 122 90 C120 78 112 80 110 98 C108 110 98 110 98 96 C98 82 90 80 86 92 C82 104 72 102 74 88 C76 76 66 78 62 86 C56 94 52 76 58 64Z" fill="#F5B82E" stroke="#B36B00" stroke-width="3" stroke-linejoin="round" opacity=".95"/>`; };
+// Zzz
+const zzz = (x, y) => titre('z', x, y, 28, '#3F8EDB', -10) + titre('z', x + 22, y - 26, 36, '#3F8EDB', -10) + titre('Z', x + 50, y - 58, 46, '#3F8EDB', -10);
+// Papi Hamid qui dort contre le pommier (x = gauche de l'arbre)
+const sieste = (x, y, w) => { const k = w / 220;
+  return u('arbre', x, y, w) + u('hamiddort', x + 44 * k, y + 104 * k, 140 * k, { rot: -4 }) + u('chapeau', x + 64 * k, y + 98 * k, 100 * k, { rot: -12 }); };
+// les personnages « emplumés »
+const coincoinNuage = (x, y, w, o = {}) => avec('coincoin', ['coincoinplumes'], x, y, w, o);
+const cochonPoule = (x, y, w, o = {}) => u('caramel', x, y, w, o) + (o.flip ? '' : mielDos(x, y, w)) + u('caramelplumes', x, y, w, o);
+const vachePlumes = (x, y, w, o = {}) => avec('marguerite', ['margueriteplumes'], x, y, w, o);
+
+lancerHistoire({
+  numero: 15,
+  titre: "Poupou et l’oreiller de plumes",
+  morale: "Un oreiller, c’est pour faire dodo, pas pour faire boing-boing ! Et après une bêtise, on dit pardon… on répare ensemble… et on rit très fort.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 140) + u('nuage', 600, 50, 130) +
+    u('plumes', 170, 70, 460) + plumesVolent(10, 30, 760, 40, 300, 2) +
+    u('oreillercrac', 280, 400, 240) + rebond(300, 380) +
+    u('poupououps', 310, 170, 180, { rot: -12 }) +
+    coincoinNuage(620, 400, 120, { flip: true }) + u('caramel', 20, 360, 170),
+  fin: () => decor('coucher', u('soleil', 20, 250, 140)) + u('nuage', 560, 40, 120) +
+    u('oreiller', 300, 410, 200) +
+    u('poupou', 330, 286, 150) +
+    u('caramel', 20, 350, 190) + u('plume', 150, 336, 22, { rot: 20 }) +
+    u('marguerite', 520, 240, 240, { flip: true }) +
+    u('coincoin', 220, 440, 80) + u('mouton', 640, 400, 130, { flip: true }) +
+    u('coeur', 120, 120, 50, { rot: -12 }) + u('coeur', 640, 110, 44, { rot: 12 }) +
+    titre('Tout doux !', 400, 120, 56, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 300, 30, 100) + u('nuage', 60, 40, 130) +
+        u('grange', 10, 150, 220) +
+        sieste(540, 120, 230) + zzz(720, 190) +
+        u('oreiller', 270, 380, 200) +
+        u('poupou', 70, 320, 150) +
+        titre('Ronpchiii…', 600, 90, 44, '#3F8EDB', 4),
+      texte: "Ce matin-là, le soleil brillait sur la ferme. Papi Hamid posa son gros <b>oreiller de plumes</b> dans l’herbe : « Un peu de soleil, et il sera tout doux ! » Puis il s’installa contre le pommier pour une petite <b>sieste</b>. « Ronpchiii… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 360, 30, 110) +
+        sieste(590, 140, 190) + zzz(740, 210) +
+        u('oreiller', 270, 400, 210) + rebond(280, 390) +
+        u('poupou', 290, 150, 170, { rot: -10 }) +
+        u('coincoin', 80, 400, 110) + bulle(40, 300, 'Encore !', 150) +
+        titre('BOING ! BOING !', 400, 100, 54, '#C9427F', -4),
+      texte: "Poupou regarda le gros oreiller. Il était rond, il était moelleux… « On dirait un <b>trampoline</b> ! » Elle sauta dessus : <b>BOING</b> ! Et encore : <b>BOING, BOING</b> ! « Youpi ! » Coin-Coin applaudissait : « Encore, encore ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 40, 130) +
+        u('plumes', 220, 90, 380) + u('plumes', 20, 40, 200, { flip: true }) + u('plumes', 580, 120, 190) +
+        u('oreillercrac', 300, 400, 230) +
+        u('poupououps', 90, 300, 170) + surprise(196, 318) +
+        titre('CRAC !', 420, 100, 58, '#E8553E', -6) + titre('POUF !', 640, 100, 58, '#3F8EDB', 6) +
+        titre('Oh oh…', 150, 280, 40, '#E8553E', -6),
+      texte: "Mais au plus gros BOING… <b>CRAC</b> ! L’oreiller se déchira. <b>POUF</b> ! Un énorme nuage de <b>plumes</b> s’envola dans le ciel. « Oh oh… », fit Poupou."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('grange', 20, 140, 240) + u('plumes', 40, 120, 200) + u('plume', 200, 250, 24, { rot: 40 }) +
+        plumesVolent(16, 280, 780, 20, 300, 1) +
+        u('fleur', 660, 360, 50) + u('fleur', 720, 380, 44) + u('plume', 664, 352, 20, { rot: -30 }) +
+        u('poupououps', 240, 320, 140) +
+        coincoinNuage(420, 340, 170) +
+        bulle(380, 240, 'Je suis un nuage !', 250),
+      texte: "Les plumes retombaient partout, comme de la neige. Sur la grange, sur les fleurs… et sur Coin-Coin ! « Regardez ! Je suis un petit <b>nuage avec des pattes</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) +
+        u('poupououps', 90, 290, 180) + flap(120, 360) +
+        plumesVolent(12, 260, 520, 120, 330, 3) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"><path d="M280 300 Q380 260 470 290 M290 350 Q380 320 460 340"/></g>` +
+        u('marguerite', 470, 220, 290, { flip: true }) + u('plume', 470, 318, 20, { rot: -70 }) +
+        titre('FLAP ! FLAP ! FLAP !', 400, 100, 50, '#E8553E', -3),
+      texte: "« Vite, je vais les chasser ! » Poupou battit des ailes très fort : <b>FLAP, FLAP, FLAP</b> ! Mais les plumes s’envolèrent… tout droit sur Marguerite. Une plume lui chatouilla le nez…"
+    },
+    {
+      scene: () => decor('jour') +
+        plumesVolent(28, 20, 780, 20, 330, 4) +
+        vachePlumes(210, 210, 320) +
+        u('poupououps', 30, 330, 140) +
+        u('mouton', 580, 330, 190, { flip: true }) +
+        bulle(520, 230, 'Bê ! Il neige ?', 220) +
+        titre('ATCHOUM !', 360, 100, 66, '#C9427F', -4),
+      texte: "« A… a… <b>ATCHOUM</b> ! » Marguerite éternua si fort que toutes les plumes repartirent dans le ciel ! Flocon le petit mouton ouvrit de grands yeux : « Bê ! Il <b>neige</b> déjà ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + plumesVolent(8, 200, 760, 30, 250, 5) +
+        flaqueMiel(470, 440, 240) +
+        u('caramel', 260, 300, 230) + mielDos(260, 300, 230) +
+        u('potmiel', 510, 330, 100, { rot: 110 }) +
+        `<g fill="#F5B82E" stroke="#B36B00" stroke-width="2"><circle cx="480" cy="300" r="9"/><circle cx="520" cy="280" r="6"/><circle cx="350" cy="280" r="7"/><circle cx="600" cy="420" r="7"/></g>` +
+        u('poupououps', 40, 310, 160) +
+        titre('SPLATCH !', 440, 170, 62, '#E39A1C', 5) +
+        bulle(60, 210, 'Du miel ?!', 160),
+      texte: "Caramel arriva avec son pot de <b>miel</b> du goûter. « J’ai une idée ! On va <b>recoller</b> les plumes avec du miel ! » Il leva le pot bien haut… et <b>SPLATCH</b> ! Tout le miel lui coula sur le dos."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) + plumesVolent(6, 300, 760, 40, 200, 6) +
+        flaqueMiel(560, 450, 180) +
+        cochonPoule(300, 290, 250) +
+        u('poupou', 40, 360, 160, { rot: -24 }) +
+        titre('Ha ha ha !', 130, 300, 40, '#C9427F', -8) +
+        coincoinNuage(640, 420, 100) +
+        bulle(330, 170, 'Cot cot ! Je suis un cochon-poule !', 420),
+      texte: "Et toutes les plumes se collèrent sur le miel ! Des plumes sur le dos, des plumes sur la tête… « <b>Cot cot</b> ! Je suis un <b>cochon-poule</b> ! » Poupou rit si fort qu’elle en tomba sur le derrière."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + plumesVolent(8, 20, 380, 40, 300, 7) +
+        u('arbre', 290, 80, 260) +
+        avec('hamidsurpris', ['hamidplumes'], 480, 190, 140) + surprise(528, 172) +
+        u('chapeau', 650, 120, 100, { rot: 30 }) +
+        u('plume', 578, 222, 22, { rot: 60 }) +
+        titre('ATCHOUM !', 200, 140, 64, '#C9427F', -5),
+      texte: "Pendant ce temps, une petite plume volait, volait… et se posa sur le nez de Papi Hamid. « A… a… <b>ATCHOUM</b> ! » Papi se réveilla d’un bond, avec des plumes plein la <b>moustache</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) + plumesVolent(10, 20, 780, 30, 160, 8) +
+        u('plumes', 600, 160, 180) +
+        avec('hamidsurpris', ['hamidplumes'], 330, 130, 160) + surprise(400, 112) +
+        vachePlumes(520, 240, 260, { flip: true }) +
+        cochonPoule(0, 330, 200) +
+        u('poupououps', 200, 350, 130) +
+        coincoinNuage(560, 420, 100) +
+        titre('Il a neigé des poules ?!', 400, 70, 44, '#E8553E', -2),
+      texte: "Papi Hamid vit la vache à plumes, le cochon-poule et le canard-nuage… Ses yeux devinrent <b>ronds comme des œufs</b> ! « Mais… mais… il a <b>neigé des poules</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) + plumesVolent(5, 300, 700, 40, 160, 9) +
+        avec('hamid', ['hamidplumes'], 450, 180, 150, { flip: true }) +
+        u('poupou', 210, 320, 160, { rot: 10 }) +
+        cochonPoule(600, 350, 180, { flip: true }) +
+        bulle(40, 210, 'Pardon, Papi…', 200) +
+        titre('Ho ho ho !', 640, 110, 54, '#C9427F', 4),
+      texte: "Poupou baissa la tête. « <b>Pardon</b>, Papi… J’ai sauté sur ton oreiller, et il a fait CRAC. » Papi Hamid regarda Caramel. « Cot cot ? » fit Caramel. Et Papi éclata de rire : « <b>Ho ho ho</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('hamid', 540, 180, 150, { flip: true }) +
+        u('oreiller', 420, 390, 170) +
+        `<path d="M470 410 l8 -8 l8 8 l8 -8 l8 8 l8 -8 l8 8" fill="none" stroke="#C9427F" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `<path d="M526 408 Q548 360 562 340" fill="none" stroke="#C9427F" stroke-width="2.5" stroke-linecap="round"/><path d="M522 412 L540 386" stroke="#8A8A8A" stroke-width="4" stroke-linecap="round"/>` +
+        u('panier', 290, 390, 130) + u('plumes', 296, 350, 116) +
+        u('poupou', 150, 300, 150) +
+        u('caramel', 0, 370, 170) + mielDos(0, 370, 170) +
+        u('coincoin', 400, 450, 76) + u('plume', 462, 456, 16, { rot: 80 }) +
+        titre('Pique, pique !', 600, 100, 46, '#3F8EDB', 3) +
+        titre('Miam !', 110, 340, 40, '#E39A1C', -6),
+      texte: "Alors tout le monde aida à <b>réparer</b>. Poupou et Coin-Coin ramassèrent les plumes, une par une. Papi Hamid recousit l’oreiller : <b>pique, pique</b>. Et Caramel ? Il lécha tout le miel : « <b>Miam</b> ! »"
+    }
+  ]
+});
+</script>
+</body>
+</html>

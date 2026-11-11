@@ -1358,5 +1358,85 @@
   <use href="#chaussette" x="282" y="20" width="22" height="44" transform="rotate(12 293 22)"/>
 </symbol>
 
+<symbol id="plume" viewBox="0 0 40 100">
+  <path d="M21 6 C34 16 38 44 32 70 C29 80 24 86 21 88 C14 82 6 68 6 46 C6 26 12 12 21 6Z" fill="#FFFDF6" stroke="#8A6A52" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M8 58 C4 62 4 68 9 70 M33 60 C38 62 37 68 32 70" fill="none" stroke="#8A6A52" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M20 96 C20 70 22 40 21 10" fill="none" stroke="#C9A98A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M21 30 L12 24 M21 44 L10 38 M21 58 L12 54 M21 36 L30 30 M21 50 L31 46 M21 64 L29 62" stroke="#E6D9C8" stroke-width="2" stroke-linecap="round"/>
+</symbol>
+<symbol id="oreiller" viewBox="0 0 200 130">
+  <clipPath id="oreillerforme"><path d="M22 28 Q100 8 178 28 Q194 66 178 104 Q100 122 22 104 Q6 66 22 28Z"/></clipPath>
+  <ellipse cx="100" cy="122" rx="84" ry="6" fill="#000" opacity=".12"/>
+  <path d="M22 28 Q100 8 178 28 Q194 66 178 104 Q100 122 22 104 Q6 66 22 28Z" fill="#FFFDF6"/>
+  <g clip-path="url(#oreillerforme)" stroke="#BFDDF2" stroke-width="7"><path d="M36 0 V130 M64 0 V130 M92 0 V130 M120 0 V130 M148 0 V130 M176 0 V130"/></g>
+  <path d="M22 28 Q100 8 178 28 Q194 66 178 104 Q100 122 22 104 Q6 66 22 28Z" fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M22 28 l-10 -8 M178 28 l10 -8 M22 104 l-10 8 M178 104 l10 8" stroke="#6B3A1E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M100 76 C88 66 84 56 92 52 C96 50 100 54 100 58 C100 54 104 50 108 52 C116 56 112 66 100 76Z" fill="#FF8FA3" stroke="#C9427F" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M40 40 Q70 30 100 32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"/>
+</symbol>
+<symbol id="oreillercrac" viewBox="0 0 200 130">
+  <clipPath id="oreillercracforme"><path d="M22 58 Q60 46 78 52 L86 44 L96 54 L106 42 L116 54 L126 46 Q160 48 178 58 Q194 82 178 106 Q100 122 22 106 Q6 82 22 58Z"/></clipPath>
+  <ellipse cx="100" cy="122" rx="86" ry="6" fill="#000" opacity=".12"/>
+  <use href="#plume" x="70" y="6" width="18" height="45" transform="rotate(-30 79 28)"/><use href="#plume" x="90" y="0" width="20" height="50" transform="rotate(-5 100 25)"/><use href="#plume" x="112" y="4" width="18" height="45" transform="rotate(25 121 26)"/><use href="#plume" x="56" y="18" width="16" height="40" transform="rotate(-55 64 38)"/><use href="#plume" x="130" y="16" width="16" height="40" transform="rotate(50 138 36)"/>
+  <path d="M22 58 Q60 46 78 52 L86 44 L96 54 L106 42 L116 54 L126 46 Q160 48 178 58 Q194 82 178 106 Q100 122 22 106 Q6 82 22 58Z" fill="#FFFDF6"/>
+  <g clip-path="url(#oreillercracforme)" stroke="#BFDDF2" stroke-width="7"><path d="M36 0 V130 M64 0 V130 M92 0 V130 M120 0 V130 M148 0 V130 M176 0 V130"/></g>
+  <path d="M80 56 L86 48 L96 58 L106 46 L116 58 L122 52 Q104 66 80 56Z" fill="#6B3A1E" opacity=".75"/>
+  <path d="M22 58 Q60 46 78 52 L86 44 L96 54 L106 42 L116 54 L126 46 Q160 48 178 58 Q194 82 178 106 Q100 122 22 106 Q6 82 22 58Z" fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M22 58 l-10 -6 M178 58 l10 -6 M22 106 l-10 8 M178 106 l10 8" stroke="#6B3A1E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M100 96 C90 88 87 80 93 77 C96 76 100 79 100 82 C100 79 104 76 107 77 C113 80 110 88 100 96Z" fill="#FF8FA3" stroke="#C9427F" stroke-width="2.5" stroke-linejoin="round"/>
+</symbol>
+<symbol id="plumes" viewBox="0 0 200 140">
+  <use href="#plume" x="20" y="36" width="20" height="50" transform="rotate(-40 30 61)"/><use href="#plume" x="50" y="6" width="22" height="54" transform="rotate(-15 61 33)"/><use href="#plume" x="84" y="-4" width="23" height="59" transform="rotate(10 96 25)"/><use href="#plume" x="120" y="4" width="22" height="54" transform="rotate(35 131 31)"/><use href="#plume" x="156" y="26" width="20" height="50" transform="rotate(60 166 51)"/><use href="#plume" x="34" y="66" width="20" height="50" transform="rotate(-70 44 91)"/><use href="#plume" x="70" y="46" width="23" height="59" transform="rotate(-5 82 75)"/><use href="#plume" x="108" y="44" width="22" height="54" transform="rotate(25 119 71)"/><use href="#plume" x="146" y="64" width="20" height="50" transform="rotate(80 156 89)"/><use href="#plume" x="56" y="80" width="18" height="45" transform="rotate(-100 65 102)"/><use href="#plume" x="96" y="82" width="20" height="50" transform="rotate(120 106 107)"/><use href="#plume" x="130" y="88" width="18" height="45" transform="rotate(150 139 110)"/><use href="#plume" x="8" y="92" width="16" height="40" transform="rotate(-120 16 112)"/><use href="#plume" x="170" y="92" width="16" height="40" transform="rotate(100 178 112)"/>
+</symbol>
+<symbol id="potmiel" viewBox="0 0 100 110">
+  <ellipse cx="50" cy="104" rx="38" ry="5" fill="#000" opacity=".12"/>
+  <path d="M22 34 C10 50 10 86 24 100 L76 100 C90 86 90 50 78 34Z" fill="#F5B82E" stroke="#8A5A10" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="18" y="22" width="64" height="16" rx="8" fill="#E39A1C" stroke="#8A5A10" stroke-width="4"/>
+  <path d="M26 38 C26 50 34 52 34 44 C36 56 46 58 46 46 C50 60 60 58 60 46 C64 52 72 50 74 38Z" fill="#FFCF4D" stroke="#8A5A10" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="30" y="58" width="40" height="24" rx="7" fill="#FFF6D9" stroke="#8A5A10" stroke-width="3"/>
+  <text x="50" y="76" text-anchor="middle" font-family="Fredoka, Arial Rounded MT Bold, sans-serif" font-weight="700" font-size="14" fill="#B36B00">MIEL</text>
+  <path d="M60 30 L84 2" stroke="#A8692E" stroke-width="6" stroke-linecap="round"/>
+  <g fill="#D9984F" stroke="#6B3A1E" stroke-width="2.5"><ellipse cx="84" cy="6" rx="8" ry="6"/></g>
+  <path d="M28 46 Q22 62 30 80" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+</symbol>
+<symbol id="hamiddort" viewBox="0 0 160 256">
+  <g fill="#6B4423" stroke="#3A2410" stroke-width="3"><path d="M44 230 h32 v18 h-40 a8 8 0 0 1 8-18Z"/><path d="M84 230 h32 a8 8 0 0 1 8 18 h-40Z"/></g>
+  <rect x="46" y="170" width="28" height="64" rx="6" fill="#2F6FB5" stroke="#1B3F68" stroke-width="3"/>
+  <rect x="86" y="170" width="28" height="64" rx="6" fill="#2F6FB5" stroke="#1B3F68" stroke-width="3"/>
+  <path d="M40 100 Q80 86 120 100 L124 178 Q80 190 36 178Z" fill="#E34B3F" stroke="#8A2A22" stroke-width="3"/>
+  <g stroke="#B8382F" stroke-width="2" opacity=".6"><path d="M44 120 H116 M42 140 H118 M40 160 H120 M60 96 V182 M80 92 V186 M100 96 V182"/></g>
+  <path d="M50 124 H110 V182 Q80 192 50 182Z" fill="#2F6FB5" stroke="#1B3F68" stroke-width="3"/>
+  <path d="M56 124 L52 100 M104 124 L108 100" stroke="#1B3F68" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="58" cy="128" r="4" fill="#FFD43B"/><circle cx="102" cy="128" r="4" fill="#FFD43B"/>
+  <rect x="68" y="140" width="24" height="18" rx="3" fill="#2A63A3" stroke="#1B3F68" stroke-width="2"/>
+  <path d="M40 104 Q18 130 22 160" fill="none" stroke="#E34B3F" stroke-width="18" stroke-linecap="round"/>
+  <path d="M120 104 Q142 130 138 160" fill="none" stroke="#E34B3F" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="22" cy="166" r="11" fill="#E0A877" stroke="#8A5A33" stroke-width="3"/>
+  <circle cx="138" cy="166" r="11" fill="#E0A877" stroke="#8A5A33" stroke-width="3"/>
+  <circle cx="40" cy="62" r="10" fill="#E0A877" stroke="#8A5A33" stroke-width="3"/>
+  <circle cx="120" cy="62" r="10" fill="#E0A877" stroke="#8A5A33" stroke-width="3"/>
+  <circle cx="80" cy="60" r="40" fill="#E0A877" stroke="#8A5A33" stroke-width="4"/>
+  <path d="M42 52 Q44 34 56 30 M118 52 Q116 34 104 30" fill="none" stroke="#C9C9C9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M58 56 Q66 63 74 56" fill="none" stroke="#2B1B10" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M86 56 Q94 63 102 56" fill="none" stroke="#2B1B10" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M60 46 Q66 42 72 46 M88 46 Q94 42 100 46" fill="none" stroke="#A0A0A0" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="80" cy="68" rx="7" ry="6" fill="#D48E5E"/>
+  <path d="M60 80 Q70 72 80 78 Q90 72 100 80 Q90 86 80 82 Q70 86 60 80Z" fill="#D9D9D9" stroke="#9A9A9A" stroke-width="2"/>
+  <ellipse cx="80" cy="90" rx="6" ry="4.5" fill="#8A3B2B"/>
+  <circle cx="58" cy="72" r="6" fill="#F08A7A" opacity=".55"/><circle cx="102" cy="72" r="6" fill="#F08A7A" opacity=".55"/>
+</symbol>
+<symbol id="hamidplumes" viewBox="0 0 160 256">
+  <use href="#plume" x="50" y="6" width="16" height="40" transform="rotate(-30 58 26)"/><use href="#plume" x="71" y="0" width="18" height="45" transform="rotate(0 80 22)"/><use href="#plume" x="94" y="6" width="16" height="40" transform="rotate(30 102 26)"/><use href="#plume" x="62" y="74" width="12" height="30" transform="rotate(-80 68 89)"/><use href="#plume" x="88" y="74" width="12" height="30" transform="rotate(80 94 89)"/><use href="#plume" x="34" y="100" width="14" height="35" transform="rotate(-50 41 118)"/><use href="#plume" x="108" y="110" width="14" height="35" transform="rotate(40 115 128)"/><use href="#plume" x="70" y="146" width="14" height="35" transform="rotate(10 77 164)"/><use href="#plume" x="16" y="150" width="12" height="30" transform="rotate(-20 22 165)"/>
+</symbol>
+<symbol id="caramelplumes" viewBox="0 0 220 180">
+  <g fill="#F5B82E" stroke="#B36B00" stroke-width="2" opacity=".95"><path d="M84 54 C84 70 90 74 92 64 C94 76 100 78 100 66 C104 72 110 70 108 56Z"/><circle cx="130" cy="120" r="7"/><path d="M174 116 q2 12 6 0"/></g>
+  <use href="#plume" x="76" y="10" width="22" height="55" transform="rotate(-50 87 38)"/><use href="#plume" x="96" y="2" width="22" height="55" transform="rotate(-25 107 30)"/><use href="#plume" x="116" y="6" width="22" height="55" transform="rotate(0 127 34)"/><use href="#plume" x="158" y="6" width="14" height="35" transform="rotate(-20 165 24)"/><use href="#plume" x="169" y="2" width="14" height="35" transform="rotate(0 176 20)"/><use href="#plume" x="180" y="6" width="14" height="35" transform="rotate(20 187 24)"/><use href="#plume" x="40" y="108" width="18" height="45" transform="rotate(-60 49 130)"/><use href="#plume" x="140" y="100" width="18" height="45" transform="rotate(40 149 122)"/><use href="#plume" x="14" y="52" width="16" height="40" transform="rotate(-80 22 72)"/>
+</symbol>
+<symbol id="coincoinplumes" viewBox="0 0 120 120">
+  <use href="#plume" x="14" y="48" width="16" height="40" transform="rotate(-80 22 68)"/><use href="#plume" x="28" y="44" width="18" height="45" transform="rotate(-40 37 66)"/><use href="#plume" x="46" y="46" width="18" height="45" transform="rotate(-5 55 68)"/><use href="#plume" x="60" y="50" width="16" height="40" transform="rotate(40 68 70)"/><use href="#plume" x="20" y="70" width="16" height="40" transform="rotate(-110 28 90)"/><use href="#plume" x="40" y="72" width="16" height="40" transform="rotate(170 48 92)"/><use href="#plume" x="60" y="70" width="16" height="40" transform="rotate(120 68 90)"/><use href="#plume" x="70" y="6" width="12" height="30" transform="rotate(-20 76 21)"/><use href="#plume" x="82" y="2" width="12" height="30" transform="rotate(10 88 17)"/>
+</symbol>
+<symbol id="margueriteplumes" viewBox="0 0 300 240">
+  <use href="#plume" x="226" y="6" width="16" height="40" transform="rotate(-25 234 26)"/><use href="#plume" x="246" y="0" width="16" height="40" transform="rotate(5 254 20)"/><use href="#plume" x="266" y="6" width="16" height="40" transform="rotate(30 274 26)"/><use href="#plume" x="250" y="100" width="14" height="35" transform="rotate(-90 257 118)"/><use href="#plume" x="70" y="58" width="22" height="55" transform="rotate(-50 81 86)"/><use href="#plume" x="100" y="48" width="24" height="60" transform="rotate(-15 112 78)"/><use href="#plume" x="132" y="52" width="22" height="55" transform="rotate(20 143 80)"/><use href="#plume" x="170" y="60" width="22" height="55" transform="rotate(45 181 88)"/><use href="#plume" x="110" y="120" width="18" height="45" transform="rotate(-70 119 142)"/><use href="#plume" x="180" y="118" width="18" height="45" transform="rotate(60 189 140)"/>
+</symbol>
 </defs>
 </svg>

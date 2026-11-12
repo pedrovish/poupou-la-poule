@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et les pots de peinture</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// les couleurs de la peinture
+const C = { rouge: ['#E63B3B', '#8A1F1F'], bleu: ['#3F8EDB', '#1F4F85'], jaune: ['#FFD43B', '#B38F00'], vert: ['#7CC24F', '#3E7A25'] };
+// une tache de peinture (x, y, taille, couleur)
+const tache = (x, y, k, c, rot = 0) =>
+  `<path transform="translate(${x} ${y}) rotate(${rot}) scale(${k})" d="M-12 0 C-14 -10 -4 -14 2 -12 C10 -15 15 -6 12 0 C15 8 6 14 0 12 C-8 15 -15 8 -12 0Z" fill="${C[c][0]}" stroke="${C[c][1]}" stroke-width="${2 / k}"/>`;
+// des gouttes de peinture qui volent (n gouttes, zone x0..x1, y0..y1)
+const eclabousse = (n, x0, x1, y0, y1, d = 0) => {
+  const cs = ['rouge', 'bleu', 'jaune', 'vert']; let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0));
+    s += tache(x, y, 0.35 + (i % 3) * 0.15, cs[(i + d) % 4], (i * 47) % 360);
+  }
+  return s; };
+// une flaque de peinture (x, y, largeur, couleur)
+const flaque = (x, y, w, c) => { const k = w / 200;
+  return `<path transform="translate(${x} ${y}) scale(${k})" d="M14 24 C6 8 50 2 92 8 C134 0 196 8 188 26 C196 42 150 48 104 44 C60 50 2 44 14 24Z" fill="${C[c][0]}" stroke="${C[c][1]}" stroke-width="3" stroke-linejoin="round"/>` +
+    `<ellipse cx="${x + 70 * k}" cy="${y + 18 * k}" rx="${26 * k}" ry="${4 * k}" fill="#fff" opacity=".45"/>`; };
+// des traces de pattes de poule, comme des petites étoiles
+const pattes = (pts, c = 'jaune') => pts.map(([x, y, r]) =>
+  `<g transform="translate(${x} ${y}) rotate(${r})" stroke="${C[c][0]}" stroke-width="5" stroke-linecap="round"><path d="M0 0 V-16 M0 0 L-11 -11 M0 0 L11 -11 M0 0 V6"/></g>`).join('');
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// des traits de mouvement (secousses)
+const secoue = (x, y, h) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} q-14 ${h / 4} 0 ${h / 2} q14 ${h / 4} 0 ${h / 2}"/><path d="M${x - 20} ${y + 10} q-14 ${h / 5} 0 ${h / 2.5} q14 ${h / 5} 0 ${h / 2.5}"/></g>`;
+// Poupou qui tient le gros pinceau
+const poupouPinceau = (x, y, w, o = {}) =>
+  u(o.oups ? 'poupououps' : 'poupou', x, y, w) + (o.peinture ? u('poupoupeinture', x, y, w) : '') +
+  u('pinceau', x + 0.66 * w, y + 0.1 * w, 0.3 * w, { rot: o.rot ?? 40 });
+const poupouSale = (x, y, w, o = {}) => avec(o.oups === false ? 'poupou' : 'poupououps', ['poupoupeinture'], x, y, w, o);
+const caramelTomate = (x, y, w, o = {}) => avec('caramel', ['caramelrouge'], x, y, w, o);
+const coincoinMyrtille = (x, y, w, o = {}) => avec('coincoin', ['coincoinbleu'], x, y, w, o);
+const vachePois = (x, y, w, o = {}) => avec('marguerite', ['margueritepois'], x, y, w, o);
+
+lancerHistoire({
+  numero: 16,
+  titre: "Poupou et les pots de peinture",
+  morale: "Pour aider un grand, on lui demande d’abord comment faire ! Et après une bêtise, on dit pardon… on répare ensemble… et on rit très fort.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 140) + u('nuage', 600, 50, 130) +
+    eclabousse(14, 40, 760, 40, 280, 1) +
+    u('barrierebarbouillee', 120, 300, 560) +
+    flaque(300, 470, 220, 'jaune') + u('potjaune', 470, 440, 70, { rot: 80 }) +
+    u('potrouge', 40, 430, 90) + u('potbleu', 650, 440, 80) +
+    poupouPinceau(270, 260, 210, { oups: true, peinture: true }) +
+    caramelTomate(10, 340, 170) + coincoinMyrtille(610, 360, 110, { flip: true }),
+  fin: () => decor('coucher', u('soleil', 20, 250, 140)) + u('nuage', 560, 40, 120) +
+    u('barrierecouleurs', 100, 280, 600) +
+    u('caramel', 20, 360, 180) +
+    u('poupou', 230, 320, 150) + u('pinceau', 360, 330, 30, { rot: 30 }) +
+    u('coincoin', 400, 430, 90) +
+    u('marguerite', 500, 260, 250, { flip: true }) +
+    u('coeur', 120, 120, 50, { rot: -12 }) + u('coeur', 640, 110, 44, { rot: 12 }) +
+    titre('Toute belle !', 400, 120, 56, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 320, 30, 100) + u('nuage', 60, 40, 130) +
+        u('grange', 10, 120, 230) +
+        u('barriere', 260, 320, 300) +
+        u('potrouge', 300, 440, 70) + u('potbleu', 380, 446, 64) + u('potjaune', 454, 446, 64) +
+        u('pinceau', 530, 430, 34, { rot: 70 }) +
+        u('hamid', 590, 170, 150, { flip: true }) +
+        u('poupou', 120, 350, 130) +
+        bulle(470, 90, 'Je reviens tout de suite !', 300),
+      texte: "Ce matin, Papi Hamid voulait repeindre sa vieille <b>barrière</b>. Il posa trois pots de <b>peinture</b> dans l’herbe : un rouge, un bleu et un jaune. « Zut, j’ai oublié mon chapeau ! Je reviens tout de suite. »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 560, 50, 120) +
+        u('barriere', 420, 320, 300) +
+        u('potrouge', 300, 430, 90) + u('potbleu', 640, 450, 64) + u('potjaune', 710, 450, 64) +
+        `<g fill="#E63B3B"><circle cx="390" cy="390" r="7"/><circle cx="410" cy="360" r="5"/><circle cx="372" cy="350" r="4"/></g>` +
+        poupouPinceau(110, 250, 200, { rot: 20 }) +
+        titre('SCHLOUP !', 400, 110, 60, '#E63B3B', -5) +
+        bulle(40, 160, 'Je vais aider Papi !', 240),
+      texte: "Poupou regarda le gros <b>pinceau</b>. « Je vais aider Papi ! Il sera tellement content ! » Elle le trempa dans le pot rouge : <b>SCHLOUP</b> ! « Ouh là… qu’il est lourd ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('barrierebarbouillee', 300, 300, 440) +
+        eclabousse(10, 140, 520, 120, 320, 2) +
+        poupouPinceau(80, 270, 200, { oups: true, peinture: true, rot: -30 }) +
+        u('potrouge', 40, 460, 70) +
+        titre('FLIC !', 420, 110, 58, '#E63B3B', -8) + titre('FLAC !', 620, 110, 58, '#E63B3B', 8) +
+        titre('Oh oh…', 160, 240, 40, '#E8553E', -6),
+      texte: "Poupou peignit à droite : <b>FLIC</b> ! Puis à gauche : <b>FLAC</b> ! Un peu de rouge sur la barrière… et beaucoup sur Poupou ! « Oh oh… », fit Poupou, le bec tout rouge."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 130) +
+        u('grange', 560, 120, 220) +
+        u('barrierebarbouillee', 20, 300, 300) +
+        flaque(250, 450, 200, 'jaune') + u('potjaune', 250, 418, 80, { rot: 75 }) +
+        pattes([[380, 430, 10], [430, 410, -15], [480, 432, 20], [520, 404, -10], [560, 424, 15], [600, 398, -20], [640, 418, 10], [690, 400, -10]]) +
+        u('poupououps', 620, 260, 130) + u('poupoupeinture', 620, 260, 130) + surprise(700, 268) +
+        titre('PATATRA !', 360, 110, 64, '#E39A1C', -4) +
+        titre('trotte, trotte…', 520, 520, 34, '#E39A1C', -3),
+      texte: "En reculant pour admirer son travail, Poupou buta contre le pot jaune. <b>PATATRA</b> ! La peinture coula dans l’herbe. Et avec ses pattes toutes jaunes, Poupou laissa des petites <b>étoiles</b> partout : trotte, trotte, trotte !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) + u('nuage', 600, 30, 120) +
+        vachePois(330, 210, 320, { flip: true }) +
+        u('potbleu', 270, 440, 70) + u('potrouge', 200, 450, 60) +
+        poupouPinceau(60, 280, 170, { peinture: true, rot: 60 }) +
+        titre('PLOC ! PLOC ! PLOC !', 420, 100, 52, '#3F8EDB', -3) +
+        bulle(500, 160, 'Meuh ! Je suis belle ?', 260),
+      texte: "Marguerite arriva en rêvassant. « Meuh… c’est joli, toutes ces couleurs ! » Poupou eut une <b>idée farfelue</b> : « Attends, je vais te faire belle ! » <b>PLOC, PLOC, PLOC</b> ! Et voilà une vache <b>à pois de toutes les couleurs</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 130) +
+        vachePois(40, 210, 320) +
+        u('potbleu', 0, 430, 80) +
+        `<g fill="none" stroke="#3F8EDB" stroke-width="6" stroke-linecap="round"><path d="M60 330 Q40 380 70 420"/></g>` +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"><path d="M20 300 q-20 30 0 60 M110 300 q20 30 0 60"/></g>` +
+        eclabousse(8, 360, 640, 260, 400, 3) +
+        coincoinMyrtille(480, 360, 160) + surprise(560, 352) +
+        titre('FLOUCH ! FLOUCH !', 400, 100, 52, '#3F8EDB', -3) +
+        bulle(560, 240, 'Coin ?!', 120),
+      texte: "Marguerite était si contente qu’elle remua la queue… mais le bout de sa queue trempait dans le pot bleu ! <b>FLOUCH, FLOUCH</b> ! Coin-Coin, qui passait par là, devint tout bleu, comme une <b>myrtille</b> avec des pattes. « Coin ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) +
+        flaque(250, 450, 300, 'rouge') + u('potrouge', 520, 420, 80, { rot: -80 }) +
+        caramelTomate(250, 290, 250) +
+        `<g fill="#E63B3B"><circle cx="230" cy="380" r="9"/><circle cx="200" cy="350" r="6"/><circle cx="540" cy="330" r="7"/><circle cx="580" cy="360" r="5"/></g>` +
+        u('poupououps', 40, 320, 150) + u('poupoupeinture', 40, 320, 150) +
+        titre('BOUM ! SPLATCH !', 420, 100, 56, '#E63B3B', -3) +
+        bulle(440, 180, 'Je suis une tomate !', 260),
+      texte: "Caramel arriva en courant… et ne vit pas le pot rouge. <b>BOUM</b> ! Il glissa dans la peinture : <b>SPLATCH</b> ! Il se releva tout rouge, de la queue jusqu’aux oreilles. « Groin ? Je suis une <b>tomate</b> qui marche ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        eclabousse(30, 20, 780, 30, 330, 4) +
+        vachePois(470, 200, 300, { flip: true }) + secoue(470, 270, 120) +
+        caramelTomate(20, 330, 200) + secoue(240, 360, 90) +
+        coincoinMyrtille(300, 420, 110) +
+        u('poupououps', 250, 250, 140) + u('poupoupeinture', 250, 250, 140) +
+        titre('SPLITCH ! SPLATCH !', 400, 100, 54, '#C9427F', -3) +
+        bulle(30, 180, 'Secouez-vous !', 200),
+      texte: "« Vite, secouez-vous pour vous <b>sécher</b> ! », cria Poupou. Alors tout le monde se secoua très fort : <b>SPLITCH, SPLATCH</b> ! Des gouttes de toutes les couleurs volèrent partout… sur la grange, sur l’herbe… et encore sur Poupou !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('grange', 20, 120, 250) + eclabousse(14, 40, 250, 180, 330, 5) +
+        u('mouton', 290, 330, 210) + u('moutonpois', 290, 330, 210) +
+        u('poupououps', 560, 320, 140, { flip: true }) + u('poupoupeinture', 560, 320, 140, { flip: true }) +
+        titre('Bêêê ?!', 400, 290, 46, '#B36BD9', -4) +
+        bulle(480, 150, 'Un mouton à pois ?!', 260),
+      texte: "Même Flocon, le petit mouton tout blanc, reçut des gouttes plein sa laine. Il se regarda, tout étonné : « Bêêê ? Je suis devenu un <b>mouton à pois</b> ! » Poupou se cacha les yeux sous son aile. « Oh oh… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) + eclabousse(8, 20, 300, 40, 200, 6) +
+        u('barrierebarbouillee', 10, 330, 240) +
+        u('hamidsurpris', 330, 120, 150) + surprise(378, 104) +
+        u('chapeau', 480, 70, 100, { rot: 30 }) +
+        vachePois(530, 220, 260, { flip: true }) +
+        caramelTomate(10, 380, 170) +
+        coincoinMyrtille(200, 450, 90) +
+        u('poupououps', 640, 400, 120, { flip: true }) + u('poupoupeinture', 640, 400, 120, { flip: true }) +
+        titre('Un arc-en-ciel est tombé ?!', 400, 60, 42, '#E8553E', -2),
+      texte: "Juste à ce moment-là, Papi Hamid revint avec son chapeau. Il vit la vache à pois, le cochon-tomate et le canard-myrtille… Ses yeux devinrent <b>ronds comme des œufs</b> ! « Mais… mais… un <b>arc-en-ciel</b> est tombé sur ma ferme ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) +
+        u('hamid', 470, 170, 150, { flip: true }) +
+        u('poupou', 230, 320, 150, { rot: 10 }) + u('poupoupeinture', 230, 320, 150, { rot: 10 }) +
+        caramelTomate(600, 360, 180, { flip: true }) +
+        bulle(30, 210, 'Pardon, Papi…', 200) +
+        titre('Ho ho ho !', 640, 110, 54, '#C9427F', 4),
+      texte: "Poupou baissa la tête. « <b>Pardon</b>, Papi… Je voulais t’aider à peindre la barrière. » Papi Hamid regarda Caramel. « Groin ? Je suis une tomate », fit Caramel. Et Papi éclata de rire : « <b>Ho ho ho</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) + u('bulles', 330, 120, 110) +
+        u('bassine', 260, 360, 280) +
+        `<ellipse cx="400" cy="398" rx="106" ry="18" fill="#CFEAF7"/>` +
+        u('caramel', 300, 260, 190) + u('mousse', 270, 330, 240, { op: .95 }) +
+        u('coincoin', 120, 420, 90) +
+        u('hamid', 620, 170, 140, { flip: true }) + u('barrierecouleurs', 560, 360, 220) +
+        u('poupou', 40, 300, 140) + u('pinceau', 160, 330, 26, { rot: 30 }) +
+        titre('Frotte, frotte !', 400, 90, 50, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida à <b>réparer</b>. Dans la grande bassine, on frotta Caramel, Coin-Coin et Marguerite : <b>frotte, frotte</b> ! Puis Papi donna à Poupou un tout <b>petit pinceau</b> : « Pour une petite poule ! » Et ensemble, ils peignirent la plus jolie barrière de la ferme."
+    }
+  ]
+});
+</script>
+</body>
+</html>

@@ -23,7 +23,9 @@
     boitesavon: 120 / 100, bulles: 120 / 160, mousse: 160 / 280, chemise: 120 / 140, chaussette: 100 / 50, calecon: 90 / 120, cordelinge: 200 / 420,
     poupououps: 1, hamidsurpris: 256 / 160, poupoumousse: 1, barbemousse: 1, tachesboue: 180 / 220, caramelcalecon: 180 / 220, coincoinchaussette: 1, margueritelinge: 240 / 300,
     plume: 100 / 40, oreiller: 130 / 200, oreillercrac: 130 / 200, plumes: 140 / 200, potmiel: 110 / 100,
-    hamiddort: 256 / 160, hamidplumes: 256 / 160, caramelplumes: 180 / 220, coincoinplumes: 1, margueriteplumes: 240 / 300
+    hamiddort: 256 / 160, hamidplumes: 256 / 160, caramelplumes: 180 / 220, coincoinplumes: 1, margueriteplumes: 240 / 300,
+    potrouge: 1, potbleu: 1, potjaune: 1, pinceau: 170 / 60, poupoupeinture: 1, caramelrouge: 180 / 220, coincoinbleu: 1, margueritepois: 240 / 300, moutonpois: 170 / 200,
+    barrierebarbouillee: 0.4, barrierecouleurs: 0.4
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

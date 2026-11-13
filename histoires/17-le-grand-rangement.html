@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le grand rangement</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// des brins de foin qui volent
+const foinVole = (n, x0, x1, y0, y1, d = 0) => {
+  let s = '<g fill="none" stroke="#E0B23A" stroke-width="4" stroke-linecap="round">';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0)), r = (i * 47 + d * 13) % 180;
+    s += `<path d="M${x - 14} ${y} q14 -6 28 0" transform="rotate(${r} ${x} ${y})"/>`;
+  }
+  return s + '</g>'; };
+// des éclaboussures de boue
+const boue = (n, x0, x1, y0, y1, d = 0) => {
+  let s = '<g fill="#8B5A2B">';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0));
+    s += `<circle cx="${x}" cy="${y}" r="${4 + (i % 4) * 3}"/>`;
+  }
+  return s + '</g>'; };
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// des traits de mouvement (ça tremble !)
+const tremble = (x, y, h) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} q-14 ${h / 4} 0 ${h / 2} q14 ${h / 4} 0 ${h / 2}"/><path d="M${x - 20} ${y + 10} q-14 ${h / 5} 0 ${h / 2.5} q14 ${h / 5} 0 ${h / 2.5}"/></g>`;
+// une petite étoile de choc (BONG, TOC)
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// Poupou qui balaie avec le grand balai
+const poupouBalai = (x, y, w, o = {}) =>
+  u(o.oups ? 'poupououps' : 'poupou', x, y, w, o.flip ? { flip: true } : {}) + (o.boue ? u('poupouboue', x, y, w, o.flip ? { flip: true } : {}) : '') +
+  u('balai', x + (o.flip ? -0.02 : 0.62) * w, y + 0.02 * w, 0.32 * w, { rot: (o.rot ?? -28) * (o.flip ? -1 : 1) });
+// Marguerite déguisée (foin, bottes…)
+const vache = (x, y, w, extras, o = {}) => avec('marguerite', extras, x, y, w, o);
+// un seau à l'envers sur la tête de quelqu'un
+const seauTete = (x, y, w) => u('seau', x, y, w, { rot: 180 });
+// Coin-Coin assis dans le panier
+const coincoinPanier = (x, y, w) => u('coincoin', x + 0.18 * w, y - 0.36 * w, 0.62 * w) + u('panier', x, y, w);
+// Caramel assis dans la brouette
+const caramelBrouette = (x, y, w, chapeau = false) =>
+  u('caramel', x + 0.14 * w, y - 0.2 * w, 0.62 * w) + (chapeau ? u('chapeau', x + 0.46 * w, y - 0.23 * w, 0.32 * w, { rot: -8 }) : '') + u('brouette', x, y, w);
+
+lancerHistoire({
+  numero: 17,
+  titre: "Poupou et le grand rangement",
+  morale: "Ranger, c’est mettre chaque chose à sa place… pas les canards dans les paniers ! Et après une bêtise, on dit pardon, on répare ensemble… et on rit très fort.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 140) + u('nuage', 600, 50, 130) +
+    foinVole(14, 40, 760, 40, 260, 1) +
+    u('grange', 10, 110, 220) +
+    vache(470, 200, 300, ['margueritefoin', 'margueritebottes'], { flip: true }) +
+    caramelBrouette(220, 380, 220, true) +
+    coincoinPanier(640, 430, 120) +
+    poupouBalai(60, 330, 170, { oups: true }) +
+    u('pomme', 470, 470, 40) + u('pomme', 520, 486, 34),
+  fin: () => decor('coucher', u('soleil', 450, 230, 120)) + u('nuage', 560, 40, 120) +
+    u('grange', 20, 120, 230) +
+    u('seau', 260, 330, 60) + u('seau', 320, 336, 54) + u('panier', 380, 320, 90) + u('pomme', 398, 300, 30) + u('pomme', 428, 298, 30) +
+    u('mare', 520, 430, 260) + u('coincoin', 610, 404, 80) +
+    u('flaqueboue', 60, 470, 200) + u('caramel', 80, 380, 150) +
+    u('hamid', 640, 190, 130, { flip: true }) + u('chapeau', 653, 180, 104) +
+    u('botte', 666, 348, 42) + u('botte', 704, 348, 42) +
+    poupouBalai(330, 360, 130) +
+    u('coeur', 120, 90, 50, { rot: -12 }) + u('coeur', 460, 80, 44, { rot: 12 }) +
+    titre('Tout est rangé !', 400, 150, 56, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 330, 30, 100) + u('nuage', 60, 40, 130) +
+        u('grange', 10, 120, 230) +
+        u('seau', 250, 420, 60) + u('panier', 330, 430, 90, { rot: -20 }) + u('pomme', 440, 470, 36) + u('pomme', 480, 482, 30) +
+        u('citrouille', 300, 480, 80) + u('bottefoin', 500, 380, 110) + u('pelote', 230, 490, 40) +
+        u('botte', 450, 400, 40, { rot: 70 }) + u('botte', 400, 430, 36, { rot: -20 }) +
+        u('hamid', 610, 170, 150, { flip: true }) +
+        u('poupou', 70, 380, 120) +
+        bulle(420, 80, 'Quel bazar !', 200),
+      texte: "Devant la grange, c’était le grand <b>bazar</b> : des seaux, des paniers, des pommes, des bottes… « Quel bazar ! Demain, je range tout », dit Papi Hamid. Et il partit au <b>marché</b> en sifflotant."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) +
+        foinVole(20, 220, 760, 60, 240, 3) +
+        vache(330, 200, 330, ['margueritefoin'], { flip: true }) +
+        poupouBalai(60, 320, 170, { oups: true, rot: -50 }) + surprise(146, 330) +
+        titre('FROUTCH !', 200, 120, 54, '#E39A1C', -6) +
+        titre('FLOUF !', 560, 110, 64, '#E39A1C', 6) +
+        bulle(300, 170, 'Meuh ?', 120),
+      texte: "Poupou eut une idée : « Je vais <b>tout ranger</b> pour faire une surprise à Papi ! » Elle prit le grand <b>balai</b> : <b>FROUTCH, FROUTCH</b> ! Le tas de foin s’envola… et retomba sur Marguerite : <b>FLOUF</b> ! « Meuh ? Je suis une <b>botte de foin</b> qui parle ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 130) + u('nuage', 560, 30, 120) +
+        u('mais', 375, 330, 46, { rot: -20 }) + u('mais', 482, 334, 46, { rot: 20 }) +
+        coincoinPanier(360, 360, 200) + surprise(452, 256) +
+        poupouBalai(60, 310, 180) +
+        bulle(30, 200, 'Tout ce qui est jaune !', 290) +
+        bulle(520, 220, 'Coin ?!', 120) +
+        titre('HOP !', 650, 120, 60, '#E39A1C', 6),
+      texte: "« Pour bien ranger, il faut <b>trier</b> ! », dit Poupou. « Tout ce qui est <b>jaune</b>, dans le panier ! » Deux épis de maïs… et Coin-Coin, <b>HOP</b> ! « Coin ? Mais je ne suis pas un <b>épi de maïs</b>, moi ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('citrouille', 500, 360, 80) + u('pelote', 590, 372, 46) + u('pomme', 400, 380, 36) + u('pomme', 450, 384, 34) +
+        caramelBrouette(330, 350, 300) + surprise(470, 246) +
+        u('poupou', 70, 340, 160) +
+        titre('Et HOP !', 200, 230, 52, '#E39A1C', -6) +
+        bulle(400, 140, 'Groin ? Pas une citrouille !', 330),
+      texte: "« Et tout ce qui est <b>rond</b>, dans la brouette ! » Des pommes, une citrouille, une pelote… et Caramel, tout rond lui aussi ! <b>Et HOP</b> ! « Groin ? Mais je ne suis pas une <b>citrouille</b>, moi ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        vache(30, 190, 330, ['margueritefoin', 'margueritebottes']) +
+        caramelBrouette(470, 360, 260, true) +
+        u('poupou', 330, 360, 130, { flip: true }) +
+        bulle(60, 100, 'Meuh… très élégante !', 270) +
+        titre('Tadaaa !', 620, 150, 54, '#C9427F', 5),
+      texte: "Puis Poupou trouva les <b>bottes</b> de Papi. « Des bottes, ça se range… sur des pattes ! » Elle les enfila à Marguerite. Et le <b>chapeau</b> de Papi ? Sur la tête de Caramel, bien sûr ! « Meuh… je suis très élégante ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('grange', 560, 120, 220) + boue(10, 580, 760, 200, 320, 1) +
+        u('flaqueboue', 220, 440, 300) +
+        boue(22, 160, 560, 140, 400, 2) +
+        poupouBalai(60, 300, 180, { oups: true, boue: true, rot: -60 }) +
+        u('caramel', 560, 330, 200, { flip: true }) + u('tachesboue', 560, 330, 200, { flip: true }) + surprise(580, 330) +
+        titre('SPLATCH !', 420, 110, 66, '#8B5A2B', -4) +
+        bulle(560, 230, 'Ma flaque !', 160),
+      texte: "Il restait la <b>flaque de boue</b> de Caramel. « Pouah ! Je vais la balayer ! » <b>FROUTCH… SPLATCH</b> ! La boue vola partout : sur la grange, dans le ciel… et sur Poupou ! « Ma flaque préférée ! », cria Caramel."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) +
+        u('seau', 340, 400, 100) +
+        u('panier', 330, 312, 120, { rot: 4 }) +
+        u('seau', 350, 230, 96, { rot: -6 }) +
+        u('bottefoin', 335, 160, 120, { rot: 5 }) +
+        u('citrouille', 350, 90, 90, { rot: -8 }) +
+        tremble(500, 140, 200) + tremble(320, 160, 160) +
+        u('poupououps', 120, 340, 150) + u('poupouboue', 120, 340, 150) +
+        titre('gling… glong…', 640, 260, 40, '#3F8EDB', 6) +
+        titre('Oh oh…', 160, 300, 44, '#E8553E', -6),
+      texte: "« Plus de place ! Je vais tout <b>empiler</b> ! » Un seau, un panier, un autre seau, du foin… et une citrouille tout en haut ! La tour faisait <b>gling… glong…</b> « Oh oh… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        u('caramel', 40, 330, 200) + seauTete(160, 290, 90) + choc(250, 300) +
+        vache(460, 200, 300, ['margueritefoin', 'margueritebottes'], { flip: true }) + u('panier', 460, 160, 120, { rot: 170 }) + choc(470, 160) +
+        u('coincoin', 300, 410, 100) + seauTete(318, 370, 70) + choc(390, 380, .8) +
+        u('citrouille', 640, 470, 70, { rot: 30 }) + u('pomme', 240, 500, 32) +
+        titre('PATATRA !', 400, 80, 64, '#E8553E', -3) +
+        titre('BONG !', 180, 250, 40, '#E39A1C', -8) + titre('BONG !', 360, 330, 36, '#E39A1C', 6) + titre('BONG !', 560, 130, 40, '#E39A1C', 8),
+      texte: "<b>PATATRA</b> ! La tour s’écroula ! <b>BONG</b> ! Un seau sur la tête de Caramel. <b>BONG</b> ! Un seau sur la tête de Coin-Coin. <b>BONG</b> ! Un panier sur les cornes de Marguerite !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        vache(30, 200, 300, ['margueritefoin', 'margueritebottes']) + u('panier', 222, 168, 110, { rot: 190 }) +
+        u('caramel', 360, 330, 200, { flip: true }) + seauTete(374, 290, 90) + choc(350, 330) +
+        u('coincoin', 600, 420, 100) + seauTete(618, 380, 70) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 12" opacity=".95"><path d="M590 500 C540 500 540 430 600 420 C690 410 720 500 680 520"/></g>` +
+        titre('TOC !', 410, 262, 48, '#E39A1C', -6) +
+        bulle(420, 140, 'Pardon, madame la grange !', 330) +
+        bulle(30, 100, 'Meuh ! C’est moi !', 230),
+      texte: "Plus personne ne voyait rien ! Caramel avança à tâtons… <b>TOC</b> ! « Oh, pardon, madame la grange ! » — « Meuh ! C’est <b>moi</b>, Marguerite ! » Et Coin-Coin tournait en rond : « Coin ? Où est passé le monde ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('hamidsurpris', 320, 120, 150) + surprise(368, 104) +
+        vache(490, 220, 280, ['margueritefoin', 'margueritebottes'], { flip: true }) +
+        caramelBrouette(30, 370, 230, true) +
+        u('coincoin', 300, 440, 80) + seauTete(312, 410, 56) +
+        u('poupououps', 660, 410, 110, { flip: true }) + u('poupouboue', 660, 410, 110, { flip: true }) +
+        titre('Qui a rangé ma ferme à l’envers ?!', 400, 64, 38, '#E8553E', -2),
+      texte: "Juste à ce moment-là, Papi Hamid revint du marché. Une vache en bottes, un cochon en chapeau dans la brouette, un canard-seau… Ses yeux devinrent <b>ronds comme des pommes</b> ! « Mais… mais… qui a rangé ma ferme <b>à l’envers</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) +
+        u('hamid', 420, 170, 150, { flip: true }) +
+        u('poupou', 230, 330, 150, { rot: 10 }) + u('poupouboue', 230, 330, 150, { rot: 10 }) +
+        u('caramel', 610, 360, 180, { flip: true }) + u('seau', 616, 334, 70, { rot: 160 }) +
+        bulle(30, 220, 'Pardon, Papi…', 200) +
+        bulle(600, 262, 'C’est rangé ?', 180) +
+        titre('Ho ho ho !', 400, 110, 58, '#C9427F', 4),
+      texte: "Poupou baissa la tête. « <b>Pardon</b>, Papi… Je voulais tout ranger pour te faire une surprise. » Caramel souleva son seau : « Groin ? C’est rangé, maintenant ? » Et Papi éclata de rire : « <b>Ho ho ho</b> ! Ça, pour une surprise ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('grange', 10, 120, 220) +
+        u('seau', 250, 340, 56) + u('seau', 310, 346, 50) +
+        u('flaqueboue', 0, 490, 210) + u('caramel', 20, 400, 150) +
+        u('panier', 270, 430, 90) + u('pomme', 286, 410, 30) + u('pomme', 318, 406, 30) +
+        u('mare', 520, 440, 260) + u('coincoin', 600, 412, 80) +
+        u('hamid', 380, 170, 140) + u('chapeau', 380, 160, 112) +
+        u('botte', 403, 340, 45) + u('botte', 447, 340, 45) +
+        u('marguerite', 580, 230, 200, { flip: true }) +
+        poupouBalai(180, 390, 110) +
+        titre('Chaque chose à sa place !', 400, 90, 46, '#3F8EDB', -2),
+      texte: "Alors tout le monde aida à <b>réparer</b>. « <b>Chaque chose à sa place</b> ! », dit Papi. Les pommes dans le panier, les seaux près de la grange, les bottes aux pieds de Papi… et Coin-Coin dans la mare ! Et Caramel ? Il retrouva sa flaque de boue, tout content."
+    }
+  ]
+});
+</script>
+</body>
+</html>

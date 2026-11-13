@@ -25,7 +25,8 @@
     plume: 100 / 40, oreiller: 130 / 200, oreillercrac: 130 / 200, plumes: 140 / 200, potmiel: 110 / 100,
     hamiddort: 256 / 160, hamidplumes: 256 / 160, caramelplumes: 180 / 220, coincoinplumes: 1, margueriteplumes: 240 / 300,
     potrouge: 1, potbleu: 1, potjaune: 1, pinceau: 170 / 60, poupoupeinture: 1, caramelrouge: 180 / 220, coincoinbleu: 1, margueritepois: 240 / 300, moutonpois: 170 / 200,
-    barrierebarbouillee: 0.4, barrierecouleurs: 0.4
+    barrierebarbouillee: 0.4, barrierecouleurs: 0.4,
+    balai: 200 / 60, mais: 120 / 70, botte: 1.2, margueritebottes: 240 / 300, margueritefoin: 240 / 300, flaqueboue: 0.25, poupouboue: 1
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

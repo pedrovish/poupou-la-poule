@@ -145,5 +145,14 @@
     "fichier": "/histoires/16-les-pots-de-peinture.html",
     "couleur": "#FFE9C7",
     "objet": "potrouge"
+  },
+  {
+    "numero": 17,
+    "titre": "Poupou et le grand rangement",
+    "resume": "FROUTCH, FROUTCH ! Poupou veut ranger toute la ferme pour faire une surprise à Papi Hamid… Une vache en bottes, un canard dans le panier, un cochon dans la brouette… PATATRA !",
+    "date": "2026-11-13",
+    "fichier": "/histoires/17-le-grand-rangement.html",
+    "couleur": "#E6F4D9",
+    "objet": "balai"
   }
 ]

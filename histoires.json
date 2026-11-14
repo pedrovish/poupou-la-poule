@@ -154,5 +154,14 @@
     "fichier": "/histoires/17-le-grand-rangement.html",
     "couleur": "#E6F4D9",
     "objet": "balai"
+  },
+  {
+    "numero": 18,
+    "titre": "Poupou et la confiture de fraises",
+    "resume": "SPLOUTCH ! Poupou voulait goûter juste UNE goutte de confiture… Une tête coincée dans un pot, un train collant, un buisson qui marche, des papillons qui chatouillent… Que va dire Papi Hamid ?",
+    "date": "2026-11-14",
+    "fichier": "/histoires/18-la-confiture-de-fraises.html",
+    "couleur": "#FDE0E6",
+    "objet": "potconfiture"
   }
 ]

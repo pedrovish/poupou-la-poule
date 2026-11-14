@@ -26,7 +26,9 @@
     hamiddort: 256 / 160, hamidplumes: 256 / 160, caramelplumes: 180 / 220, coincoinplumes: 1, margueriteplumes: 240 / 300,
     potrouge: 1, potbleu: 1, potjaune: 1, pinceau: 170 / 60, poupoupeinture: 1, caramelrouge: 180 / 220, coincoinbleu: 1, margueritepois: 240 / 300, moutonpois: 170 / 200,
     barrierebarbouillee: 0.4, barrierecouleurs: 0.4,
-    balai: 200 / 60, mais: 120 / 70, botte: 1.2, margueritebottes: 240 / 300, margueritefoin: 240 / 300, flaqueboue: 0.25, poupouboue: 1
+    balai: 200 / 60, mais: 120 / 70, botte: 1.2, margueritebottes: 240 / 300, margueritefoin: 240 / 300, flaqueboue: 0.25, poupouboue: 1,
+    potconfiture: 110 / 100, potouvert: 110 / 100, potrenverse: 100 / 160, poupouconfiture: 1, coincoinconfiture: 1, caramelconfiture: 180 / 220,
+    papillon: 100 / 120, papillonbleu: 100 / 120, table: 150 / 240, tartine: 90 / 120, baguette: 50 / 200, fraise: 90 / 80
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la confiture de fraises</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+const ROUGE = '#D6264A', SOMBRE = '#8A1230';
+// une tache de confiture
+const tache = (x, y, k, rot = 0) =>
+  `<path transform="translate(${x} ${y}) rotate(${rot}) scale(${k})" d="M-12 0 C-14 -10 -4 -14 2 -12 C10 -15 15 -6 12 0 C15 8 6 14 0 12 C-8 15 -15 8 -12 0Z" fill="${ROUGE}" stroke="${SOMBRE}" stroke-width="${2 / k}"/>` +
+  `<circle cx="${x - 3 * k}" cy="${y - 4 * k}" r="${2.5 * k}" fill="#fff" opacity=".55"/>`;
+// des gouttes de confiture qui volent
+const eclabousse = (n, x0, x1, y0, y1, d = 0) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0));
+    s += tache(x, y, 0.4 + (i % 3) * 0.2, (i * 47) % 360);
+  }
+  return s; };
+// une flaque de confiture
+const flaqueJ = (x, y, w) => { const k = w / 200;
+  return `<path transform="translate(${x} ${y}) scale(${k})" d="M14 24 C6 8 50 2 92 8 C134 0 196 8 188 26 C196 42 150 48 104 44 C60 50 2 44 14 24Z" fill="${ROUGE}" stroke="${SOMBRE}" stroke-width="3" stroke-linejoin="round"/>` +
+    `<ellipse cx="${x + 70 * k}" cy="${y + 18 * k}" rx="${26 * k}" ry="${4 * k}" fill="#fff" opacity=".45"/>`; };
+// une goutte qui coule
+const goutte = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M-6 0 C-6 8 -3 12 -4 18 C-5 24 3 25 3 19 C3 13 6 8 6 0Z" fill="${ROUGE}" stroke="${SOMBRE}" stroke-width="${1.8 / k}"/>`;
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// des traits de mouvement (ça tremble !)
+const tremble = (x, y, h) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} q-14 ${h / 4} 0 ${h / 2} q14 ${h / 4} 0 ${h / 2}"/><path d="M${x - 20} ${y + 10} q-14 ${h / 5} 0 ${h / 2.5} q14 ${h / 5} 0 ${h / 2.5}"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// l'odeur de la confiture (petites vagues roses)
+const odeur = (x, y) => `<g fill="none" stroke="#FF8FA3" stroke-width="5" stroke-linecap="round" opacity=".9"><path d="M${x} ${y} q-10 -14 0 -28 q10 -14 0 -28"/><path d="M${x + 22} ${y - 6} q-10 -14 0 -28 q10 -14 0 -28"/><path d="M${x - 22} ${y - 6} q-10 -14 0 -28 q10 -14 0 -28"/></g>`;
+// des feuilles et des fleurs collées partout
+const feuilles = (n, x0, x1, y0, y1, d = 0) => {
+  const ids = ['feuille', 'feuillerouge', 'fleur', 'feuille', 'feuillerouge']; let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 113 + d * 41) % Math.max(1, x1 - x0)), y = y0 + ((i * 67 + d * 23) % Math.max(1, y1 - y0));
+    const id = ids[(i + d) % ids.length];
+    s += u(id, x, y, id === 'fleur' ? 22 : 30, { rot: (i * 61 + d * 17) % 360 - 180 });
+  }
+  return s; };
+// des papillons : [x, y, largeur, rotation, bleu ?]
+const papillons = pts => pts.map(([x, y, w, r = 0, b]) => u(b ? 'papillonbleu' : 'papillon', x, y, w, { rot: r })).join('');
+// Poupou avec le pot de confiture coincé sur la tête
+const poupouPot = (x, y, w, o = {}) =>
+  u('poupou', x, y, w) + u('potouvert', x + 0.5 * w, y - 0.04 * w, 0.5 * w, { rot: 180 }) +
+  goutte(x + 0.6 * w, y + 0.5 * w, w / 150) + goutte(x + 0.88 * w, y + 0.48 * w, w / 190);
+// les amis tout collants
+const poupouColle = (x, y, w, o = {}) => avec(o.oups === false ? 'poupou' : 'poupououps', ['poupouconfiture'], x, y, w, o);
+const coincoinColle = (x, y, w, o = {}) => avec('coincoin', ['coincoinconfiture'], x, y, w, o);
+const caramelColle = (x, y, w, o = {}) => avec('caramel', ['caramelconfiture'], x, y, w, o);
+// le train collant : Caramel, Coin-Coin (à l'envers) et Poupou, tous collés ! (largeur ≈ 353·k, hauteur ≈ 150·k)
+const train = (x, y, k = 1, o = {}) =>
+  caramelColle(x, y + 20 * k, 170 * k) +
+  coincoinColle(x + 143 * k, y + 55 * k, 95 * k, { flip: true }) +
+  poupouColle(x + 218 * k, y + 12 * k, 135 * k) +
+  (o.feuilles ? feuilles(o.feuilles, x + 10 * k, x + 340 * k, y + 20 * k, y + 130 * k, o.d || 0) : '');
+
+lancerHistoire({
+  numero: 18,
+  titre: "Poupou et la confiture de fraises",
+  morale: "Quand on a très envie de goûter, on demande d’abord ! Et après une bêtise, on dit pardon, on répare ensemble… et on rit très fort.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 140) + u('nuage', 600, 50, 130) +
+    eclabousse(16, 40, 760, 40, 260, 1) +
+    u('table', 540, 300, 230, { rot: 8 }) + u('potconfiture', 580, 220, 56, { rot: 30 }) + u('potconfiture', 690, 170, 50, { rot: -40 }) +
+    u('potrenverse', 560, 440, 140) + flaqueJ(600, 490, 180) +
+    papillons([[80, 120, 60, -15], [300, 90, 50, 20, true], [560, 130, 50, 10]]) +
+    train(20, 280, 1.45, { feuilles: 7, d: 2 }) +
+    u('fraise', 740, 470, 40, { rot: 20 }),
+  fin: () => decor('coucher', u('soleil', 40, 250, 130)) + u('nuage', 600, 40, 120) +
+    u('marguerite', 590, 220, 210, { flip: true }) +
+    u('table', 270, 300, 260) + u('potconfiture', 370, 248, 60) +
+    u('tartine', 296, 290, 60, { rot: -8 }) + u('tartine', 450, 290, 60, { rot: 8 }) + u('baguette', 300, 278, 70, { rot: -6 }) +
+    u('hamid', 520, 200, 120) +
+    u('caramel', 20, 370, 170) + u('tartine', 168, 420, 44, { rot: -20 }) +
+    u('poupou', 190, 340, 120) +
+    u('coincoin', 600, 420, 80, { flip: true }) + u('tartine', 568, 450, 40, { rot: 10 }) +
+    papillons([[150, 90, 50, -10], [640, 150, 46, 15, true]]) +
+    u('coeur', 90, 160, 46, { rot: -12 }) + u('coeur', 720, 100, 40, { rot: 12 }) +
+    titre('Miam ! Des tartines !', 400, 110, 56, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 330, 30, 100) + u('nuage', 60, 40, 130) +
+        u('grange', 10, 120, 230) +
+        u('table', 280, 300, 260) +
+        u('potconfiture', 300, 258, 54) + u('potconfiture', 362, 258, 54) + u('potconfiture', 424, 258, 54) + u('potconfiture', 486, 258, 54) +
+        odeur(330, 250) + odeur(460, 250) +
+        u('panier', 170, 420, 100) + u('fraise', 190, 400, 30, { rot: -10 }) + u('fraise', 222, 396, 30, { rot: 12 }) +
+        u('hamid', 610, 170, 150, { flip: true }) +
+        u('poupou', 60, 360, 120) +
+        bulle(470, 90, 'N’y touchez pas !', 220),
+      texte: "Ce matin, Papi Hamid avait fait de la <b>confiture de fraises</b>. Il posa les pots sur la table pour qu’ils refroidissent. « N’y touchez pas, c’est pour le goûter ! Je vais chercher du <b>pain</b> au village. »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 560, 50, 120) +
+        u('table', 540, 300, 230) + u('potconfiture', 560, 262, 46) + u('potconfiture', 616, 262, 46) + u('potconfiture', 672, 262, 46) +
+        u('bottefoin', 380, 380, 130) + u('potouvert', 410, 322, 64) +
+        odeur(442, 310) +
+        u('poupou', 210, 300, 160) +
+        titre('Sniff… sniff…', 280, 130, 46, '#C9427F', -5) +
+        bulle(20, 190, 'Juste UNE goutte…', 260),
+      texte: "Mais un pot, sans couvercle, était resté sur la <b>botte de foin</b>. Ça sentait si bon ! <b>Sniff, sniff…</b> « Mmm… Juste <b>une</b> toute petite goutte… Papi ne verra rien ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" opacity=".95"><path d="M60 470 C120 520 200 400 260 470 C300 510 330 470 360 450"/></g>` +
+        u('bottefoin', 30, 400, 120) +
+        u('table', 500, 300, 260, { rot: -5 }) + tremble(780, 300, 140) +
+        u('potconfiture', 520, 230, 54, { rot: -20 }) + u('potconfiture', 590, 214, 54, { rot: 15 }) + u('potconfiture', 666, 236, 54, { rot: -10 }) +
+        poupouPot(320, 310, 170) + choc(500, 380) +
+        tache(360, 470, 0.8, 30) + tache(420, 486, 0.6) +
+        titre('SPLOUTCH !', 200, 120, 58, ROUGE, -6) +
+        titre('BOUM !', 560, 140, 56, '#E39A1C', 6) +
+        titre('Mmmh ! Mmmh !', 330, 260, 38, '#6B3A1E', -3),
+      texte: "Elle plongea son bec dans le pot… <b>SPLOUTCH</b> ! Oh oh… sa tête était <b>coincée</b> dedans ! « Mmmh ! Mmmh ! » Poupou courait partout sans rien voir… et <b>BOUM</b> ! Droit dans la table !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        eclabousse(30, 20, 780, 40, 330, 3) +
+        u('table', 500, 330, 250, { rot: 14 }) +
+        u('potconfiture', 420, 120, 54, { rot: 140 }) + u('potconfiture', 600, 80, 54, { rot: -60 }) + u('potconfiture', 230, 200, 70, { rot: 200 }) +
+        u('potrenverse', 330, 460, 150) + flaqueJ(560, 490, 180) +
+        poupouColle(60, 320, 160) + surprise(160, 330) +
+        coincoinColle(400, 390, 110) + surprise(470, 380) +
+        titre('PATATRA !', 360, 70, 62, '#E8553E', -3) +
+        titre('POP !', 300, 180, 44, '#E39A1C', -10) +
+        titre('SPLOUTCH !', 650, 230, 46, ROUGE, 6),
+      texte: "<b>PATATRA</b> ! Les pots sautèrent de la table. <b>POP</b> ! Le pot s’envola de la tête de Poupou… et <b>SPLOUTCH, SPLOUTCH</b> ! De la confiture partout ! Sur Poupou, sur l’herbe… et sur Coin-Coin, qui passait par là."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 130) + u('nuage', 560, 40, 120) +
+        u('table', 570, 340, 200, { rot: 14 }) + flaqueJ(30, 480, 180) + u('potrenverse', 610, 470, 120) +
+        coincoinColle(250, 375, 115, { flip: true }) +
+        poupouColle(335, 320, 160) +
+        `<g fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"><path d="M230 330 l-60 0 m14 -14 l-14 14 l14 14"/><path d="M520 300 l60 0 m-14 -14 l14 14 l-14 14"/></g>` +
+        titre('SCROTCH !', 400, 110, 64, ROUGE, -4) +
+        bulle(470, 200, 'On est collés !', 200) + bulle(40, 240, 'Coin !', 110),
+      texte: "Poupou tira à droite, Coin-Coin tira à gauche… <b>SCROTCH</b> ! Rien à faire. « Oh non ! On est <b>collés</b> comme deux tartines ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('table', 600, 340, 190, { rot: 14 }) + flaqueJ(560, 480, 180) +
+        train(120, 300, 1.25) + surprise(300, 300) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"><path d="M60 380 q-24 0 -40 0 M70 420 q-24 0 -50 0 M60 460 q-24 0 -40 0"/></g>` +
+        titre('Tchou-tchou !', 520, 110, 58, '#3F8EDB', 4) +
+        bulle(60, 200, 'Groin ? Collé !', 200),
+      texte: "Caramel arriva en rigolant : « Ha ha ! Je vais vous <b>décoller</b> ! » Il poussa Coin-Coin avec son groin… <b>SCROTCH</b> ! « Groin ? Moi aussi, je suis collé ! » Et voilà un drôle de <b>train collant</b> : tchou-tchou !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('arbreautomne', 280, 70, 200) +
+        u('feuille', 230, 150, 30, { rot: 30 }) + u('feuillerouge', 470, 210, 28, { rot: -40 }) + u('feuille', 380, 280, 26, { rot: 80 }) +
+        u('fleur', 20, 470, 30) + u('fleur', 120, 490, 26) + u('fleur', 450, 480, 28) +
+        train(10, 320, 1.15, { feuilles: 26, d: 1 }) +
+        u('marguerite', 480, 210, 300, { flip: true }) + surprise(530, 236) +
+        titre('SCRITCH !', 140, 110, 48, '#E39A1C', -6) + titre('SCRATCH !', 330, 70, 48, '#E39A1C', 6) +
+        bulle(455, 120, 'Meuh ! Un buisson ?!', 255),
+      texte: "Le train collant partit en zigzag dans le pré. Une feuille : <b>SCRITCH</b> ! Une fleur : <b>SCRATCH</b> ! Bientôt, ils étaient couverts de feuilles de la tête aux pattes. « Meuh ! Un <b>buisson</b> qui marche ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) +
+        u('arbreautomne', 600, 80, 190) +
+        train(180, 310, 1.15, { feuilles: 26, d: 1 }) +
+        papillons([[200, 300, 46, -20], [300, 330, 40, 15, true], [420, 300, 44, 10], [500, 360, 38, -15, true], [250, 400, 36, 20], [380, 380, 40, -10],
+          [100, 200, 56, -10, true], [560, 220, 52, 20], [660, 330, 46, -15, true], [60, 340, 46, 15], [450, 180, 50, -5], [300, 200, 46, 10, true]]) +
+        titre('Hi hi hi !', 200, 120, 56, '#C9427F', -6) +
+        bulle(540, 110, 'Ça chatouille !', 200),
+      texte: "La confiture sentait si bon que les <b>papillons</b> arrivèrent : un, deux, dix, vingt ! Ils se posèrent partout. « Hi hi hi ! Ça <b>chatouille</b> ! », gloussa Poupou. Et le buisson se tortillait de rire."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        u('tasfeuilles', 450, 380, 330) + feuilles(14, 450, 760, 200, 380, 4) +
+        u('marguerite', 10, 230, 230) +
+        surprise(150, 236) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14" opacity=".95"><path d="M230 360 C300 200 420 180 500 300"/><path d="M380 300 C450 180 560 200 620 330"/></g>` +
+        caramelColle(290, 200, 130, { rot: -25 }) + feuilles(4, 300, 400, 220, 280, 8) +
+        coincoinColle(440, 180, 80, { rot: 30 }) +
+        poupouColle(560, 190, 110, { rot: 25 }) + feuilles(5, 560, 660, 200, 290, 2) +
+        titre('HISSE !', 110, 130, 56, '#3F8EDB', -6) +
+        titre('POP ! POP ! POP !', 470, 110, 50, '#E39A1C', 3) +
+        titre('FLOUF !', 640, 440, 52, '#E39A1C', -4),
+      texte: "Marguerite voulut aider. Elle attrapa la queue de Caramel et tira très fort : « Un, deux, trois… <b>HISSE</b> ! » <b>POP ! POP ! POP !</b> Les trois amis se décollèrent… et s’envolèrent dans le gros tas de feuilles : <b>FLOUF</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('hamidsurpris', 60, 140, 150) + surprise(108, 124) +
+        u('baguette', 40, 470, 120, { rot: -15 }) + choc(160, 470, .7) +
+        u('table', 230, 350, 180, { rot: 180 }) + flaqueJ(220, 480, 160) +
+        u('tasfeuilles', 440, 400, 340) +
+        caramelColle(420, 320, 150, { flip: true }) + feuilles(14, 430, 560, 330, 430, 3) +
+        coincoinColle(560, 360, 90) + feuilles(6, 560, 640, 370, 440, 5) +
+        poupouColle(640, 320, 120, { flip: true }) + feuilles(10, 640, 750, 340, 430, 6) +
+        papillons([[450, 300, 40, -10], [600, 330, 34, 15, true], [700, 300, 38, 10]]) +
+        titre('POC !', 180, 430, 40, '#E39A1C', -8) +
+        titre('Des monstres à la fraise ?!', 460, 90, 44, '#E8553E', -2),
+      texte: "Juste à ce moment-là, Papi Hamid revint avec son pain. La table à l’envers, de la confiture partout… et trois <b>monstres de feuilles</b> couverts de papillons ! Sa baguette tomba : <b>POC</b> ! « Mais… mais… qu’est-ce que c’est que ces <b>monstres à la fraise</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) +
+        u('hamid', 420, 170, 150, { flip: true }) + u('baguette', 480, 300, 100, { rot: -40 }) +
+        poupouColle(230, 330, 150, { rot: 10, oups: false }) + feuilles(3, 240, 330, 380, 440, 7) +
+        coincoinColle(130, 410, 90) +
+        caramelColle(600, 360, 180, { flip: true }) + feuilles(4, 620, 760, 380, 450, 2) +
+        papillons([[160, 360, 40, -10, true], [700, 320, 40, 15]]) +
+        bulle(20, 230, 'Pardon, Papi…', 200) +
+        titre('Ho ho ho !', 400, 110, 58, '#C9427F', 4),
+      texte: "Poupou baissa la tête. « <b>Pardon</b>, Papi… Je voulais goûter juste une goutte. » Papi Hamid éclata de rire : « <b>Ho ho ho</b> ! La prochaine fois, <b>demande-moi</b> : je te ferai une tartine ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('grange', 10, 120, 220) +
+        u('bassine', 190, 400, 200) + u('caramel', 220, 330, 130) +
+        `<g fill="#fff" stroke="#9FC5E0" stroke-width="2"><circle cx="210" cy="390" r="12"/><circle cx="370" cy="380" r="10"/><circle cx="230" cy="350" r="7"/><circle cx="360" cy="336" r="8"/></g>` +
+        u('hamid', 390, 180, 130, { flip: true }) +
+        u('table', 540, 310, 190) +
+        `<rect x="676" y="308" width="34" height="20" rx="6" fill="#FFD43B" stroke="#B38F00" stroke-width="3" transform="rotate(-10 693 318)"/>` +
+        u('poupou', 690, 310, 105, { flip: true }) +
+        u('coincoin', 90, 440, 80) +
+        u('potconfiture', 580, 256, 54) + titre('Ouf !', 608, 232, 36, '#C9427F', 6) +
+        titre('Frotte, frotte !', 300, 110, 50, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida à <b>réparer</b>. Papi lava les amis dans la grande bassine, Poupou frotta la table, frotte, frotte ! Et devine quoi ? Un pot était resté tout entier. « Ce soir, <b>tartines</b> pour tout le monde ! »"
+    }
+  ]
+});
+</script>
+</body>
+</html>

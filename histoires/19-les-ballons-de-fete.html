@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et les ballons de fête</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc (POP, BOING)
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des traits de vitesse
+const vitesse = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 22} h-${l * 1.3} M${x} ${y + 44} h-${l}"/></g>`;
+const COULEURS = ['rouge', 'bleu', 'jaune', 'vert', 'violet'];
+// un ballon (largeur w, hauteur 1,7·w ; le bout de la ficelle est en bas au milieu)
+const ballon = (c, x, y, w, rot = 0) => u('ballon' + c, x, y, w, { rot });
+// un bouquet de ballons dont les ficelles se rejoignent en (x, y)
+const bouquet = (x, y, w, n = 5, d = 0) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = (i - (n - 1) / 2) * 16;                // angle en degrés
+    const r = a * Math.PI / 180, L = 1.7 * w;         // longueur du ballon (ficelle comprise)
+    const cx = x + Math.sin(r) * L / 2, cy = y - Math.cos(r) * L / 2 - (i % 2) * 0.12 * w;
+    s += ballon(COULEURS[(i + d) % 5], cx - w / 2, cy - L / 2, w, a);
+  }
+  return s; };
+// des morceaux de ballons éclatés
+const morceaux = (n, x0, x1, y0, y1, d = 0) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0));
+    s += u('ballonpop', x, y, 44 + (i % 3) * 10, { rot: (i * 61 + d * 17) % 90 - 45 });
+  }
+  return s; };
+// des confettis tombés partout (dans une zone)
+const paillettes = (n, x0, x1, y0, y1, d = 0) => {
+  const cols = ['#FF5C7A', '#FFD43B', '#3F8EDB', '#4CAF50', '#FF9F1C', '#B36BD9']; let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 113 + d * 41) % Math.max(1, x1 - x0)), y = y0 + ((i * 67 + d * 23) % Math.max(1, y1 - y0)), r = (i * 47 + d * 11) % 180;
+    s += `<rect x="${x}" y="${y}" width="12" height="7" rx="2" fill="${cols[(i + d) % 6]}" transform="rotate(${r} ${x + 6} ${y + 3})"/>`;
+  }
+  return s; };
+// le sachet de ballons (ou de confettis)
+const sachet = (x, y, k = 1, txt = '') =>
+  `<g transform="translate(${x} ${y}) scale(${k})"><path d="M4 10 L56 10 L60 70 Q30 78 0 70Z" fill="#FFF3D6" stroke="#6B3A1E" stroke-width="3" stroke-linejoin="round"/>` +
+  `<path d="M4 10 Q30 0 56 10" fill="none" stroke="#6B3A1E" stroke-width="3"/>` +
+  `<circle cx="20" cy="38" r="8" fill="#FF5C7A"/><circle cx="38" cy="46" r="8" fill="#5AB0F0"/><circle cx="26" cy="58" r="7" fill="#FFD43B"/><circle cx="44" cy="28" r="6" fill="#7DD36A"/>${txt}</g>`;
+// Poupou qui souffle dans un ballon (b = largeur du ballon)
+const poupouSouffle = (x, y, w, b) =>
+  u('poupousouffle', x, y, w) + u('ballonsouffle', x + 0.95 * w, y + 0.41 * w - 0.5 * b / 1.2, b);
+// Caramel emballé comme un cadeau
+const caramelCadeau = (x, y, w, o = {}) => avec('caramel', ['caramelcadeau'], x, y, w, o);
+// Coin-Coin avec un bouquet de ballons attaché à la queue
+const coincoinBallons = (x, y, w, bw, n = 5, d = 0) =>
+  bouquet(x + 0.08 * w, y + 0.6 * w, bw, n, d) + u('coincoin', x, y, w);
+// Poupou avec le gâteau à l'envers sur la tête
+const poupouGateau = (x, y, w) => {
+  const g = 0.62 * w;
+  return u('poupououps', x, y, w) + u('gateau', x + 0.74 * w - g / 2, y - 0.08 * w, g, { rot: 180 }) +
+    `<g fill="#FFF8EA" stroke="#6B3A1E" stroke-width="2.5">` +
+    `<path d="M${x + 0.52 * w} ${y + 0.32 * w} c0 ${0.08 * w} ${0.05 * w} ${0.08 * w} ${0.05 * w} 0Z"/>` +
+    `<path d="M${x + 0.9 * w} ${y + 0.34 * w} c0 ${0.1 * w} ${0.05 * w} ${0.1 * w} ${0.05 * w} 0Z"/></g>`; };
+// Biscotte la chèvre qui croque une ficelle
+const biscotte = (x, y, w, o = {}) => u(o.id || 'chevre', x, y, w, o);
+
+lancerHistoire({
+  numero: 19,
+  titre: "Poupou et les ballons de fête",
+  morale: "Avant de toucher aux affaires de la fête, on demande d’abord ! Et après une bêtise, on dit pardon, on répare ensemble… et on rit très fort.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 140) + u('nuage', 600, 40, 130) +
+    confettis(20) +
+    u('guirlande', 20, 30, 760) +
+    u('ballonfile', 560, 130, 170, { rot: -20 }) + vitesse(560, 190, 50) +
+    coincoinBallons(600, 330, 110, 52, 4, 1) + choc(640, 470, .6) +
+    caramelCadeau(30, 360, 200) +
+    poupouSouffle(200, 300, 150, 190) +
+    morceaux(4, 300, 760, 470, 520, 2),
+  fin: () => decor('coucher', u('soleil', 330, 250, 130)) + u('nuage', 600, 40, 120) +
+    u('guirlande', 30, 40, 740) +
+    bouquet(110, 340, 56, 5, 0) + bouquet(512, 352, 46, 4, 2) +
+    u('hamid', 170, 180, 115) +
+    u('table', 300, 330, 220) + u('gateau', 345, 270, 120) +
+    u('marguerite', 530, 230, 250, { flip: true }) + u('noeud', 538, 220, 64, { rot: -15 }) +
+    u('chevre', 50, 300, 90) +
+    caramelCadeau(10, 400, 150) +
+    u('poupou', 200, 390, 100) +
+    u('coincoin', 470, 450, 70, { flip: true }) +
+    u('coeur', 720, 150, 40, { rot: 12 }) +
+    titre('Joyeux anniversaire, Marguerite !', 400, 128, 44, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 640, 30, 100) + u('nuage', 330, 40, 130) +
+        u('grange', 10, 110, 240) + u('guirlande', 20, 150, 220) +
+        u('barriere', 470, 340, 300) + bouquet(560, 360, 50, 5, 0) +
+        u('table', 260, 300, 240) + u('gateau', 300, 228, 120) + sachet(440, 252, .9) +
+        u('hamid', 630, 228, 140, { flip: true }) +
+        u('caramel', 60, 400, 150) +
+        u('poupou', 220, 400, 110) +
+        bulle(380, 80, 'Chut ! C’est une surprise !', 330),
+      texte: "Aujourd’hui, c’est l’<b>anniversaire</b> de Marguerite ! Papi Hamid prépare une fête surprise : une guirlande, un gâteau et de jolis <b>ballons</b>. « Chut ! Ne touchez à rien. Je vais chercher Marguerite au pré. »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 580, 50, 120) +
+        u('table', 520, 300, 240) + u('gateau', 560, 228, 120) + sachet(706, 252, .9) +
+        poupouSouffle(150, 300, 170, 80) +
+        u('caramel', 10, 380, 150) +
+        titre('PFFF… PFFF…', 300, 150, 56, '#E8553E', -5) +
+        bulle(390, 180, 'Le plus GROS du monde !', 310),
+      texte: "Sur la table, il y avait un sachet de ballons tout plats. « Je vais gonfler le plus <b>GROS</b> ballon du monde pour Marguerite ! » <b>PFFF… PFFF…</b> Les joues de Poupou devinrent rondes comme des pommes."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 40, 130) +
+        poupouSouffle(30, 310, 170, 360) +
+        u('caramel', 590, 320, 150, { flip: true }) + bulle(630, 230, 'Encore !', 140) +
+        u('coincoin', 690, 470, 76, { flip: true }) + surprise(700, 470) +
+        bulle(250, 150, 'Coin… ça va éclater !', 260) +
+        titre('PFFFFFFF !', 400, 90, 60, '#E8553E', 3),
+      texte: "Le ballon grossit, grossit… Il devint plus gros que Poupou ! « Encore ! Encore ! », criait Caramel. Coin-Coin se cachait derrière ses ailes : « Coin… il va <b>éclater</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" opacity=".95"><path d="M300 330 C200 250 120 120 260 110 C400 100 330 260 470 240 C560 228 560 160 600 140"/></g>` +
+        u('ballonfile', 590, 90, 150, { rot: -25 }) +
+        u('poupououps', 260, 330, 140) + surprise(350, 330) +
+        u('caramel', 470, 380, 170, { rot: 160 }) +
+        titre('Ha ha ha !', 560, 360, 40, '#C9427F', 8) +
+        titre('PFFRRRRT !', 300, 80, 62, '#E8553E', -4) +
+        titre('ZIOUUU !', 680, 260, 44, '#3F8EDB', 10),
+      texte: "Oh oh… le ballon glissa du bec de Poupou ! <b>PFFRRRRT</b> ! Il fila partout dans le ciel en faisant de drôles de bruits. « Il fait <b>prout</b> ! », rigola Caramel, qui tomba sur le dos à force de rire."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) +
+        u('grange', 10, 110, 240) +
+        `<path d="M40 160 Q100 230 140 330" fill="none" stroke="#6B3A1E" stroke-width="3" stroke-dasharray="6 6"/>` +
+        u('ballonfile', 160, 100, 110, { rot: 200 }) + choc(160, 150, .8) +
+        caramelCadeau(300, 340, 190) + surprise(470, 350) +
+        u('guirlande', 260, 300, 160, { rot: 40 }) +
+        u('poupououps', 590, 370, 120, { flip: true }) +
+        titre('PATATRA !', 420, 120, 62, '#E8553E', -4) +
+        bulle(500, 230, 'Je suis un cadeau ?!', 260),
+      texte: "Le ballon fonça droit dans la <b>guirlande</b>… <b>PATATRA</b> ! Elle tomba sur Caramel et s’enroula autour de lui, avec un gros nœud sur le dos. « Groin ? Je suis un <b>cadeau</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 600, 40, 120) +
+        u('barriere', 20, 360, 260) +
+        coincoinBallons(400, 330, 110, 60, 5, 0) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M410 470 q20 -30 40 0 M450 470 q20 -30 40 0"/></g>` +
+        u('poupou', 230, 360, 130) +
+        caramelCadeau(600, 390, 170, { flip: true }) +
+        titre('BOING ! BOING !', 440, 120, 50, '#3F8EDB', 4) +
+        bulle(20, 230, 'J’ai une autre idée !', 260),
+      texte: "« Pas grave ! J’ai une autre idée ! » Poupou détacha les ballons de la barrière et les attacha à la queue de Coin-Coin. <b>BOING ! BOING !</b> Coin-Coin sautillait sur la pointe des pattes : « Je suis un <b>canard-ballon</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('bottefoin', 560, 400, 200) +
+        u('chevre', 60, 300, 170) +
+        `<path d="M206 380 C240 360 270 330 300 300" fill="none" stroke="#6B3A1E" stroke-width="2.5"/>` +
+        u('ballonjaune', 270, 210, 50, 20) +
+        choc(330, 170, 1.1) + choc(430, 140, .9) + choc(510, 200, .8) +
+        morceaux(5, 280, 600, 120, 260, 1) +
+        u('coincoin', 560, 330, 100, { rot: 160 }) + surprise(600, 330) +
+        titre('POP ! POP ! POP !', 420, 90, 56, '#E8553E', -3) +
+        titre('FLOUF !', 700, 520, 44, '#E39A1C', -6) +
+        bulle(10, 210, 'Des bonbons ?', 190),
+      texte: "Mais voilà <b>Biscotte</b>, la petite chèvre gourmande. « Oh ! Des gros bonbons ! » <b>CROC !</b> <b>POP ! POP ! POP !</b> Les ballons éclatèrent l’un après l’autre… et Coin-Coin retomba dans le foin : <b>FLOUF</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" opacity=".95"><path d="M60 470 C120 520 200 420 260 470 C300 500 330 470 360 450"/></g>` +
+        caramelCadeau(300, 330, 180, { rot: 70 }) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M290 380 a40 40 0 0 0 -40 40 M300 340 a70 70 0 0 0 -70 70"/></g>` +
+        u('table', 520, 310, 230, { rot: 10 }) + choc(530, 380, .9) +
+        u('gateau', 560, 90, 120, { rot: -30 }) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M600 210 v40 M630 214 v30 M570 214 v30"/></g>` +
+        morceaux(4, 40, 260, 460, 520, 3) +
+        titre('ROULI-ROULA !', 200, 130, 48, '#3F8EDB', -5) +
+        titre('BADABOUM !', 640, 300, 44, '#E8553E', 8) +
+        titre('HOP !', 730, 110, 48, '#E39A1C', 8),
+      texte: "Les <b>POP</b> firent si peur à Caramel-cadeau qu’il roula dans l’herbe : <b>ROULI-ROULA</b> ! Tout droit dans la table… <b>BADABOUM</b> ! Et le gâteau de Marguerite fit un grand saut dans le ciel : <b>HOP</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 40, 120) +
+        u('table', 560, 400, 200, { rot: 180 }) +
+        poupouGateau(250, 330, 150) +
+        `<g fill="#FFF8EA" stroke="#6B3A1E" stroke-width="2"><circle cx="300" cy="300" r="7"/><circle cx="420" cy="290" r="6"/><circle cx="260" cy="340" r="5"/></g>` +
+        sachet(450, 420, 1.1) + paillettes(60, 30, 770, 40, 380, 1) + paillettes(30, 380, 760, 400, 520, 4) +
+        titre('SPLAF !', 300, 120, 60, '#C9427F', -6) +
+        titre('FRRROUF !', 600, 160, 50, '#3F8EDB', 6) +
+        bulle(30, 220, 'Je ne vois rien !', 240),
+      texte: "Le gâteau retomba… <b>SPLAF</b> ! Pile sur la tête de Poupou, à l’envers, comme un chapeau ! « Je ne vois plus rien ! » Elle marcha à l’aveuglette et renversa le sachet de <b>confettis</b> : <b>FRRROUF</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) + paillettes(40, 20, 780, 40, 300, 2) +
+        u('hamidsurpris', 20, 150, 150) + surprise(70, 140) +
+        u('marguerite', 140, 230, 240) + surprise(330, 220) +
+        u('bottefoin', 380, 430, 130) + u('coincoin', 405, 378, 80, { rot: 20 }) +
+        u('chevre', 690, 290, 95) +
+        poupouGateau(530, 320, 130) +
+        caramelCadeau(640, 420, 140, { flip: true }) +
+        morceaux(4, 380, 760, 480, 520, 5) + paillettes(30, 380, 780, 380, 540, 6) +
+        titre('Mais… mais… ?!', 470, 110, 52, '#E8553E', -3) +
+        bulle(440, 190, 'Meuh ?!', 120),
+      texte: "Juste à ce moment-là, Papi Hamid arriva avec Marguerite : « <b>Surpri</b>… » Il ouvrit de <b>grands yeux</b>. Une poule-gâteau, un cochon-cadeau, un canard dans le foin et des confettis partout ! « Mais… mais… ?! » « Meuh ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) + paillettes(30, 20, 780, 40, 260, 3) +
+        u('marguerite', 470, 220, 270, { flip: true }) +
+        u('hamid', 330, 170, 140, { flip: true }) +
+        u('poupou', 190, 360, 130) + `<g fill="#FFF8EA" stroke="#6B3A1E" stroke-width="2.5"><circle cx="300" cy="380" r="8"/><circle cx="286" cy="368" r="6"/><circle cx="312" cy="372" r="5"/></g>` +
+        caramelCadeau(20, 420, 140) +
+        bulle(20, 230, 'Pardon, Papi…', 200) +
+        titre('MEUH HA HA !', 590, 120, 50, '#C9427F', 4),
+      texte: "Poupou enleva le gâteau de sa tête. « <b>Pardon</b>, Papi… Je voulais faire le plus gros ballon du monde. » Marguerite éclata de rire : « <b>Meuh ha ha</b> ! C’est la fête la plus rigolote de ma vie ! » Et Papi Hamid rit aussi : « La prochaine fois, <b>demande-moi</b>, on le gonflera ensemble ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('grange', 10, 110, 240) + u('guirlande', 20, 150, 220) +
+        u('hamid', 300, 170, 140, { flip: true }) + u('ballonsouffle', 220, 220, 90, { flip: true }) +
+        bouquet(495, 432, 44, 4, 2) +
+        u('poupou', 440, 370, 110) +
+        u('table', 560, 330, 210) + u('gateau', 600, 268, 110) + u('fraise', 640, 262, 28) +
+        u('caramel', 30, 410, 140) +
+        u('coincoin', 200, 460, 70) + u('chevre', 590, 400, 90, { flip: true }) +
+        titre('On répare !', 420, 110, 52, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida à <b>réparer</b>. Caramel et Poupou raccrochèrent la guirlande. Papi gonfla de nouveaux ballons, et Poupou fit les nœuds. Le gâteau était un peu cabossé… mais tout le monde dit que c’était le <b>meilleur</b> !"
+    }
+  ]
+});
+</script>
+</body>
+</html>

@@ -28,7 +28,9 @@
     barrierebarbouillee: 0.4, barrierecouleurs: 0.4,
     balai: 200 / 60, mais: 120 / 70, botte: 1.2, margueritebottes: 240 / 300, margueritefoin: 240 / 300, flaqueboue: 0.25, poupouboue: 1,
     potconfiture: 110 / 100, potouvert: 110 / 100, potrenverse: 100 / 160, poupouconfiture: 1, coincoinconfiture: 1, caramelconfiture: 180 / 220,
-    papillon: 100 / 120, papillonbleu: 100 / 120, table: 150 / 240, tartine: 90 / 120, baguette: 50 / 200, fraise: 90 / 80
+    papillon: 100 / 120, papillonbleu: 100 / 120, table: 150 / 240, tartine: 90 / 120, baguette: 50 / 200, fraise: 90 / 80,
+    ballonrouge: 1.7, ballonbleu: 1.7, ballonjaune: 1.7, ballonvert: 1.7, ballonviolet: 1.7, ballonsouffle: 100 / 120, ballonfile: 90 / 140,
+    ballonpop: 0.6, noeud: 80 / 120, poupousouffle: 1, caramelcadeau: 180 / 220
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

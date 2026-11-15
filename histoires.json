@@ -163,5 +163,14 @@
     "fichier": "/histoires/18-la-confiture-de-fraises.html",
     "couleur": "#FDE0E6",
     "objet": "potconfiture"
+  },
+  {
+    "numero": 19,
+    "titre": "Poupou et les ballons de fête",
+    "resume": "PFFRRRRT ! Poupou veut gonfler le plus gros ballon du monde pour l’anniversaire de Marguerite… Un cochon-cadeau, un canard-ballon, une chèvre qui croque, un gâteau-chapeau… POP ! Que va dire Papi Hamid ?",
+    "date": "2026-11-15",
+    "fichier": "/histoires/19-les-ballons-de-fete.html",
+    "couleur": "#FFE3EA",
+    "objet": "ballonrouge"
   }
 ]

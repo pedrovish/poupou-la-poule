@@ -30,7 +30,9 @@
     potconfiture: 110 / 100, potouvert: 110 / 100, potrenverse: 100 / 160, poupouconfiture: 1, coincoinconfiture: 1, caramelconfiture: 180 / 220,
     papillon: 100 / 120, papillonbleu: 100 / 120, table: 150 / 240, tartine: 90 / 120, baguette: 50 / 200, fraise: 90 / 80,
     ballonrouge: 1.7, ballonbleu: 1.7, ballonjaune: 1.7, ballonvert: 1.7, ballonviolet: 1.7, ballonsouffle: 100 / 120, ballonfile: 90 / 140,
-    ballonpop: 0.6, noeud: 80 / 120, poupousouffle: 1, caramelcadeau: 180 / 220
+    ballonpop: 0.6, noeud: 80 / 120, poupousouffle: 1, caramelcadeau: 180 / 220,
+    chapeaupaille: 90 / 160, epouvantail: 280 / 200, epouvantailnu: 280 / 200, corbeau: 110 / 120, corbeaurit: 110 / 120, corbeauvole: 100 / 140,
+    poupouchemise: 1, potager: 90 / 320, sacgraines: 120 / 100
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

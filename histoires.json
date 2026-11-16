@@ -172,5 +172,14 @@
     "fichier": "/histoires/19-les-ballons-de-fete.html",
     "couleur": "#FFE3EA",
     "objet": "ballonrouge"
+  },
+  {
+    "numero": 20,
+    "titre": "Poupou et l’épouvantail",
+    "resume": "HOUUU ! Poupou veut devenir le plus terrible épouvantail du monde pour faire peur aux corbeaux… Un cochon dans la boue, une vache derrière un buisson, un canard dans une botte, un ATCHOUM de paille… Que va dire Papi Hamid ?",
+    "date": "2026-11-16",
+    "fichier": "/histoires/20-l-epouvantail.html",
+    "couleur": "#FFF1C9",
+    "objet": "epouvantail"
   }
 ]

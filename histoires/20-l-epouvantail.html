@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et l’épouvantail</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des brins de paille qui volent partout
+const brins = (n, x0, x1, y0, y1, d = 0) => {
+  let s = '<g stroke="#E3B648" stroke-width="4" stroke-linecap="round">';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + d * 53) % Math.max(1, x1 - x0)), y = y0 + ((i * 71 + d * 29) % Math.max(1, y1 - y0));
+    const a = ((i * 47 + d * 31) % 180) * Math.PI / 180, l = 9 + (i % 3) * 5;
+    s += `<path d="M${x} ${y} l${(Math.cos(a) * l).toFixed(1)} ${(Math.sin(a) * l).toFixed(1)}"/>`;
+  }
+  return s + '</g>'; };
+// des éclaboussures de boue
+const boue = (n, x0, x1, y0, y1, d = 0) => {
+  let s = '<g fill="#8B5A2B" stroke="#5A3A1A" stroke-width="1.5">';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 113 + d * 41) % Math.max(1, x1 - x0)), y = y0 + ((i * 67 + d * 23) % Math.max(1, y1 - y0));
+    s += `<circle cx="${x}" cy="${y}" r="${4 + (i % 4) * 2.5}"/>`;
+  }
+  return s + '</g>'; };
+// les boutons de la chemise qui sautent
+const boutons = pts => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7" fill="#FFD43B" stroke="#B38F00" stroke-width="2"/><circle cx="${x - 2}" cy="${y - 1}" r="1.4" fill="#B38F00"/><circle cx="${x + 2}" cy="${y + 1}" r="1.4" fill="#B38F00"/>`).join('');
+// une ligne de graines semées par terre
+const ligneGraines = (x0, x1, y, pas = 60) => { let s = ''; for (let x = x0; x < x1; x += pas) s += u('graines', x, y + ((x / pas) % 2) * 6, 46); return s; };
+// des corbeaux : [x, y, largeur, 'rit' | 'vole' | '', flip]
+const corbeaux = pts => pts.map(([x, y, w, t = '', f]) => u('corbeau' + t, x, y, w, { flip: !!f })).join('');
+// Poupou déguisée en épouvantail (yeux : chapeau sur la tête au lieu de sur les yeux)
+const poupouEpou = (x, y, w, o = {}) => {
+  const base = avec(o.oups ? 'poupououps' : 'poupou', ['poupouchemise'], x, y, w);
+  const chap = o.yeux ? u('chapeaupaille', x + 0.44 * w, y - 0.06 * w, 0.6 * w, { rot: 8 })
+                      : u('chapeaupaille', x + 0.435 * w, y + 0.04 * w, 0.61 * w, { rot: o.rot || 0 });
+  return base + chap; };
+// des petits « z » de sieste
+const dodo = (x, y) => titre('z', x, y, 26, '#5A6390') + titre('z', x + 18, y - 22, 32, '#5A6390') + titre('Z', x + 40, y - 50, 40, '#5A6390');
+
+lancerHistoire({
+  numero: 20,
+  titre: "Poupou et l’épouvantail",
+  morale: "Avant de prendre les affaires des autres, on demande d’abord ! Et après une bêtise, on dit pardon, on répare ensemble… et on rit très fort.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 600, 30, 130) +
+    corbeaux([[620, 120, 120, 'vole'], [480, 70, 90, 'vole']]) +
+    u('potager', 20, 420, 300) +
+    u('epouvantailnu', 40, 170, 150) + surprise(100, 186) +
+    u('flaqueboue', 520, 470, 260) + avec('caramel', ['tachesboue'], 580, 380, 170, { flip: true }) + boue(10, 520, 780, 360, 470, 1) +
+    brins(30, 220, 560, 200, 520, 2) +
+    poupouEpou(250, 290, 220) + corbeaux([[390, 254, 66, 'rit']]) +
+    titre('HOUUU !', 590, 250, 56, '#E8553E', 6),
+  fin: () => decor('coucher', u('soleil', 320, 250, 130)) + u('nuage', 60, 40, 120) +
+    u('potager', 200, 430, 360) +
+    u('epouvantail', 330, 232, 150) +
+    u('mangeoire', 680, 210, 100) + `<rect x="726" y="316" width="10" height="119" fill="#B07A45" stroke="#6B3A1E" stroke-width="3"/>` +
+    corbeaux([[640, 320, 60, 'rit'], [740, 330, 56, '', true]]) +
+    u('hamid', 520, 200, 140, { flip: true }) +
+    u('marguerite', -30, 250, 230) +
+    u('caramel', 170, 410, 140) +
+    u('poupou', 380, 400, 110) +
+    u('coincoin', 520, 460, 70, { flip: true }) +
+    u('coeur', 120, 120, 40, { rot: -12 }) + u('coeur', 660, 120, 36, { rot: 12 }) +
+    titre('Croa ! Merci, Poupou !', 400, 110, 44, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 100) + u('nuage', 300, 40, 130) +
+        u('arbre', 620, 130, 170) +
+        u('potager', 260, 400, 330) +
+        u('epouvantail', 360, 214, 150) +
+        u('sacgraines', 590, 410, 66) +
+        u('hamid', 630, 220, 140, { flip: true }) +
+        u('caramel', -10, 410, 150) +
+        u('poupou', 140, 380, 120) +
+        bulle(470, 120, 'À tout à l’heure !', 220),
+      texte: "Ce matin, Papi Hamid sema des <b>graines</b> de petits pois dans le potager. Au milieu, il planta un grand <b>épouvantail</b>. « Comme ça, les corbeaux ne mangeront pas mes graines ! Je vais au marché. À tout à l’heure ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 40, 130) +
+        u('potager', 160, 410, 330) +
+        u('epouvantail', 250, 206, 160) +
+        corbeaux([[262, 248, 62, 'rit'], [360, 248, 62, 'rit', true], [296, 160, 58, 'rit']]) +
+        titre('CROA ! CROA !', 330, 100, 52, '#454D73', -4) +
+        bulle(440, 150, 'Il ne fait peur à personne !', 330) +
+        u('poupou', 580, 370, 140, { flip: true }) + titre('Grrr…', 640, 350, 40, '#E8553E', 6),
+      texte: "Mais trois <b>corbeaux</b> arrivèrent. Ils s’assirent sur les bras de l’épouvantail et rigolèrent : « Croa ! Croa ! Il ne fait <b>peur</b> à personne, ce bonhomme ! » Poupou fronça les sourcils. « Grrr… Il faut un épouvantail beaucoup plus <b>terrible</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 130) +
+        u('potager', 0, 420, 320) +
+        u('epouvantailnu', 70, 196, 160) + surprise(132, 212) +
+        corbeaux([[74, 240, 58, 'rit'], [172, 240, 58, 'rit', true]]) +
+        titre('Ha ha !', 160, 120, 40, '#454D73', -4) +
+        u('poupou', 430, 370, 140) + u('chapeaupaille', 492, 352, 84, { rot: 8 }) +
+        u('chemise', 400, 300, 110, { rot: -25 }) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M400 450 h-60 M410 475 h-80 M400 500 h-60"/></g>` +
+        titre('HOP ! HOP !', 650, 300, 50, '#3F8EDB', 6) +
+        bulle(400, 120, 'Le plus terrible, ce sera MOI !', 380),
+      texte: "Poupou eut une idée. « Le plus terrible des épouvantails, ce sera <b>MOI</b> ! » <b>HOP</b> ! Elle prit le chapeau. <b>HOP</b> ! Elle prit la chemise. Oh oh… le pauvre épouvantail était tout <b>nu</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 560, 40, 120) +
+        u('flaqueboue', 560, 420, 200) + u('caramel', 590, 340, 130) + dodo(740, 330) +
+        u('bottefoin', 20, 380, 200) + brins(24, 40, 300, 300, 400, 1) +
+        poupouEpou(250, 290, 200) +
+        u('coincoin', 470, 450, 76, { flip: true }) + titre('Coin ! Ha ha !', 600, 530, 34, '#E39A1C', -3) +
+        titre('SCRITCH ! SCRATCH !', 400, 110, 50, '#E8553E', -3) +
+        bulle(450, 170, 'Hou ! Je suis TERRIBLE !', 320),
+      texte: "Elle enfila la chemise : beaucoup trop grande ! Alors elle la remplit de <b>paille</b>. <b>SCRITCH, SCRATCH</b>, ça gratte ! Le chapeau lui tomba sur les yeux. « Hou ! Je suis <b>TERRIBLE</b> ! » Coin-Coin rigola : « Coin ! Une botte de foin qui parle ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) +
+        u('flaqueboue', 400, 440, 340) +
+        boue(22, 400, 760, 150, 440, 2) +
+        avec('caramel', ['tachesboue'], 470, 320, 200, { rot: -12 }) + surprise(640, 330) +
+        poupouEpou(60, 300, 190) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 14" opacity=".95"><path d="M40 510 C100 490 160 520 220 500"/></g>` +
+        titre('SPLATCH !', 600, 140, 64, '#8B5A2B', 5) +
+        bulle(360, 210, 'Au secours ! Un monstre !', 330) + titre('Houuu…', 160, 270, 40, '#E8553E', -5),
+      texte: "Poupou avança à petits pas, sans rien voir : « <b>Houuu</b>… » Caramel faisait la sieste dans la boue. Il ouvrit un œil… « Au secours ! Un <b>monstre de paille</b> ! » Il sauta en l’air et retomba… <b>SPLATCH</b> ! En plein dans la flaque."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        u('marguerite', 330, 226, 270, { flip: true }) + surprise(380, 240) +
+        u('buisson', 380, 360, 190) +
+        titre('MEUH ?!', 470, 150, 56, '#C9427F', -5) +
+        u('coincoin', 666, 372, 56, { flip: true }) + u('botte', 650, 404, 96) +
+        titre('FLOP !', 700, 340, 40, '#3F8EDB', 8) +
+        poupouEpou(40, 320, 180) +
+        bulle(20, 200, 'Houuu !', 130),
+      texte: "Marguerite arriva : « <b>Meuh</b> ?! » Elle eut si peur qu’elle se cacha derrière un tout petit <b>buisson</b>… Mais on voyait ses cornes, ses taches et son gros derrière ! Et Coin-Coin ? Il sauta dans une <b>botte</b> : <b>FLOP</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 30, 120) +
+        brins(70, 60, 760, 60, 520, 3) +
+        poupouEpou(220, 300, 200, { rot: -8 }) +
+        boutons([[470, 330], [520, 270], [180, 300], [560, 380]]) + choc(500, 240, .6) +
+        corbeaux([[560, 110, 120, 'vole'], [380, 70, 100, 'vole'], [306, 262, 60]]) +
+        titre('ATCHOUM !', 200, 120, 62, '#E8553E', -6) +
+        titre('POP ! POP !', 670, 360, 40, '#E39A1C', 8) +
+        bulle(520, 196, 'Croa ! Un nid géant !', 250),
+      texte: "La paille chatouillait le bec de Poupou… « A… a… <b>ATCHOUM</b> ! » La paille s’envola partout, et les boutons firent <b>POP ! POP !</b> Et les corbeaux ? Ils n’avaient pas peur du tout ! « Croa ! Un <b>nid géant</b> ! » Et ils se posèrent sur son chapeau."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('sacgraines', 640, 410, 80, { rot: 75 }) + u('graines', 600, 470, 70) + choc(660, 420, .8) +
+        titre('BOUM !', 700, 280, 50, '#E8553E', 8) +
+        ligneGraines(40, 470, 500, 70) +
+        poupouEpou(430, 320, 170, { oups: true }) + corbeaux([[496, 290, 52, '', true], [540, 286, 50]]) +
+        corbeaux([[40, 440, 66], [130, 446, 62], [220, 440, 66], [310, 446, 62]]) +
+        titre('Croa, miam ! Croa, miam !', 230, 410, 34, '#454D73', -3) +
+        bulle(200, 130, 'Hé ! Ça pèse !', 190),
+      texte: "Poupou marchait en zigzag, quand… <b>BOUM</b> ! Elle renversa le <b>sac de graines</b> de Papi ! Les graines tombèrent dans sa chemise. À chaque pas : trac, trac, trac… une ligne de graines ! Et tous les corbeaux la suivirent en file : « Croa, miam ! Croa, miam ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 600, 50, 120) +
+        u('potager', 420, 430, 360) +
+        poupouEpou(270, 310, 200, { oups: true }) +
+        u('epouvantailnu', 285, 281, 170, { rot: -70 }) +
+        choc(250, 360, .9) + choc(470, 330, .7) +
+        corbeaux([[372, 268, 52], [430, 300, 52, 'rit', true], [560, 380, 60, 'rit', true], [100, 440, 60, 'rit']]) +
+        titre('PATATRA !', 560, 150, 64, '#E8553E', 5) +
+        bulle(400, 200, 'Je suis un épouvantail-poule !', 370),
+      texte: "Le défilé fit le tour du potager… et <b>PATATRA</b> ! Poupou fonça dans l’épouvantail tout nu, qui lui tomba dessus ! Un épouvantail sur le dos, un chapeau sur les yeux et des corbeaux sur la tête… « Au secours ! Je suis un <b>épouvantail-poule</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) + brins(30, 200, 780, 60, 320, 4) +
+        u('hamidsurpris', 20, 150, 150) + surprise(70, 140) +
+        u('panier', 130, 420, 90, { rot: -30 }) + u('pomme', 230, 470, 34) + u('pomme', 270, 492, 30) +
+        u('marguerite', 520, 200, 220, { flip: true }) + u('buisson', 560, 300, 160) +
+        u('flaqueboue', 230, 380, 190) + avec('caramel', ['tachesboue'], 260, 320, 130) +
+        u('coincoin', 712, 450, 46, { flip: true }) + u('botte', 700, 466, 76) +
+        poupouEpou(400, 340, 170, { oups: true }) + corbeaux([[460, 310, 50, '', true], [510, 300, 50, 'rit']]) +
+        titre('Mais… mais… ?!', 420, 110, 52, '#E8553E', -3),
+      texte: "Juste à ce moment-là, Papi Hamid revint du marché. Il ouvrit de <b>grands yeux</b> : un cochon tout en boue, une vache derrière un buisson, un canard dans une botte… et un épouvantail qui marche, couvert de corbeaux ! Son panier tomba : <b>BADABOUM</b> ! « Mais… mais… ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) +
+        u('epouvantailnu', 600, 160, 150) + corbeaux([[602, 202, 52, 'rit'], [700, 202, 52, 'rit', true]]) +
+        u('hamid', 420, 170, 150, { flip: true }) +
+        avec('poupou', ['poupouchemise'], 200, 350, 150) + u('chapeaupaille', 140, 450, 100, { rot: -20 }) +
+        avec('caramel', ['tachesboue'], -10, 410, 150) +
+        bulle(20, 230, 'Pardon, Papi…', 200) +
+        titre('HO HO HO !', 560, 120, 54, '#C9427F', 4),
+      texte: "Poupou enleva son chapeau. « <b>Pardon</b>, Papi… Je voulais faire peur aux corbeaux. Mais c’est moi qui ai fait peur à tout le monde ! » Papi Hamid éclata de rire : « <b>Ho ho ho</b> ! Le plus drôle des épouvantails ! La prochaine fois, <b>demande-moi</b> avant de prendre mes affaires. »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) +
+        u('potager', 200, 420, 330) +
+        u('epouvantail', 300, 226, 150) +
+        u('hamid', 20, 200, 140) + u('graines', 150, 400, 50) +
+        u('poupou', 430, 380, 120) +
+        u('mangeoire', 660, 200, 110) + `<rect x="710" y="318" width="10" height="132" fill="#B07A45" stroke="#6B3A1E" stroke-width="3"/>` +
+        corbeaux([[620, 310, 62, 'rit'], [740, 320, 56, '', true], [690, 120, 90, 'vole']]) +
+        u('caramel', 520, 440, 120, { flip: true }) +
+        titre('On répare !', 420, 110, 52, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida à <b>réparer</b>. Poupou rhabilla l’épouvantail, et Papi sema de nouvelles graines. Pour les corbeaux, Poupou installa une <b>mangeoire</b>, loin du potager. « Croa ! Merci ! » Et tout le monde rit très fort."
+    }
+  ]
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la pâte à pain</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des bulles de pâte qui font BLOUP
+const bloups = pts => pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#F7E3BC" stroke="#A8743A" stroke-width="3"/><circle cx="${x - r * .35}" cy="${y - r * .35}" r="${r * .3}" fill="#FFF4DE"/>`).join('');
+// la poudre de levure qui tombe
+const poudre = (x, y) => { let s = '<g fill="#F2C94C" stroke="#C99A1C" stroke-width="1">'; for (let i = 0; i < 16; i++) s += `<circle cx="${x + ((i * 37) % 44) - 22}" cy="${y + i * 6}" r="${2.5 + (i % 3)}"/>`; return s + '</g>'; };
+// des petits traits de mouvement (glissade, envol)
+const mouvement = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 24} h-${l + 20} M${x} ${y + 48} h-${l}"/></g>`;
+// un fil de pâte qui s'étire entre deux points
+const fil = (x1, y1, x2, y2, e = 18) => `<path d="M${x1} ${y1 - e} C${(x1 + x2) / 2} ${y1 - 4} ${(x1 + x2) / 2} ${y2 - 4} ${x2} ${y2 - e} L${x2} ${y2 + e} C${(x1 + x2) / 2} ${y2 + 2} ${(x1 + x2) / 2} ${y1 + 2} ${x1} ${y1 + e}Z" fill="#F7E3BC" stroke="#A8743A" stroke-width="4" stroke-linejoin="round"/>`;
+// des petits « z » de sieste
+const dodo = (x, y) => titre('z', x, y, 26, '#5A6390') + titre('z', x + 18, y - 22, 32, '#5A6390') + titre('Z', x + 40, y - 50, 40, '#5A6390');
+// la table de la cour (son plateau est à y + 0.16 × largeur)
+const table = (x, y, w = 260) => u('table', x, y, w);
+
+lancerHistoire({
+  numero: 21,
+  titre: "Poupou et la pâte à pain",
+  morale: "Quand un grand dit « une toute petite cuillère », c’est une toute petite cuillère ! Et après une bêtise, on dit pardon, on répare ensemble… et on partage le goûter.",
+  couverture: () => decor('jour') + u('nuage', 30, 40, 130) + u('nuage', 610, 30, 130) +
+    u('pate', 170, 250, 460) + bloups([[250, 300, 14], [560, 330, 12], [400, 250, 10]]) +
+    u('poupououps', 310, 150, 150) + u('pate', 290, 270, 220) +
+    avec('caramel', ['caramelpate'], 600, 400, 170, { flip: true }) +
+    u('coincoin', 60, 420, 90) + fil(140, 456, 210, 470, 10) +
+    u('levure', 650, 150, 60, { rot: 25 }) + poudre(680, 240) +
+    titre('BLOUP !', 160, 210, 60, '#E8553E', -8),
+  fin: () => decor('coucher', u('soleil', 320, 250, 130)) + u('nuage', 60, 40, 120) +
+    u('four', 600, 250, 180) +
+    u('hamid', 440, 200, 140, { flip: true }) +
+    table(160, 300, 300) + u('petitspains', 190, 226, 240) +
+    u('marguerite', -40, 250, 220) +
+    u('poupou', 290, 410, 110) + u('caramel', 130, 420, 130) + u('coincoin', 420, 460, 70, { flip: true }) +
+    u('coeur', 120, 120, 40, { rot: -12 }) + u('coeur', 680, 120, 36, { rot: 12 }) +
+    titre('Miam ! Le meilleur pain du monde !', 400, 110, 40, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 640, 30, 100) + u('nuage', 300, 40, 130) +
+        u('hamid', 40, 190, 150) +
+        table(230, 270) + u('saladier', 285, 211, 150) + u('sacfarine', 450, 228, 60) + u('levure', 250, 245, 40) +
+        u('caramel', 620, 400, 140, { flip: true }) +
+        u('poupou', 500, 330, 120, { flip: true }) +
+        bulle(150, 110, 'Une toute petite cuillère !', 310),
+      texte: "Ce matin, Papi Hamid prépara la <b>pâte à pain</b> dans le grand saladier. Il ajouta une <b>toute petite cuillère</b> de levure. « La levure fait gonfler la pâte, tout doucement. Ne touchez à rien, je vais chercher les œufs ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 560, 30, 120) +
+        table(230, 270) + u('saladier', 285, 211, 150) + u('sacfarine', 450, 228, 60) +
+        u('poupou', 400, 182, 120, { flip: true }) +
+        u('levure', 330, 120, 56, { rot: 150 }) + poudre(355, 175) +
+        titre('GLOUP !', 220, 200, 54, '#E8553E', -8) +
+        u('caramel', 560, 400, 150, { flip: true }) + surprise(580, 410) +
+        bulle(560, 290, 'Oh oh…', 130) +
+        bulle(420, 60, 'Moi, je veux un pain GÉANT !', 340),
+      texte: "« Une toute petite cuillère ? Pour un tout petit pain ? » dit Poupou. « Moi, je veux un pain <b>GÉANT</b> ! » Et elle versa <b>TOUT le paquet</b> de levure : <b>GLOUP</b> ! Caramel ouvrit de grands yeux : « Oh oh… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 40, 120) +
+        table(230, 270) + u('patemonte', 290, 136, 140) +
+        bloups([[330, 116, 12], [380, 86, 9], [420, 120, 7], [300, 160, 6]]) +
+        titre('BLOUP !', 130, 140, 54, '#E39A1C', -8) + titre('BLOUP !', 660, 270, 48, '#E39A1C', 8) +
+        u('poupououps', 460, 182, 120, { flip: true }) +
+        u('caramel', 600, 400, 140, { flip: true }) +
+        bulle(570, 110, 'Elle gonfle !', 180),
+      texte: "D’abord, rien ne se passa. Poupou approcha son bec… <b>BLOUP</b> ! Une grosse bulle. <b>BLOUP, BLOUP</b> ! La pâte se mit à monter, monter, monter… plus haut que le saladier ! « Elle <b>gonfle</b> ! » cria Poupou."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) +
+        table(150, 270) + u('patemonte', 200, 142, 150) +
+        u('pate', 110, 300, 340) +
+        avec('caramel', ['caramelpate'], 420, 390, 170) + surprise(560, 390) +
+        titre('SPLOUTCH !', 580, 240, 56, '#A8743A', 6) +
+        u('poupououps', 640, 330, 120, { flip: true }) +
+        bulle(410, 60, 'Je suis un cochon-brioche !', 340),
+      texte: "La pâte déborda du saladier et coula de la table comme un gros <b>nuage tout mou</b>. Caramel faisait la sieste juste à côté… <b>SPLOUTCH</b> ! « Groin ?! Je suis un <b>cochon-brioche</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) +
+        u('pate', -40, 300, 300) +
+        fil(250, 415, 330, 420, 14) +
+        u('coincoin', 296, 360, 90, { flip: true }) +
+        u('poupou', 400, 330, 120, { flip: true }) +
+        avec('caramel', ['caramelpate'], 540, 400, 150, { flip: true }) +
+        titre('GNIIIII !', 560, 250, 56, '#E8553E', 6) +
+        bulle(60, 140, 'Un, deux, trois…', 230),
+      texte: "Coin-Coin voulut goûter. <b>CROC</b> ! Son bec resta <b>collé</b> ! Poupou tira Coin-Coin, Caramel tira Poupou… « Un, deux, trois… <b>GNIIIII</b> ! » La pâte s’étira, s’étira, s’étira…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        u('pate', -40, 300, 300) + bloups([[120, 300, 10]]) +
+        avec('caramel', ['caramelpate'], 470, 400, 170, { rot: 20 }) +
+        u('coincoin', 560, 330, 90, { rot: -30 }) +
+        u('poupououps', 500, 260, 130, { rot: -25 }) +
+        choc(500, 290, .7) + choc(700, 380, .6) +
+        mouvement(420, 300, 70) +
+        titre('BOING !', 270, 160, 64, '#3F8EDB', -6) + titre('POUF !', 690, 250, 52, '#E8553E', 8),
+      texte: "… et <b>BOING</b> ! La pâte les renvoya en arrière comme un élastique. <b>POUF</b> ! Tout le monde tomba en tas : une poule sur un canard, un canard sur un cochon. Et la pâte ? Elle <b>gonflait toujours</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 600, 40, 120) +
+        u('marguerite', 470, 210, 290, { flip: true }) + surprise(500, 230) +
+        u('pate', 60, 250, 380) +
+        u('feuille', 120, 300, 40, { rot: 30 }) + u('feuillerouge', 300, 290, 36, { rot: -20 }) + u('plume', 220, 330, 30, { rot: 60 }) +
+        u('botte', 380, 330, 60, { rot: 20 }) +
+        mouvement(80, 330, 50) +
+        titre('ROULI-ROULA !', 260, 150, 50, '#A8743A', -5) +
+        bulle(430, 110, 'Meuh ?! Un nuage qui roule !', 330),
+      texte: "La pâte devint si grosse qu’elle se mit à <b>rouler</b> dans la cour, <b>rouli-roula</b>. Elle attrapa des feuilles, une plume… et même une botte ! Marguerite n’en croyait pas ses yeux : « Meuh ?! Un <b>nuage qui roule</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) +
+        u('pate', 260, 320, 340) +
+        avec('marguerite', ['margueritepate'], 250, 40, 260, { rot: -15 }) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M320 300 v40 M380 300 v50 M440 300 v40"/></g>` +
+        titre('POUÊT !', 650, 300, 54, '#C9427F', 8) +
+        u('poupououps', 60, 340, 120) + u('coincoin', 160, 420, 70) +
+        bulle(30, 200, 'Oh oh…', 130),
+      texte: "Marguerite voulut s’asseoir dessus pour l’arrêter. <b>POUÊT</b> ! La pâte fit trampoline et la vache rebondit en l’air ! Elle retomba avec un drôle de <b>chapeau de pâte</b> sur la tête… et sa marguerite qui dépassait tout en haut."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 580, 40, 120) +
+        u('poupou', 290, 300, 150) +
+        u('pate', 200, 320, 360) + bloups([[260, 340, 10], [500, 360, 9]]) +
+        titre('PLAF !', 160, 260, 48, '#3F8EDB', -8) + titre('BLOUP !', 680, 330, 46, '#E39A1C', 8) +
+        titre('SPLOUF !', 400, 130, 60, '#E8553E', -3) +
+        avec('caramel', ['caramelpate'], 620, 420, 140, { flip: true }) +
+        bulle(480, 170, 'Je suis coincée !', 200),
+      texte: "Poupou essaya d’aplatir la pâte. <b>PLAF</b> ! … <b>BLOUP</b>, elle remontait. <b>PLAF</b> ! … <b>BLOUP</b> ! Alors Poupou sauta dessus de toutes ses forces. <b>SPLOUF</b> ! Elle s’enfonça jusqu’au cou. « Je suis <b>coincée</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) +
+        u('hamidsurpris', 20, 150, 150) + surprise(70, 140) +
+        u('panier', 150, 330, 80, { rot: -40 }) +
+        u('oeuf', 250, 330, 30, { rot: 20 }) + u('oeuf', 300, 360, 28, { rot: -30 }) +
+        u('poupou', 370, 305, 130) + u('pate', 300, 330, 300) +
+        titre('PLOC ! PLOC !', 300, 300, 36, '#E39A1C', -4) +
+        avec('marguerite', ['margueritepate'], 600, 230, 200, { flip: true }) +
+        avec('caramel', ['caramelpate'], 620, 420, 140, { flip: true }) +
+        titre('Mais… mais… ?!', 420, 110, 52, '#E8553E', -3),
+      texte: "Juste à ce moment-là, Papi Hamid revint avec son panier d’œufs. Il ouvrit de <b>grands yeux</b> : un cochon-brioche, une vache à chapeau de pâte… et une <b>montagne de pâte</b> avec une tête de poule ! Les œufs lui glissèrent des mains : <b>PLOC, PLOC</b>… dans la pâte ! « Mais… mais… ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 140) +
+        u('pate', 480, 330, 300) +
+        u('hamid', 360, 180, 150, { flip: true }) +
+        avec('poupou', ['poupoupate'], 180, 330, 150) +
+        avec('caramel', ['caramelpate'], -10, 410, 150) +
+        u('coincoin', 300, 450, 70) +
+        bulle(20, 220, 'Pardon, Papi…', 200) +
+        titre('HO HO HO !', 600, 120, 54, '#C9427F', 4),
+      texte: "Papi aida Poupou à sortir. « <b>Pardon</b>, Papi… Je voulais un pain géant. » Papi Hamid éclata de rire : « <b>Ho ho ho</b> ! Une petite cuillère, c’est pour un pain. Tout le paquet, c’est pour une <b>montagne</b> ! La prochaine fois, on fait le pain <b>ensemble</b>. »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 130) + u('nuage', 560, 40, 120) +
+        u('hamid', 20, 190, 150) +
+        table(200, 290, 300) + u('pate', 225, 247, 110) + u('petitspains', 335, 250, 160) +
+        u('poupou', 300, 210, 100, { flip: true }) +
+        u('marguerite', 560, 240, 230, { flip: true }) +
+        u('caramel', 520, 420, 130, { flip: true }) + u('coincoin', 140, 450, 70) +
+        titre('On répare !', 420, 110, 52, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida à <b>nettoyer</b> la cour. Puis, avec la montagne de pâte, on fit plein de <b>petits pains</b> : un pain-poule, un pain-cochon, un pain-canard et un pain-vache ! Papi les fit cuire dans son grand four."
+    }
+  ]
+});
+</script>
+</body>
+</html>

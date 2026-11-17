@@ -32,7 +32,8 @@
     ballonrouge: 1.7, ballonbleu: 1.7, ballonjaune: 1.7, ballonvert: 1.7, ballonviolet: 1.7, ballonsouffle: 100 / 120, ballonfile: 90 / 140,
     ballonpop: 0.6, noeud: 80 / 120, poupousouffle: 1, caramelcadeau: 180 / 220,
     chapeaupaille: 90 / 160, epouvantail: 280 / 200, epouvantailnu: 280 / 200, corbeau: 110 / 120, corbeaurit: 110 / 120, corbeauvole: 100 / 140,
-    poupouchemise: 1, potager: 90 / 320, sacgraines: 120 / 100
+    poupouchemise: 1, potager: 90 / 320, sacgraines: 120 / 100,
+    levure: 1.3, pate: 200 / 300, patemonte: 1.2, caramelpate: 180 / 220, margueritepate: 240 / 300, poupoupate: 1, petitspains: 140 / 300
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

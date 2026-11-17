@@ -181,5 +181,14 @@
     "fichier": "/histoires/20-l-epouvantail.html",
     "couleur": "#FFF1C9",
     "objet": "epouvantail"
+  },
+  {
+    "numero": 21,
+    "titre": "Poupou et la pâte à pain",
+    "resume": "BLOUP ! BLOUP ! Poupou veut un pain GÉANT et verse TOUT le paquet de levure… Un cochon-brioche, un canard collé, une vache qui rebondit, une montagne de pâte qui roule… Que va dire Papi Hamid ?",
+    "date": "2026-11-17",
+    "fichier": "/histoires/21-la-pate-a-pain.html",
+    "couleur": "#FFF0D6",
+    "objet": "patemonte"
   }
 ]

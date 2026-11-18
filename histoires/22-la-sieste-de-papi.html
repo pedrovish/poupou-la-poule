@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la sieste de Papi</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// Poupou déguisée en fermière : le grand chapeau sur les yeux et les grosses bottes
+const fermiere = (x, y, w, o = {}) => avec('poupou', ['chapeaugeant', 'grossesbottes'], x, y, w, o);
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// le petit chapeau de paille de Poupou, juste à sa taille
+const petitChapeau = (x, y, w, o = {}) => u('chapeaupaille', o.flip ? x - 0.043 * w : x + 0.443 * w, y - 0.129 * w, 0.6 * w, { rot: o.flip ? -8 : 8 });
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des petits traits de mouvement
+const mouvement = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 24} h-${l + 20} M${x} ${y + 48} h-${l}"/></g>`;
+// des petits « z » de sieste
+const dodo = (x, y) => titre('z', x, y, 26, '#5A6390') + titre('z', x + 18, y - 22, 32, '#5A6390') + titre('Z', x + 40, y - 50, 40, '#5A6390');
+// un jet d'eau qui sort de l'arrosoir (du bec x1,y1 jusqu'à x2,y2)
+const jet = (x1, y1, x2, y2) => {
+  let s = '<g fill="none" stroke="#5AB0F0" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 9" opacity=".9">';
+  for (let k = -2; k <= 2; k++) s += `<path d="M${x1} ${y1} Q${(x1 + x2) / 2 + k * 6} ${Math.min(y1, y2) - 40} ${x2 + k * 16} ${y2 + Math.abs(k) * 6}"/>`;
+  return s + '</g>';
+};
+// des graines qui pleuvent
+const pluieGraines = (x, y, l = 160, h = 120) => { let s = ''; for (let i = 0; i < 14; i++) s += `<ellipse cx="${x + (i * 53) % l}" cy="${y + (i * 37) % h}" rx="5" ry="3" fill="#F2C94C" stroke="#B38F00" stroke-width="1.5" transform="rotate(${(i * 40) % 180} ${x + (i * 53) % l} ${y + (i * 37) % h})"/>`; return s; };
+// des touffes de laine qui volent
+const laine = pts => pts.map(([x, y, w]) => u('touffe', x, y, w)).join('');
+// des pommes qui roulent
+const pommes = pts => pts.map(([x, y, w, r]) => u('pomme', x, y, w, { rot: r || 0 })).join('');
+// le pommier de la sieste, avec Papi qui dort dessous
+const sieste = (x, y, w = 150) => u('arbre', x - 70, y - 120, w + 140) + u('hamiddort', x, y, w) + dodo(x + w * 0.9, y + 10);
+// trois fleurs (qui ont soif)
+const fleurs = (x, y, w = 40) => u('fleur', x, y, w) + u('fleur', x + w * 1.1, y + 8, w * 0.9) + u('fleur', x + w * 2.1, y - 4, w);
+
+lancerHistoire({
+  numero: 22,
+  titre: "Poupou et la sieste de Papi",
+  morale: "Pour bien aider, il faut d’abord bien voir ce qu’on fait ! Et après une bêtise, on dit pardon… et on répare ensemble.",
+  couverture: () => decor('jour') + u('nuage', 30, 40, 130) + u('nuage', 610, 40, 120) +
+    sieste(40, 190, 140) +
+    fermiere(300, 230, 210) +
+    u('arrosoir', 440, 300, 110, { rot: 30 }) + jet(540, 350, 650, 440) +
+    avec('caramel', ['carameleau'], 590, 400, 170, { flip: true }) +
+    u('coincoin', 160, 420, 90) + surprise(180, 420) +
+    titre('CLOC ! CLOC !', 600, 150, 52, '#E8553E', 6),
+  fin: () => decor('coucher', u('soleil', 320, 250, 130)) + u('nuage', 60, 40, 120) + u('nuage', 600, 50, 110) +
+    u('arbre', -40, 110, 240) + u('brouette', 40, 400, 170) + pommes([[80, 390, 34], [116, 386, 32], [150, 392, 30]]) +
+    papi('hamid', 230, 190, 150) +
+    u('poupou', 400, 330, 130) + petitChapeau(400, 330, 130) +
+    u('arrosoir', 510, 330, 80, { rot: 25 }) + jet(588, 358, 640, 400) + fleurs(600, 360, 40) +
+    u('caramel', 110, 430, 120) + u('coincoin', 380, 470, 60) + u('mouton', 680, 430, 110, { flip: true }) +
+    u('coeur', 330, 170, 34, { rot: -12 }) + u('coeur', 700, 180, 32, { rot: 12 }) +
+    titre('Bravo, petite fermière !', 420, 110, 46, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 640, 30, 100) + u('nuage', 330, 40, 120) +
+        sieste(110, 180, 150) +
+        u('chapeau', 290, 410, 110, { rot: 6 }) + u('botte', 410, 360, 54) + u('botte', 452, 366, 54, { rot: 6 }) +
+        u('poupou', 540, 300, 140, { flip: true }) +
+        u('caramel', 640, 420, 130, { flip: true }) +
+        bulle(430, 200, 'C’est MOI la fermière !', 300),
+      texte: "Après le déjeuner, Papi Hamid fit la <b>sieste</b> sous le pommier. Il posa son grand <b>chapeau</b> et ses grosses <b>bottes</b> à côté de lui. Poupou chuchota : « Pendant que Papi dort, c’est <b>MOI</b> la fermière ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) + u('nuage', 620, 50, 110) +
+        sieste(10, 200, 120) +
+        fermiere(290, 230, 200) +
+        titre('FLOP !', 400, 170, 52, '#E39A1C', -6) + titre('CLOC ! CLOC !', 640, 350, 40, '#E8553E', 6) +
+        u('coincoin', 640, 400, 90, { flip: true }) + surprise(660, 400) +
+        u('caramel', 130, 420, 140) +
+        bulle(520, 120, 'Je ne vois rien !', 220),
+      texte: "Poupou mit le chapeau de Papi : <b>FLOP</b> ! Il lui tomba jusqu’au bec. Elle enfila les bottes : <b>CLOC, CLOC</b> ! Elles étaient presque aussi grandes qu’elle. « Je ne vois rien… mais je suis la <b>fermière</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 560, 30, 120) +
+        fleurs(680, 330, 36) +
+        fermiere(460, 240, 180, { flip: true }) +
+        u('arrosoir', 395, 320, 110, { flip: true, rot: -30 }) + jet(405, 350, 270, 410) +
+        avec('caramel', ['carameleau'], 90, 370, 210) + surprise(240, 380) +
+        titre('PSCHHHH !', 360, 220, 54, '#3F8EDB', -6) +
+        bulle(40, 260, 'Groin ! Il pleut ?!', 230),
+      texte: "Premier travail de fermière : <b>arroser les fleurs</b>. Poupou prit l’arrosoir et versa, versa… <b>PSCHHHH</b> ! Mais ce n’étaient pas les fleurs. C’était <b>Caramel</b> ! « Groin ! Il pleut ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('marguerite', 300, 200, 280) + surprise(520, 210) +
+        pluieGraines(340, 160, 200, 100) +
+        u('mesange', 350, 240, 50) + u('rougegorge', 420, 238, 50) + u('mesange', 470, 250, 46, { flip: true }) + u('rougegorge', 520, 192, 46) +
+        u('mesange', 650, 140, 46, { flip: true }) + mouvement(760, 150, 40) +
+        fermiere(60, 280, 160) + u('sacgraines', 190, 260, 60, { rot: 40 }) +
+        titre('FRRRT !', 230, 200, 52, '#E39A1C', -8) + titre('piou ! piou !', 680, 250, 34, '#3F8EDB', 6) +
+        bulle(440, 70, 'Meuh ? Je suis un nid ?', 310),
+      texte: "Deuxième travail : <b>donner les graines</b>. Poupou lança les graines très haut… <b>FRRRT</b> ! Elles retombèrent sur le dos de Marguerite. Alors tous les petits oiseaux arrivèrent : <b>piou, piou</b> ! « Meuh ? Je suis un <b>nid</b> ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) +
+        u('moutonbouffant', 360, 160, 320) +
+        laine([[300, 150, 50], [280, 250, 40], [700, 140, 46], [330, 330, 36], [720, 300, 40]]) +
+        fermiere(90, 280, 160) + u('balai', 260, 220, 50, { rot: 40 }) +
+        titre('FROTTI-FROTTA !', 200, 190, 40, '#C9427F', -6) +
+        bulle(410, 50, 'Bêêê ? Où sont mes pattes ?', 360),
+      texte: "Troisième travail : <b>brosser Flocon</b>, le petit mouton. <b>FROTTI-FROTTA</b> avec le grand balai ! Mais plus Poupou brossait, plus la laine gonflait… Flocon devint un énorme <b>nuage tout bouclé</b>. « Bêêê… je ne vois plus mes pattes ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) +
+        u('botte', 250, 350, 64, { rot: -10 }) + u('botte', 316, 356, 64, { rot: 8 }) +
+        u('flaqueboue', 180, 410, 300) +
+        titre('SCHLOUP !', 300, 320, 52, '#8B5A2B', -6) +
+        u('poupououps', 440, 140, 140, { rot: 25 }) + mouvement(430, 170, 60) +
+        u('chapeau', 610, 60, 140, { rot: 22 }) +
+        titre('ZIOUUU !', 560, 110, 44, '#3F8EDB', 8) +
+        avec('caramel', ['carameleau'], 620, 410, 150, { flip: true }) + surprise(640, 420) +
+        bulle(60, 160, 'Oh oh…', 130),
+      texte: "Poupou voulut courir vers un autre travail. <b>CLOC, CLOC</b>… <b>SCHLOUP</b> ! Les grosses bottes restèrent plantées dans la boue. Mais Poupou, elle, continua sans elles : « Oh oh… » <b>ZIOUUU</b> ! Et le chapeau s’envola de son côté."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 120) +
+        u('flaqueboue', -30, 440, 260) + avec('poupou', ['poupouboue'], 30, 340, 130) + choc(110, 330, .6) +
+        u('chapeaumarche', 300, 330, 180) + mouvement(290, 380, 50) +
+        titre('tip-tap, tip-tap', 390, 300, 36, '#E39A1C', -4) +
+        avec('caramel', ['carameleau'], 610, 400, 160) + surprise(740, 400) + mouvement(600, 420, 50) +
+        titre('PLOF !', 120, 300, 48, '#8B5A2B', -8) +
+        bulle(350, 110, 'Au secours ! Un chapeau fantôme !', 430),
+      texte: "<b>PLOF</b> ! Poupou atterrit dans la flaque de boue. Et le chapeau ? Il retomba… pile sur <b>Coin-Coin</b> ! Alors un chapeau se mit à marcher tout seul : <b>tip-tap, tip-tap</b>. Caramel hurla : « Au secours ! Un <b>chapeau fantôme</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) + u('nuage', 600, 30, 110) +
+        u('brouette', 40, 300, 230, { rot: 28 }) +
+        pommes([[250, 440, 40, 20], [330, 470, 36, -30], [420, 430, 38], [200, 490, 34, 40], [520, 480, 36, 10], [600, 450, 34, -20], [690, 500, 36]]) +
+        avec('caramel', ['carameleau'], 170, 360, 170, { rot: -20 }) + choc(170, 380, .8) +
+        u('moutonbouffant', 440, 200, 240, { rot: 35 }) + mouvement(440, 260, 60) +
+        u('chapeaumarche', 680, 400, 100) +
+        titre('BOUM !', 140, 230, 60, '#E8553E', -8) + titre('ROULI-ROULA !', 520, 140, 50, '#C9427F', 4),
+      texte: "Caramel courut si vite… <b>BOUM</b> ! Droit dans la brouette de pommes. Les pommes roulèrent partout : <b>ROULI-ROULA</b> ! Flocon-nuage marcha sur une pomme… et se mit à rouler, lui aussi, comme une grosse <b>boule de laine</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 20, 110) +
+        u('arbre', -60, 70, 280) + u('hamidsurpris', 40, 180, 150) + surprise(90, 170) +
+        u('pomme', 170, 400, 34) + titre('TOC !', 240, 420, 40, '#E8553E', 8) +
+        u('marguerite', 500, 190, 230, { flip: true }) + u('mesange', 560, 220, 40) + u('rougegorge', 620, 214, 40, { flip: true }) + u('mesange', 520, 180, 38) +
+        u('moutonbouffant', 270, 250, 190) +
+        avec('caramel', ['carameleau'], 610, 410, 150, { flip: true }) +
+        u('chapeaumarche', 460, 420, 100) +
+        pommes([[300, 470, 34], [400, 500, 32, 30], [560, 500, 34]]) +
+        titre('Mais… mais… ?!', 470, 120, 52, '#E8553E', -3),
+      texte: "Une pomme roula, roula… jusqu’au pied de Papi Hamid. <b>TOC</b> ! Papi se réveilla et ouvrit de <b>très grands yeux</b> : un cochon tout mouillé, une vache pleine d’oiseaux, un mouton-nuage, des pommes partout… et un <b>chapeau qui marche</b> ! « Mais… mais… ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 560, 40, 110) +
+        u('hamidsurpris', 540, 180, 150, { flip: true }) +
+        u('chapeau', 360, 340, 120, { rot: -24 }) + u('coincoin', 420, 380, 90) +
+        bulle(400, 270, 'Coin ! C’est moi !', 210) +
+        avec('poupou', ['poupouboue'], 160, 300, 150) +
+        bulle(60, 180, 'Pardon, Papi…', 200),
+      texte: "Coin-Coin sortit de sous le chapeau : « Coin ! C’est moi ! » Puis une petite poule toute couverte de boue arriva, pieds nus. « <b>Pardon</b>, Papi… Je voulais être la fermière. Mais avec ton chapeau, je ne voyais <b>rien du tout</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 620, 30, 100) + u('nuage', 60, 40, 120) +
+        papi('hamid', 320, 170, 150) +
+        avec('poupou', ['poupouboue'], 140, 320, 130) +
+        u('coincoin', 520, 420, 80, { flip: true }) + u('caramel', 600, 410, 140, { flip: true }) +
+        titre('HO HO HO !', 400, 110, 60, '#C9427F', -3) +
+        bulle(30, 200, 'Je vais tout réparer !', 260),
+      texte: "Papi Hamid éclata de rire : « <b>Ho ho ho</b> ! Être fermier, ce n’est pas porter un grand chapeau. C’est <b>bien regarder</b>, et prendre soin de tout le monde. » Et Poupou répondit : « Alors je vais <b>tout réparer</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 120) + u('nuage', 580, 40, 110) +
+        u('brouette', 20, 380, 200) + pommes([[60, 360, 36], [100, 354, 36], [140, 362, 34]]) +
+        papi('hamid', 250, 170, 150) +
+        u('poupou', 420, 320, 130) + petitChapeau(420, 320, 130) +
+        u('mouton', 600, 360, 150, { flip: true }) + u('balai', 580, 260, 40, { rot: -20 }) +
+        u('caramel', 170, 430, 120) + u('coincoin', 560, 470, 60) +
+        u('coeur', 380, 260, 36, { rot: -10 }) +
+        titre('Ma petite aide-fermière !', 420, 110, 44, '#3F8EDB', -3),
+      texte: "Alors tout le monde aida : les pommes dans la brouette, Flocon bien peigné, les bottes sorties de la boue. Et pour finir, Papi offrit à Poupou un <b>petit chapeau de paille</b>, juste à sa taille. « Voilà ma <b>petite aide-fermière</b> ! » Et tout le monde rit."
+    }
+  ]
+});
+</script>
+</body>
+</html>

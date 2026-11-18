@@ -190,5 +190,14 @@
     "fichier": "/histoires/21-la-pate-a-pain.html",
     "couleur": "#FFF0D6",
     "objet": "patemonte"
+  },
+  {
+    "numero": 22,
+    "titre": "Poupou et la sieste de Papi",
+    "resume": "CLOC ! CLOC ! Pendant la sieste de Papi, Poupou met son grand chapeau et ses bottes pour jouer à la fermière… Un cochon arrosé, une vache-nid, un mouton-nuage, un chapeau qui marche tout seul… Que va dire Papi Hamid ?",
+    "date": "2026-11-18",
+    "fichier": "/histoires/22-la-sieste-de-papi.html",
+    "couleur": "#E3F3FF",
+    "objet": "arrosoir"
   }
 ]

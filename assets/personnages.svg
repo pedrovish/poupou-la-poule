@@ -2122,4 +2122,52 @@
   </g>
   <g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"><path d="M60 86 q10 -8 22 -4"/><path d="M120 76 q10 -6 20 -2"/></g>
 </symbol>
+<symbol id="feuillejaune" viewBox="0 0 100 100">
+  <path d="M50 92 L50 74" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M50 76 C30 78 18 66 22 58 C10 56 6 44 14 38 C8 28 18 20 28 24 C30 12 42 8 50 8 C58 8 70 12 72 24 C82 20 92 28 86 38 C94 44 90 56 78 58 C82 66 70 78 50 76Z" fill="#FFD43B" stroke="#B38F00" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M50 74 V20 M50 52 L30 36 M50 52 L70 36 M50 64 L32 58 M50 64 L68 58" fill="none" stroke="#D9A800" stroke-width="2.5" stroke-linecap="round"/>
+</symbol>
+<symbol id="rateau" viewBox="0 0 80 200">
+  <rect x="35" y="4" width="10" height="150" rx="5" fill="#C98A4B" stroke="#6B3A1E" stroke-width="3"/>
+  <path d="M38 12 V144" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
+  <g stroke="#4A5868" stroke-width="5" stroke-linecap="round"><path d="M10 160 V190 M22 160 V192 M34 160 V193 M46 160 V193 M58 160 V192 M70 160 V190"/></g>
+  <rect x="4" y="148" width="72" height="16" rx="7" fill="#E8553E" stroke="#8A2F1F" stroke-width="3"/>
+  <path d="M12 153 H40" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>
+</symbol>
+<symbol id="sacfeuilles" viewBox="0 0 120 140">
+  <ellipse cx="60" cy="134" rx="46" ry="5" fill="#000" opacity=".12"/>
+  <use href="#feuille" x="14" y="4" width="40" height="40" transform="rotate(-30 34.0 24.0)"/><use href="#feuillerouge" x="40" y="-2" width="42" height="42" transform="rotate(8 61.0 19.0)"/><use href="#feuillejaune" x="66" y="6" width="38" height="38" transform="rotate(34 85.0 25.0)"/>
+  <path d="M22 40 C10 70 8 112 20 130 Q60 140 100 130 C112 112 110 70 98 40 Q60 30 22 40Z" fill="#D9B07A" stroke="#6B3A1E" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M24 46 Q60 56 96 46" fill="none" stroke="#6B3A1E" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M40 76 Q46 100 40 122 M80 76 Q74 100 80 122" fill="none" stroke="#B38A55" stroke-width="3" stroke-linecap="round"/>
+  <path d="M30 64 Q34 90 30 110" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".4"/>
+</symbol>
+<symbol id="poupoufeuilles" viewBox="0 0 200 200">
+  <use href="#feuillerouge" x="124" y="2" width="44" height="44" transform="rotate(-18 146.0 24.0)"/><use href="#feuille" x="6" y="36" width="40" height="40" transform="rotate(-40 26.0 56.0)"/><use href="#feuillejaune" x="30" y="80" width="34" height="34" transform="rotate(60 47.0 97.0)"/><use href="#feuille" x="66" y="126" width="36" height="36" transform="rotate(20 84.0 144.0)"/><use href="#feuillerouge" x="108" y="100" width="30" height="30" transform="rotate(-30 123.0 115.0)"/><use href="#feuillejaune" x="136" y="130" width="28" height="28" transform="rotate(40 150.0 144.0)"/><use href="#feuille" x="150" y="92" width="24" height="24" transform="rotate(-60 162.0 104.0)"/>
+</symbol>
+<symbol id="caramelfeuilles" viewBox="0 0 220 180">
+  <use href="#feuille" x="30" y="46" width="40" height="40" transform="rotate(-20 50.0 66.0)"/><use href="#feuillerouge" x="78" y="34" width="40" height="40" transform="rotate(24 98.0 54.0)"/><use href="#feuillejaune" x="46" y="96" width="36" height="36" transform="rotate(-50 64.0 114.0)"/><use href="#feuille" x="108" y="90" width="38" height="38" transform="rotate(15 127.0 109.0)"/><use href="#feuillerouge" x="150" y="6" width="34" height="34" transform="rotate(10 167.0 23.0)"/><use href="#feuillejaune" x="14" y="80" width="30" height="30" transform="rotate(-80 29.0 95.0)"/><use href="#feuille" x="170" y="90" width="26" height="26" transform="rotate(50 183.0 103.0)"/><use href="#feuillerouge" x="84" y="124" width="30" height="30" transform="rotate(-15 99.0 139.0)"/>
+</symbol>
+<symbol id="margueritefeuilles" viewBox="0 0 300 240">
+  <use href="#feuille" x="56" y="62" width="48" height="48" transform="rotate(-30 80.0 86.0)"/><use href="#feuillerouge" x="112" y="52" width="46" height="46" transform="rotate(20 135.0 75.0)"/><use href="#feuillejaune" x="168" y="58" width="46" height="46" transform="rotate(-10 191.0 81.0)"/><use href="#feuillerouge" x="84" y="112" width="42" height="42" transform="rotate(40 105.0 133.0)"/><use href="#feuille" x="150" y="112" width="42" height="42" transform="rotate(-40 171.0 133.0)"/><use href="#feuillejaune" x="44" y="120" width="36" height="36" transform="rotate(70 62.0 138.0)"/><use href="#feuille" x="226" y="4" width="42" height="42" transform="rotate(15 247.0 25.0)"/><use href="#feuillejaune" x="200" y="104" width="34" height="34" transform="rotate(30 217.0 121.0)"/><use href="#feuillerouge" x="10" y="120" width="30" height="30" transform="rotate(-60 25.0 135.0)"/>
+</symbol>
+<symbol id="herissonfeuilles" viewBox="0 0 160 120">
+  <use href="#feuille" x="0" y="28" width="36" height="36" transform="rotate(-50 18.0 46.0)"/><use href="#feuillerouge" x="24" y="8" width="36" height="36" transform="rotate(-20 42.0 26.0)"/><use href="#feuillejaune" x="54" y="0" width="36" height="36" transform="rotate(10 72.0 18.0)"/><use href="#feuille" x="84" y="12" width="34" height="34" transform="rotate(35 101.0 29.0)"/><use href="#feuillerouge" x="14" y="56" width="30" height="30" transform="rotate(-70 29.0 71.0)"/><use href="#feuillejaune" x="46" y="40" width="30" height="30" transform="rotate(0 61.0 55.0)"/><use href="#feuille" x="72" y="50" width="26" height="26" transform="rotate(40 85.0 63.0)"/>
+</symbol>
+<symbol id="hamidfeuilles" viewBox="0 0 160 256">
+  <use href="#feuillerouge" x="52" y="4" width="40" height="40" transform="rotate(-15 72.0 24.0)"/><use href="#feuillejaune" x="82" y="0" width="34" height="34" transform="rotate(25 99.0 17.0)"/><use href="#feuille" x="96" y="128" width="30" height="30" transform="rotate(30 111.0 143.0)"/><use href="#feuillejaune" x="48" y="168" width="28" height="28" transform="rotate(-30 62.0 182.0)"/><use href="#feuillerouge" x="58" y="96" width="24" height="24" transform="rotate(60 70.0 108.0)"/><use href="#feuille" x="6" y="40" width="26" height="26" transform="rotate(-40 19.0 53.0)"/>
+</symbol>
+<symbol id="tasgeant" viewBox="0 0 400 220">
+  <ellipse cx="200" cy="214" rx="196" ry="6" fill="#000" opacity=".12"/>
+  <g stroke="#E07B1A" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M186 48 L180 12 M180 12 L166 6 M180 12 L186 0"/><path d="M214 48 L222 12 M222 12 L214 2 M222 12 L236 8"/>
+  </g>
+  <path d="M8 214 C12 110 100 36 200 32 C300 36 388 110 392 214Z" fill="#E8893A" stroke="#A8521A" stroke-width="5" stroke-linejoin="round"/>
+  <use href="#feuillerouge" x="60" y="120" width="48" height="48" transform="rotate(-30 84.0 144.0)"/><use href="#feuillejaune" x="100" y="80" width="46" height="46" transform="rotate(20 123.0 103.0)"/><use href="#feuille" x="170" y="40" width="50" height="50" transform="rotate(-10 195.0 65.0)"/><use href="#feuillerouge" x="240" y="60" width="48" height="48" transform="rotate(30 264.0 84.0)"/><use href="#feuillejaune" x="300" y="110" width="46" height="46" transform="rotate(-20 323.0 133.0)"/><use href="#feuille" x="40" y="160" width="44" height="44" transform="rotate(60 62.0 182.0)"/><use href="#feuillerouge" x="130" y="160" width="42" height="42" transform="rotate(10 151.0 181.0)"/><use href="#feuillejaune" x="200" y="150" width="40" height="40" transform="rotate(-40 220.0 170.0)"/><use href="#feuille" x="280" y="160" width="44" height="44" transform="rotate(40 302.0 182.0)"/><use href="#feuillerouge" x="330" y="170" width="36" height="36" transform="rotate(-70 348.0 188.0)"/><use href="#feuille" x="226" y="110" width="38" height="38" transform="rotate(80 245.0 129.0)"/><use href="#feuillejaune" x="90" y="130" width="30" height="30" transform="rotate(-60 105.0 145.0)"/>
+  <path d="M372 172 C390 160 398 182 388 188 C380 192 376 180 384 178" fill="none" stroke="#C9627E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M372 172 C390 160 398 182 388 188 C380 192 376 180 384 178" fill="none" stroke="#F7A8BC" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="150" cy="118" rx="30" ry="18" fill="#7A3A12"/><circle cx="140" cy="118" r="8" fill="#fff"/><circle cx="162" cy="118" r="8" fill="#fff"/><circle cx="142" cy="119" r="4" fill="#2B1B10"/><circle cx="164" cy="119" r="4" fill="#2B1B10"/>
+  <ellipse cx="262" cy="142" rx="30" ry="18" fill="#7A3A12"/><circle cx="252" cy="142" r="8" fill="#fff"/><circle cx="274" cy="142" r="8" fill="#fff"/><circle cx="250" cy="141" r="4" fill="#2B1B10"/><circle cx="272" cy="141" r="4" fill="#2B1B10"/>
+  <path d="M28 176 L4 184 L28 194Z" fill="#FFB020" stroke="#B36B00" stroke-width="3" stroke-linejoin="round"/>
+</symbol>
 </svg>

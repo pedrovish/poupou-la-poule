@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le tas de feuilles</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// les amis tout couverts de feuilles
+const poupouF = (x, y, w, o = {}) => avec('poupou', ['poupoufeuilles'], x, y, w, o);
+const caramelF = (x, y, w, o = {}) => avec('caramel', ['caramelfeuilles'], x, y, w, o);
+const margueriteF = (x, y, w, o = {}) => avec('marguerite', ['margueritefeuilles'], x, y, w, o);
+const picpicF = (x, y, w, o = {}) => avec('herisson', ['herissonfeuilles'], x, y, w, o);
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des petits traits de mouvement
+const mouvement = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 24} h-${l + 20} M${x} ${y + 48} h-${l}"/></g>`;
+// des petits traits qui gigotent
+const gigote = (x, y) => `<g fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linecap="round"><path d="M${x - 30} ${y} q-8 -10 0 -20 M${x + 30} ${y} q8 -10 0 -20 M${x - 44} ${y + 10} q-8 -10 0 -20 M${x + 44} ${y + 10} q8 -10 0 -20"/></g>`;
+// des petits « z » de sieste
+const dodo = (x, y) => titre('z', x, y, 26, '#5A6390') + titre('z', x + 18, y - 22, 32, '#5A6390') + titre('Z', x + 40, y - 50, 40, '#5A6390');
+// des feuilles qui volent : [x, y, largeur, rotation]
+const SORTES = ['feuille', 'feuillerouge', 'feuillejaune'];
+const feuilles = pts => pts.map(([x, y, w, r], k) => u(SORTES[k % 3], x, y, w, { rot: r || 0 })).join('');
+// des feuilles par terre, toutes éparpillées
+const parTerre = (x0, x1, y0, n = 10) => { const p = []; for (let k = 0; k < n; k++) p.push([x0 + ((k * 97) % (x1 - x0)), y0 + ((k * 41) % 80), 30 + (k % 3) * 6, (k * 67) % 360]); return feuilles(p); };
+// un tourbillon de feuilles autour de (cx, cy)
+const tourbillon = (cx, cy, r = 150) => {
+  let s = `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".85"><ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r * 0.45}" stroke-dasharray="40 28"/><ellipse cx="${cx}" cy="${cy - 40}" rx="${r * 0.75}" ry="${r * 0.32}" stroke-dasharray="30 24"/></g>`;
+  const p = []; for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; p.push([cx + Math.cos(a) * r - 20, cy + Math.sin(a) * r * 0.45 - 20 - (k % 2) * 40, 40, k * 47]); }
+  return s + feuilles(p);
+};
+// les pattes de Poupou qui dépassent du tas, en l'air !
+const pattes = (x, y) => `<g stroke="#E07B1A" stroke-width="7" stroke-linecap="round" fill="none"><path d="M${x - 14} ${y} L${x - 20} ${y - 40} M${x - 20} ${y - 40} L${x - 34} ${y - 48} M${x - 20} ${y - 40} L${x - 14} ${y - 54}"/><path d="M${x + 14} ${y} L${x + 22} ${y - 40} M${x + 22} ${y - 40} L${x + 14} ${y - 52} M${x + 22} ${y - 40} L${x + 36} ${y - 46}"/></g>`;
+const arbres = () => u('arbreautomne', -40, 80, 230) + u('arbreautomne', 620, 70, 220);
+
+lancerHistoire({
+  numero: 23,
+  titre: "Poupou et le tas de feuilles",
+  morale: "Quand on a très envie de faire quelque chose, on demande d’abord ! Et après une bêtise, on dit pardon… et on répare ensemble.",
+  couverture: () => decor('jour') + u('nuage', 260, 30, 120) + arbres() +
+    u('tasgeant', 200, 260, 400) +
+    u('poupou', 310, 100, 150, { rot: 35 }) + mouvement(320, 130, 50) +
+    feuilles([[180, 200, 44, 20], [600, 220, 40, -30], [520, 120, 36, 60], [150, 330, 40, -40], [640, 340, 38, 10]]) +
+    u('caramel', 610, 420, 150, { flip: true }) + u('coincoin', 60, 430, 90) + surprise(80, 430) +
+    titre('FLOUCH !', 610, 160, 60, '#E8553E', 8),
+  fin: () => decor('coucher', u('soleil', 330, 250, 130)) + u('nuage', 60, 40, 120) + u('nuage', 600, 50, 110) +
+    u('arbreautomne', -40, 90, 220) +
+    u('sacfeuilles', 40, 380, 100) + u('sacfeuilles', 120, 390, 90) + u('sacfeuilles', 200, 386, 96) +
+    papi('hamid', 300, 180, 150) + u('rateau', 440, 230, 56) +
+    u('poupou', 500, 330, 130) + u('feuillerouge', 590, 300, 40, { rot: 15 }) +
+    u('caramel', 610, 420, 140, { flip: true }) + u('coincoin', 470, 460, 70) + u('herisson', 260, 450, 100) +
+    u('coeur', 280, 150, 34, { rot: -12 }) + u('coeur', 700, 190, 32, { rot: 12 }) +
+    feuilles([[620, 120, 30, 20], [140, 250, 28, -30], [720, 300, 30, 60]]) +
+    titre('Tous ensemble !', 420, 110, 52, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 650, 30, 90) + u('nuage', 300, 40, 120) +
+        u('arbreautomne', -50, 80, 230) +
+        u('poupou', 40, 330, 130) +
+        papi('hamid', 220, 170, 150) + u('rateau', 360, 240, 56, { rot: 12 }) +
+        u('tasfeuilles', 400, 330, 290) +
+        u('caramel', 695, 445, 100, { flip: true }) +
+        bulle(390, 150, 'Surtout, n’y touchez pas !', 330) +
+        bulle(10, 240, 'Si moelleux…', 180),
+      texte: "C’est l’automne à la ferme. Papi Hamid a ratissé toutes les feuilles en un <b>énorme tas</b>, tout rouge et tout jaune. « Je vais chercher les grands sacs. Surtout, <b>n’y touchez pas</b> ! » Poupou regarda le tas… Il avait l’air si <b>moelleux</b>."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 120) + u('nuage', 560, 30, 110) +
+        pattes(410, 330) + gigote(410, 300) +
+        u('tasfeuilles', 250, 310, 320) +
+        feuilles([[300, 220, 40, 20], [480, 210, 38, -40], [380, 170, 34, 70], [250, 280, 32, -20], [530, 280, 36, 30]]) +
+        titre('FLOUCH !', 410, 140, 62, '#E8553E', -6) +
+        u('caramel', 600, 410, 150, { flip: true }) + u('coincoin', 80, 430, 90) + surprise(100, 430) +
+        bulle(580, 320, 'Hi hi hi !', 160),
+      texte: "« Juste <b>UN</b> tout petit saut… », chuchota Poupou. Un, deux, trois… <b>FLOUCH</b> ! Elle disparut dans le tas ! On ne voyait plus que ses deux <b>pattes</b> qui gigotaient en l’air."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        parTerre(40, 760, 420, 14) +
+        caramelF(300, 280, 210) + choc(330, 290, .9) +
+        poupouF(70, 320, 140) +
+        feuilles([[200, 150, 44, 20], [560, 150, 40, -30], [420, 100, 38, 70], [100, 220, 36, -50], [620, 260, 42, 30], [300, 200, 34, 80], [700, 180, 36, -10]]) +
+        titre('BADABOUM !', 400, 80, 58, '#E8553E', 4) +
+        bulle(440, 210, 'Je suis un cochon-buisson !', 340),
+      texte: "« À moi ! » cria Caramel. Il sauta, lui aussi : <b>BADABOUM</b> ! Le tas explosa et les feuilles volèrent partout. Caramel ressortit tout couvert de feuilles : « Groin ! Je suis un <b>cochon-buisson</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) +
+        parTerre(40, 360, 430, 8) +
+        poupouF(100, 300, 150) + u('balai', 240, 260, 56, { rot: -35 }) +
+        feuilles([[330, 330, 38, 20], [380, 280, 40, -40], [440, 230, 38, 60], [500, 200, 36, 10], [400, 360, 34, 80]]) +
+        mouvement(470, 270, 60) +
+        u('marguerite', 520, 250, 250) + dodo(720, 250) +
+        titre('FRRRT ! FRRRT !', 430, 130, 48, '#E39A1C', -6) +
+        bulle(60, 180, 'Vite, on remet tout !', 270),
+      texte: "Oh oh… Il n’y avait plus de tas du tout ! « Vite, il faut tout <b>remettre</b> avant que Papi revienne ! » dit Poupou. Elle prit le grand <b>balai</b> et balaya, balaya… <b>FRRRT, FRRRT</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) + u('nuage', 520, 30, 110) +
+        margueriteF(230, 190, 280) + surprise(445, 200) +
+        feuilles([[340, 120, 40, 20], [420, 90, 36, -30], [500, 130, 38, 60]]) +
+        titre('FLOP ! FLOP ! FLOP !', 450, 70, 44, '#E39A1C', -3) +
+        poupouF(60, 320, 130) + u('balai', 180, 290, 46, { rot: -20 }) +
+        u('coincoin', 510, 430, 85, { flip: true }) + surprise(520, 430) +
+        bulle(490, 320, 'Un arbre qui fait Meuh !', 300),
+      texte: "Mais elle balayait beaucoup <b>trop fort</b> ! Les feuilles s’envolèrent… et retombèrent toutes sur <b>Marguerite</b>, qui rêvait au soleil. <b>FLOP, FLOP, FLOP</b> ! Coin-Coin ouvrit grand le bec : « Coin ! Un <b>arbre</b> qui fait Meuh ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 20, 110) +
+        vent(40, 90, .9) +
+        tourbillon(390, 300, 190) +
+        poupouF(320, 230, 150, { rot: -20 }) +
+        u('caramel', 40, 420, 130) + surprise(150, 420) +
+        u('coincoin', 680, 440, 80, { flip: true }) +
+        titre('FIOUUUU !', 560, 90, 58, '#3F8EDB', 6) +
+        bulle(410, 120, 'Je suis une poule-tourbillon !', 380),
+      texte: "Alors le vent se leva : <b>FIOUUUU</b> ! Toutes les feuilles se mirent à tourner, tourner autour de Poupou. Et Poupou tournait avec elles, comme une toupie : « Je suis une <b>poule-tourbillon</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        u('arbreautomne', 440, 60, 260) +
+        parTerre(420, 760, 440, 6) +
+        picpicF(450, 360, 170) + mouvement(450, 400, 40) +
+        titre('ATCHOUM !', 560, 300, 50, '#E8553E', -6) +
+        poupouF(100, 310, 140) + surprise(220, 310) +
+        u('caramel', 230, 420, 120) +
+        bulle(60, 150, 'Le tas… il marche !', 260),
+      texte: "Quand le vent s’arrêta, les feuilles retombèrent en un petit tas, sous l’arbre. Mais ce petit tas se mit à <b>marcher</b> ! « <b>ATCHOUM</b> ! » C’était <b>Pic-Pic</b> le hérisson, qui faisait la sieste… avec des feuilles piquées sur tous ses piquants !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 560, 30, 110) +
+        u('grange', 560, 130, 230) +
+        u('brouette', 260, 260, 240, { rot: 160 }) +
+        parTerre(160, 560, 420, 10) +
+        u('coincoin', 340, 330, 90, { rot: 180 }) +
+        u('poupououps', 80, 300, 140, { rot: -20 }) + choc(140, 290, .7) +
+        caramelF(520, 370, 160, { rot: 15 }) +
+        titre('PATATRA !', 380, 120, 62, '#E8553E', -6),
+      texte: "« J’ai une idée ! dit Poupou. Mettons tout dans la <b>brouette</b> ! » Tout le monde poussa la brouette… beaucoup trop vite ! <b>PATATRA</b> ! La brouette se renversa, et Coin-Coin se retrouva dessous, <b>la tête en bas</b>."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('tasgeant', 200, 240, 400) + gigote(400, 230) + titre('POUF !', 260, 200, 56, '#E39A1C', -8) +
+        margueriteF(560, 230, 230, { flip: true }) + surprise(570, 240) +
+        picpicF(40, 400, 130) +
+        feuilles([[150, 220, 36, 30], [650, 160, 34, -20]]) +
+        bulle(405, 90, 'Meuh… un tas avec des yeux ?!', 385),
+      texte: "Alors ils poussèrent toutes les feuilles, poussèrent, poussèrent… si fort qu’ils <b>tombèrent tous dedans</b> : <b>POUF</b> ! Maintenant, le tas avait des <b>yeux</b>, une queue en tire-bouchon, un bec… et deux pattes de poule en l’air !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) +
+        papi('hamidsurpris', 40, 170, 150) + surprise(90, 160) +
+        u('sacfeuilles', 170, 400, 80, { rot: 30 }) + u('sacfeuilles', 20, 420, 70, { rot: -20 }) +
+        u('tasgeant', 300, 270, 380) + gigote(490, 270) +
+        titre('ATCH… ATCH…', 500, 170, 50, '#E8553E', 4) +
+        parTerre(240, 760, 470, 6),
+      texte: "C’est alors que Papi Hamid revint avec ses grands sacs. Il ouvrit de <b>très grands yeux</b> : des feuilles PARTOUT, une vache-arbre, un hérisson-feuilles… et un tas qui <b>gigotait</b> ! Soudain, le tas fit : « ATCH… ATCH… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        papi('hamidsurpris', 300, 160, 160) + u('hamidfeuilles', 300, 160, 160) +
+        feuilles([[330, 130, 36, -20], [390, 124, 34, 30]]) +
+        feuilles([[100, 90, 40, 20], [200, 60, 36, -40], [520, 70, 40, 60], [620, 130, 38, 10], [80, 220, 36, -60], [680, 240, 40, 30], [240, 190, 32, 80], [560, 200, 34, -10]]) +
+        titre('PFOUUUF !', 400, 70, 56, '#E8553E', -4) +
+        poupouF(90, 320, 150) + u('coincoin', 250, 440, 70) +
+        caramelF(520, 390, 160, { flip: true }) +
+        parTerre(20, 780, 470, 8) +
+        bulle(20, 220, 'Pardon, Papi…', 200),
+      texte: "… <b>ATCHOUM</b> ! <b>PFOUUUF</b> ! Le tas explosa, et toutes les feuilles retombèrent… sur <b>Papi Hamid</b> ! Il en avait sur le chapeau, sur la moustache et même dans les oreilles. Poupou sortit, toute petite : « <b>Pardon</b>, Papi… Je voulais juste faire UN petit saut. »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 150, 110) +
+        papi('hamid', 40, 170, 150) + u('rateau', 180, 230, 56, { rot: -10 }) +
+        u('tasfeuilles', 280, 340, 360) +
+        u('poupou', 330, 190, 130, { rot: 20 }) + u('caramel', 470, 210, 150, { rot: -15 }) +
+        u('coincoin', 600, 300, 80, { rot: 20 }) + u('herisson', 630, 430, 110, { flip: true }) +
+        feuilles([[300, 300, 34, 20], [620, 260, 34, -30], [440, 150, 30, 60]]) +
+        titre('UN, DEUX, TROIS… FLOUCH !', 490, 110, 38, '#C9427F', -3) +
+        bulle(20, 60, 'Ho ho ho !', 170),
+      texte: "Papi Hamid éclata de rire : « <b>Ho ho ho</b> ! Un tas de feuilles, c’est fait pour sauter… mais il faut <b>demander</b> d’abord ! » Alors tout le monde aida à ratisser. Puis Papi fit un nouveau tas : « Un, deux, trois… <b>tous ensemble</b> ! » <b>FLOUCH</b> ! Et tout le monde rit."
+    }
+  ]
+});
+</script>
+</body>
+</html>

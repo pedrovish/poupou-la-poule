@@ -199,5 +199,14 @@
     "fichier": "/histoires/22-la-sieste-de-papi.html",
     "couleur": "#E3F3FF",
     "objet": "arrosoir"
+  },
+  {
+    "numero": 23,
+    "titre": "Poupou et le tas de feuilles",
+    "resume": "FLOUCH ! Poupou devait juste regarder le gros tas de feuilles de Papi Hamid… mais elle a sauté dedans ! Un cochon-buisson, une vache-arbre, une poule-tourbillon, un tas qui éternue… Que va dire Papi Hamid ?",
+    "date": "2026-11-19",
+    "fichier": "/histoires/23-le-tas-de-feuilles.html",
+    "couleur": "#FFE8CC",
+    "objet": "tasgeant"
   }
 ]

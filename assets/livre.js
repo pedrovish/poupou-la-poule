@@ -34,7 +34,9 @@
     chapeaupaille: 90 / 160, epouvantail: 280 / 200, epouvantailnu: 280 / 200, corbeau: 110 / 120, corbeaurit: 110 / 120, corbeauvole: 100 / 140,
     poupouchemise: 1, potager: 90 / 320, sacgraines: 120 / 100,
     levure: 1.3, pate: 200 / 300, patemonte: 1.2, caramelpate: 180 / 220, margueritepate: 240 / 300, poupoupate: 1, petitspains: 140 / 300,
-    arrosoir: 120 / 160, chapeaugeant: 1, grossesbottes: 1, moutonbouffant: 200 / 240, chapeaumarche: 130 / 160, carameleau: 180 / 220
+    arrosoir: 120 / 160, chapeaugeant: 1, grossesbottes: 1, moutonbouffant: 200 / 240, chapeaumarche: 130 / 160, carameleau: 180 / 220,
+    feuillejaune: 1, rateau: 200 / 80, sacfeuilles: 140 / 120, poupoufeuilles: 1, caramelfeuilles: 180 / 220, margueritefeuilles: 240 / 300,
+    herissonfeuilles: 120 / 160, hamidfeuilles: 256 / 160, tasgeant: 220 / 400
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

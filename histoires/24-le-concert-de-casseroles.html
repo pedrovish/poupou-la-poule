@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le concert de casseroles</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// Caramel avec la casserole sur la tête, Coin-Coin avec la passoire
+const caramelC = (x, y, w, o = {}) => avec('caramel', ['caramelcasserole'], x, y, w, o);
+const coincoinP = (x, y, w, o = {}) => avec('coincoin', ['coincoinpassoire'], x, y, w, o);
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// Poupou qui tient une cuillère en bois devant elle
+const poupouCuillere = (x, y, w, o = {}) => u('poupou', x, y, w, o) +
+  u('cuillerebois', o.flip ? x + 0.19 * w : x + 0.69 * w, y + 0.36 * w, 0.12 * w, { rot: o.flip ? -75 : 75 });
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des petits traits de mouvement
+const mouvement = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 24} h-${l + 20} M${x} ${y + 48} h-${l}"/></g>`;
+// des petits traits qui tremblent (ça vacille !)
+const tremble = (x, y) => `<g fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linecap="round"><path d="M${x - 30} ${y} q-8 -10 0 -20 M${x + 30} ${y} q8 -10 0 -20 M${x - 44} ${y + 10} q-8 -10 0 -20 M${x + 44} ${y + 10} q8 -10 0 -20"/></g>`;
+// des ondes de bruit autour de (x, y)
+const ondes = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" fill="none" stroke="#E8553E" stroke-width="5" stroke-linecap="round" opacity=".85"><path d="M-40 -30 q-14 30 0 60 M-58 -44 q-22 44 0 88 M40 -30 q14 30 0 60 M58 -44 q22 44 0 88"/></g>`;
+// des notes de musique qui volent : [x, y, largeur, rotation]
+const notes = pts => pts.map(([x, y, w, r]) => u('note', x, y, w, { rot: r || 0 })).join('');
+// des éclaboussures de boue
+const eclabousse = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" fill="#8B5A2B"><circle cx="0" cy="0" r="12"/><circle cx="-40" cy="-30" r="8"/><circle cx="36" cy="-38" r="9"/><circle cx="-60" cy="10" r="6"/><circle cx="64" cy="4" r="7"/><circle cx="-10" cy="-56" r="6"/><circle cx="20" cy="-70" r="5"/></g>`;
+// des taches de boue sur Coin-Coin
+const boueCanard = (x, y, w, flip) => { const k = w / 120; const X = a => flip ? x + w - a * k : x + a * k; return `<g fill="#8B5A2B">${[[40, 80, 6], [60, 92, 5], [30, 70, 4], [70, 76, 4], [86, 54, 3.5]].map(([a, b, r]) => `<circle cx="${X(a)}" cy="${y + b * k}" r="${r * k * 1.4}"/>`).join('')}</g>`; };
+const papiChapeau = (x, y, w) => papi('hamid', x, y, w);
+
+lancerHistoire({
+  numero: 24,
+  titre: "Poupou et le concert de casseroles",
+  morale: "Avant de prendre ce qui n’est pas à soi, on demande d’abord ! Et après une bêtise, on dit pardon… et on répare ensemble.",
+  couverture: () => decor('jour') + u('soleil', 660, 30, 90) + u('nuage', 60, 40, 120) +
+    u('marmite', 250, 330, 170) + choc(330, 370, .9) +
+    poupouCuillere(110, 270, 160) +
+    caramelC(450, 300, 200) + u('cuillerebois', 640, 270, 20, { rot: -30 }) +
+    coincoinP(660, 420, 100, { flip: true }) +
+    notes([[120, 160, 40, -15], [420, 200, 36, 15], [600, 150, 40, -10], [220, 110, 32, 20], [700, 260, 30, 10]]) +
+    ondes(335, 380, .8) +
+    titre('BOUM !', 330, 120, 66, '#E8553E', -6) + titre('TING !', 560, 110, 50, '#3F8EDB', 8),
+  fin: () => decor('coucher', u('soleil', 650, 235, 100)) + u('nuage', 60, 40, 120) + u('nuage', 600, 50, 110) +
+    u('table', 230, 330, 340) +
+    u('marmite', 330, 250, 140) +
+    `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"><path d="M370 250 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M400 246 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M430 250 q-8 -14 0 -26 q8 -12 0 -24"/></g>` +
+    u('soupe', 250, 300, 70) + u('soupe', 500, 300, 70) +
+    papiChapeau(60, 170, 150) +
+    u('poupou', 610, 330, 130, { flip: true }) + u('coincoin', 700, 470, 70) +
+    u('caramel', 160, 430, 150) +
+    u('coeur', 120, 90, 40, { rot: -12 }) + u('coeur', 680, 160, 36, { rot: 12 }) +
+    notes([[560, 200, 30, 10], [200, 220, 28, -10]]) +
+    titre('Bon appétit !', 420, 110, 52, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 40, 30, 90) + u('nuage', 300, 40, 120) +
+        u('table', 330, 300, 250) +
+        u('marmite', 345, 225, 110) + u('casserole', 450, 262, 110) + u('couvercle', 470, 230, 56, { rot: -10 }) + u('passoire', 520, 205, 64, { rot: 0 }) +
+        poupouCuillere(170, 330, 140) +
+        titre('TING !', 300, 270, 44, '#3F8EDB', -8) +
+        papi('hamid', 640, 160, 140, { flip: true }) + u('panier', 600, 292, 66) +
+        bulle(560, 60, 'À tout à l’heure !', 230),
+      texte: "Ce matin, Papi Hamid a lavé toutes ses <b>casseroles</b>. Il les a mises à sécher au soleil, sur la table du jardin. « Je vais chercher des légumes pour la <b>soupe</b>. À tout à l’heure ! » Poupou tapa sur une casserole avec une cuillère en bois : <b>TING</b> ! Oh… quel joli bruit !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 110) + u('nuage', 520, 30, 110) +
+        u('bottefoin', 590, 390, 180) + avec('caramel', ['caramelendormi'], 600, 330, 160, { flip: true }) +
+        titre('z', 640, 320, 26, '#5A6390') + titre('z', 658, 298, 32, '#5A6390') + titre('Z', 680, 270, 40, '#5A6390') +
+        u('poupou', 70, 330, 140, { rot: -8 }) +
+        u('marmite', 220, 350, 150) +
+        u('casserole', 225, 319, 140, { rot: 4 }) +
+        u('casserole', 215, 284, 130, { flip: true, rot: -5 }) +
+        u('passoire', 245, 245, 100, { rot: 6 }) +
+        u('couvercle', 252, 228, 84, { rot: -10 }) +
+        u('couvercle', 268, 205, 64, { rot: 14 }) +
+        u('cuillerebois', 345, 200, 20, { rot: 30 }) +
+        tremble(300, 190) +
+        titre('Hop ! Hop ! Hop !', 190, 100, 40, '#E39A1C', -4) +
+        bulle(380, 160, 'Un ORCHESTRE !', 210),
+      texte: "« J’ai une idée ! Je vais faire un <b>orchestre</b> ! » dit Poupou. Et sans rien demander, elle prit une casserole… puis deux… puis <b>TOUTES</b> les casseroles, les couvercles, la passoire et la grosse <b>marmite</b> ! Hop, hop, hop !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('marmite', 190, 350, 160) + ondes(270, 400, .9) + choc(270, 370, .8) +
+        poupouCuillere(40, 300, 160) +
+        u('bottefoin', 470, 400, 220) +
+        caramelC(470, 130, 210, { rot: -12 }) + mouvement(560, 330, 50) +
+        notes([[100, 180, 36, -15], [360, 220, 34, 20]]) +
+        titre('BOUM ! BOUM ! BOUM !', 225, 120, 38, '#E8553E', -5) +
+        bulle(470, 40, 'Qui a éteint le soleil ?', 310),
+      texte: "Poupou tapa sur la grosse marmite : <b>BOUM ! BOUM ! BOUM !</b> Caramel, qui dormait dans la paille, sauta si haut… qu’il retomba avec une <b>casserole sur la tête</b> ! « Groin ! Qui a éteint le soleil ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) +
+        u('barriere', 0, 330, 220) + choc(120, 360, .7) + titre('BONK !', 110, 300, 38, '#E8553E', -10) +
+        u('seaulait', 230, 360, 80, { rot: 12 }) + tremble(270, 350) + titre('BONK !', 270, 320, 34, '#E8553E', 6) +
+        caramelC(300, 300, 200) +
+        u('marguerite', 470, 220, 280) + choc(490, 360, .9) + titre('BONK !', 480, 300, 44, '#E8553E', -4) +
+        surprise(680, 230) +
+        bulle(640, 100, 'Meuh ?!', 130),
+      texte: "Caramel ne voyait plus rien du tout. Il avança tout doucement… <b>BONK</b> ! dans la barrière. <b>BONK</b> ! dans le seau de lait. Et <b>BONK</b> ! dans le derrière de Marguerite. « Meuh ? Un <b>cochon-casserole</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 20, 110) +
+        u('flaquelait', 20, 420, 300) +
+        u('seaulait', 140, 370, 90, { rot: -100 }) +
+        titre('SPLATCH !', 160, 360, 46, '#3F8EDB', -8) +
+        u('marguerite', 250, 240, 290, { rot: -6 }) +
+        u('couvercle', 420, 200, 74, { rot: -30 }) + u('couvercle', 600, 210, 74, { rot: 28 }) +
+        ondes(530, 250, .7) +
+        titre('CLING ! CLANG !', 510, 110, 48, '#E39A1C', 4) +
+        poupouCuillere(620, 330, 130, { flip: true }) +
+        notes([[300, 150, 32, -10], [700, 220, 30, 15]]),
+      texte: "« Marguerite, tu feras les <b>cymbales</b> ! » dit Poupou, en lui donnant deux couvercles. <b>CLING ! CLANG !</b> Marguerite adora ça. Elle se mit à danser en remuant la queue… et <b>SPLATCH</b> ! Elle renversa tout le seau de lait."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) + u('nuage', 560, 40, 110) +
+        u('flaquelait', 110, 410, 520) +
+        mouvement(300, 360, 120) +
+        coincoinP(360, 300, 140, { rot: 12 }) + choc(490, 280, .6) +
+        titre('ZIOUUUU !', 330, 270, 50, '#3F8EDB', -6) + titre('TONK !', 560, 250, 40, '#E8553E', 10) +
+        u('poupou', 20, 330, 130) + surprise(130, 330) +
+        caramelC(590, 300, 180, { flip: true }) +
+        bulle(400, 130, 'Je suis un chevalier !', 300),
+      texte: "Coin-Coin arriva en courant. Mais le lait, ça <b>glisse</b> ! <b>ZIOUUUU</b> ! Il glissa, glissa… jusqu’à la passoire, qui sauta en l’air et retomba pile sur sa tête : <b>TONK</b> ! « Coin ! Regardez, je suis un <b>chevalier</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 100) +
+        u('chevresaute', 600, 180, 150) + mouvement(600, 230, 40) + titre('BOING !', 700, 160, 38, '#C9427F', 8) +
+        u('marguerite', 250, 190, 230) + u('couvercle', 370, 185, 60, { rot: -30 }) + u('couvercle', 480, 195, 60, { rot: 30 }) +
+        u('marmite', 170, 360, 130) + poupouCuillere(30, 310, 150) + choc(230, 390, .6) +
+        caramelC(400, 340, 170) + u('cuillerebois', 545, 290, 18, { rot: -40 }) +
+        coincoinP(630, 420, 100, { flip: true }) +
+        notes([[60, 160, 36, -15], [200, 190, 32, 15], [560, 120, 34, -10], [740, 330, 30, 10], [120, 260, 28, 20]]) +
+        titre('Quel VACARME !', 400, 80, 54, '#E8553E', -3),
+      texte: "Et maintenant, le grand <b>concert</b> ! BOUM, faisait la marmite. CLING-CLANG, faisaient les couvercles. « COIN-COIN ! » chantait Coin-Coin. Même Biscotte, la petite chèvre, sautait partout : <b>BOING ! BOING !</b> Quel <b>vacarme</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) +
+        u('marguerite', 520, 190, 250, { flip: true }) + surprise(560, 200) +
+        u('flaqueboue', 60, 400, 560) +
+        avec('caramel', ['caramelcasserole', 'tachesboue'], 330, 320, 190, { rot: 8 }) +
+        avec('poupou', ['poupouboue'], 130, 300, 140, { rot: -15 }) +
+        coincoinP(470, 420, 90, { rot: -10 }) + boueCanard(470, 420, 90) +
+        eclabousse(300, 330, 1) + eclabousse(560, 400, .8) +
+        titre('SPLATCH !', 330, 120, 66, '#8B5A2B', -5) +
+        bulle(40, 170, 'En avant, la parade !', 270),
+      texte: "« En avant, la <b>parade</b> ! » cria Poupou. Caramel marchait devant… mais il ne voyait toujours rien ! Il emmena tout le monde tout droit… dans la grande <b>flaque de boue</b>. <b>SPLATCH</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        papi('hamidsurpris', 30, 170, 150) + surprise(80, 160) +
+        u('panier', 170, 400, 80, { rot: 30 }) + u('pomme', 260, 470, 30) + u('pomme', 290, 440, 26) +
+        u('table', 330, 290, 180) +
+        u('marguerite', 560, 200, 220, { flip: true }) + u('couvercle', 580, 192, 54, { rot: -12 }) +
+        avec('poupou', ['poupouboue'], 240, 340, 120) +
+        avec('caramel', ['caramelcasserole', 'tachesboue'], 360, 360, 170) +
+        coincoinP(600, 440, 85, { flip: true }) + boueCanard(600, 440, 85, true) +
+        titre('Oh oh…', 660, 140, 44, '#E8553E', 6) +
+        bulle(180, 80, 'Mes casseroles ?!', 230),
+      texte: "C’est alors que Papi Hamid revint avec son panier. Il ouvrit de <b>très grands yeux</b> : plus une casserole sur la table ! Un cochon-casserole, un canard-passoire, une vache avec un couvercle sur la tête… et tout le monde <b>plein de boue</b> ! « Mais… où est passée ma <b>marmite</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 30, 110) +
+        papi('hamid', 300, 160, 150) +
+        u('casserole', 396, 286, 130, { rot: 180 }) +
+        `<g stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M440 370 l-14 10 M520 370 l14 10 M480 362 v14"/></g>` +
+        titre('POP !', 560, 220, 54, '#E8553E', 10) +
+        avec('caramel', ['tachesboue'], 440, 340, 180, { flip: true }) +
+        avec('poupou', ['poupouboue'], 80, 330, 130) + u('cuillerebois', 50, 450, 18, { rot: 80 }) +
+        coincoinP(660, 440, 80, { flip: true }) + boueCanard(660, 440, 80, true) +
+        bulle(30, 230, 'Pardon, Papi…', 200) + bulle(590, 280, 'Coucou !', 140),
+      texte: "Poupou posa sa cuillère, toute petite : « <b>Pardon</b>, Papi… J’ai pris tes casseroles sans demander. Je voulais faire un orchestre. » Papi s’approcha de Caramel et tira doucement sur la casserole : <b>POP</b> ! « Coucou ! » dit Caramel, tout content de revoir le soleil."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        papi('hamid', 30, 170, 140) + bulle(150, 90, 'Ho ho ho !', 170) +
+        u('bulles', 300, 230, 120) + u('bulles', 440, 210, 110) +
+        u('bassine', 270, 340, 280) +
+        `<ellipse cx="410" cy="379" rx="107" ry="20" fill="#CFEAFB"/><g fill="#fff" stroke="#B9D6EA" stroke-width="2"><circle cx="320" cy="366" r="12"/><circle cx="338" cy="360" r="10"/><circle cx="490" cy="364" r="12"/><circle cx="506" cy="370" r="9"/><circle cx="420" cy="378" r="8"/></g>` +
+        u('couvercle', 330, 350, 46, { rot: -15 }) +
+        u('coincoin', 375, 302, 86) + u('couvercle', 462, 344, 50, { rot: 20 }) +
+        u('poupou', 180, 330, 120) + u('casserole', 250, 400, 90, { rot: -20 }) +
+        u('caramel', 570, 330, 180, { flip: true }) + u('cuillerebois', 560, 360, 18, { rot: -30 }) +
+        titre('FROTTE ! FROTTE ! PLOUF !', 480, 205, 34, '#3F8EDB', -3),
+      texte: "Papi Hamid éclata de rire : « <b>Ho ho ho</b> ! Un orchestre, quelle bonne idée… mais on <b>demande</b> d’abord ! » Alors tout le monde aida à laver les casseroles dans la grande bassine. <b>FROTTE, FROTTE… PLOUF</b> ! Coin-Coin, lui, nageait entre les couvercles."
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 640, 250, 110)) + u('nuage', 60, 40, 110) +
+        u('marguerite', 10, 220, 190, { rot: -5 }) + u('couvercle', 150, 200, 44, { rot: -25 }) + u('couvercle', 196, 214, 44, { rot: 25 }) +
+        papi('hamid', 320, 150, 140) +
+        u('marmite', 470, 330, 120) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"><path d="M505 330 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M530 326 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M555 330 q-8 -14 0 -26 q8 -12 0 -24"/></g>` +
+        poupouCuillere(150, 320, 130) + u('casserole', 262, 430, 84) +
+        u('caramel', 600, 370, 170, { flip: true, rot: 6 }) + u('couvercle', 590, 330, 52, { rot: -20 }) +
+        coincoinP(40, 450, 80) +
+        u('coeur', 280, 110, 34, { rot: -12 }) + u('coeur', 720, 140, 30, { rot: 12 }) +
+        notes([[110, 180, 30, -10], [260, 250, 28, 15], [600, 180, 30, -15], [720, 280, 26, 10]]) +
+        titre('ting… toc… boum…', 420, 100, 42, '#C9427F', -3),
+      texte: "Le soir, Papi fit une bonne soupe dans sa grosse marmite. Puis il donna à chacun une <b>vieille casserole</b>, rien que pour la musique. Tous ensemble, tout doucement : ting… toc… boum… Et tout le monde <b>dansa</b> et rit jusqu’au coucher du soleil."
+    }
+  ]
+});
+</script>
+</body>
+</html>

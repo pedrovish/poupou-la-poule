@@ -208,5 +208,14 @@
     "fichier": "/histoires/23-le-tas-de-feuilles.html",
     "couleur": "#FFE8CC",
     "objet": "tasgeant"
+  },
+  {
+    "numero": 24,
+    "titre": "Poupou et le concert de casseroles",
+    "resume": "TING ! BOUM ! Poupou prend toutes les casseroles de Papi Hamid pour faire un orchestre… Un cochon-casserole, une vache-cymbales, un canard-passoire, une parade dans la boue… Que va dire Papi Hamid ?",
+    "date": "2026-11-20",
+    "fichier": "/histoires/24-le-concert-de-casseroles.html",
+    "couleur": "#E3ECF6",
+    "objet": "marmite"
   }
 ]

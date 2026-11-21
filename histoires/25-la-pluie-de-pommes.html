@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la pluie de pommes</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le grand pommier : avec ou sans ses pommes, avec ou sans la plus belle pomme
+const pommier = (x, y, w, pommes = true, belle = true, o = {}) =>
+  u('pommiervide', x, y, w, o) + (pommes ? u('pommesarbre', x, y, w, o) : '') + (belle ? u('bellepomme', x, y, w, o) : '');
+// Caramel les joues pleines de pommes
+const caramelJ = (x, y, w, o = {}) => avec('caramel', ['carameljoues'], x, y, w, o);
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// des pommes : [x, y, largeur, rotation]
+const pommes = pts => pts.map(([x, y, w, r]) => u('pomme', x, y, w, { rot: r || 0 })).join('');
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des petits traits de mouvement (vers la gauche)
+const mouvement = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 24} h-${l + 20} M${x} ${y + 48} h-${l}"/></g>`;
+// des traits de chute (ça tombe !) au-dessus de (x, y)
+const chute = (x, y) => `<g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} v-26 M${x + 14} ${y - 6} v-18"/></g>`;
+// des traits qui tremblent autour d'un arbre (cx, cy, demi-largeur)
+const secoue = (cx, cy, r) => `<g fill="none" stroke="#6B3A1E" stroke-width="5" stroke-linecap="round"><path d="M${cx - r} ${cy - 30} q-14 15 0 30 q14 15 0 30 M${cx - r - 22} ${cy - 20} q-12 12 0 24 q12 12 0 24 M${cx + r} ${cy - 30} q14 15 0 30 q-14 15 0 30 M${cx + r + 22} ${cy - 20} q12 12 0 24 q-12 12 0 24"/></g>`;
+// des éclaboussures d'eau
+const plouf = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" fill="#BFE6FF" stroke="#3F8EDB" stroke-width="3"><path d="M-30 0 q-10 -30 -24 -40 q22 6 30 34Z"/><path d="M30 0 q10 -30 24 -40 q-22 6 -30 34Z"/><path d="M-6 -4 q0 -36 6 -50 q6 14 6 50Z"/><circle cx="-44" cy="-52" r="6"/><circle cx="46" cy="-56" r="5"/><circle cx="2" cy="-66" r="5"/></g>`;
+// des petites étoiles qui tournent (la tête qui tourne !)
+const etourdi = (x, y) => u('etoile', x - 40, y, 26, { rot: -20 }) + u('etoile', x, y - 18, 22) + u('etoile', x + 34, y + 2, 24, { rot: 20 }) +
+  `<ellipse cx="${x + 10}" cy="${y + 14}" rx="60" ry="14" fill="none" stroke="#E39A1C" stroke-width="3" stroke-dasharray="8 8"/>`;
+// Poupou qui tient une pomme dans ses ailes
+const poupouPomme = (x, y, w, o = {}) => u('poupou', x, y, w, o) + u('pomme', o.flip ? x + 0.15 * w : x + 0.55 * w, y + 0.5 * w, 0.3 * w);
+// des pommes partout par terre, entre x0 et x1
+const parTerre = (x0, x1, y0, n = 8) => { const p = []; for (let k = 0; k < n; k++) p.push([x0 + ((k * 97) % (x1 - x0)), y0 + ((k * 37) % 60), 30 + (k % 3) * 6, (k * 53) % 60 - 30]); return pommes(p); };
+
+lancerHistoire({
+  numero: 25,
+  titre: "Poupou et la pluie de pommes",
+  morale: "Quand c’est trop haut, on demande de l’aide à un grand ! Et après une bêtise, on dit pardon… et on répare ensemble.",
+  couverture: () => decor('jour') + u('soleil', 660, 30, 90) + u('nuage', 40, 40, 120) +
+    pommier(230, 30, 320, false, true) +
+    pommes([[200, 170, 46, -20], [300, 230, 40, 15], [520, 160, 44, 25], [430, 260, 38, -10], [600, 250, 42, 10], [260, 330, 40, 30], [560, 330, 36, -20]]) +
+    chute(222, 160) + chute(322, 220) + chute(542, 150) + chute(452, 250) + chute(622, 240) +
+    u('poupououps', 90, 330, 150) + surprise(200, 340) +
+    caramelJ(470, 350, 200) +
+    parTerre(250, 470, 470, 5) +
+    titre('PLOC !', 120, 180, 56, '#E8553E', -8) + titre('PLOC !', 680, 170, 48, '#E8553E', 8),
+  fin: () => decor('coucher', u('soleil', 650, 235, 100)) + u('nuage', 60, 40, 120) + u('nuage', 600, 50, 110) +
+    pommier(-30, 30, 240, false, false) +
+    u('table', 260, 330, 300) +
+    u('tartepommes', 300, 270, 220) +
+    `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"><path d="M370 270 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M410 266 q-8 -14 0 -26 q8 -12 0 -24"/><path d="M450 270 q-8 -14 0 -26 q8 -12 0 -24"/></g>` +
+    papi('hamid', 140, 170, 140) +
+    u('marguerite', 560, 220, 230, { flip: true }) +
+    poupouPomme(200, 360, 120) +
+    u('caramel', 470, 400, 150, { flip: true }) + u('coincoin', 640, 450, 80, { flip: true }) +
+    u('ecureuil', 60, 410, 90) +
+    u('coeur', 300, 110, 40, { rot: -12 }) + u('coeur', 540, 120, 36, { rot: 12 }) +
+    titre('Miam !', 420, 120, 58, '#C9427F', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 670, 30, 90) + u('nuage', 40, 40, 110) +
+        pommier(250, 40, 300) +
+        papi('hamid', 60, 170, 150) + u('panier', 180, 340, 80) +
+        u('poupou', 590, 330, 140, { flip: true }) +
+        titre('Miam !', 610, 290, 40, '#C9427F', 6) +
+        `<path d="M590 280 Q520 160 430 90" fill="none" stroke="#E39A1C" stroke-width="4" stroke-dasharray="10 10" stroke-linecap="round"/>` +
+        bulle(20, 80, 'Demain, on cueille !', 250),
+      texte: "C’est l’automne. Le grand <b>pommier</b> de Papi Hamid est plein de pommes rouges. « Demain, on les cueillera ensemble, <b>une par une</b>, pour faire une tarte ! » dit Papi. Mais Poupou, elle, regarde tout en haut… la plus <b>belle pomme</b> du monde. Miam !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 110) +
+        pommier(280, 40, 300) +
+        papi('hamid', 690, 250, 80) + u('brouette', 610, 330, 90, { flip: true }) +
+        u('poupou', 150, 210, 140, { rot: -10 }) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M200 370 v40 M226 380 v30 M174 380 v30"/></g>` +
+        titre('HOP !', 110, 200, 48, '#E39A1C', -8) + titre('HOP ! HOP !', 200, 130, 40, '#E39A1C', 4) +
+        bulle(60, 440, 'Pfff… trop haut !', 230),
+      texte: "Papi partit au marché avec sa brouette. Poupou sauta : <b>HOP</b> ! Trop haut. Elle sauta plus fort : <b>HOP ! HOP !</b> Toujours trop haut. « Pfff… cette pomme se moque de moi ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        pommier(250, 40, 300, true, true, { rot: -3 }) +
+        secoue(400, 160, 150) +
+        u('feuille', 160, 120, 36, { rot: 30 }) + u('feuille', 610, 200, 34, { rot: -40 }) + u('feuille', 590, 90, 30, { rot: 80 }) + u('feuille', 180, 240, 30, { rot: -10 }) +
+        u('poupou', 260, 330, 130, { rot: 12 }) +
+        mouvement(250, 370, 50) +
+        titre('Secoue ! Secoue !', 180, 520, 40, '#E8553E', -3) +
+        titre('FRRRRR…', 620, 330, 46, '#6B3A1E', 6) +
+        bulle(520, 420, 'Une idée !', 160),
+      texte: "« J’ai une idée ! Je vais <b>secouer</b> l’arbre ! » Poupou poussa le tronc de toutes ses forces. « Secoue, secoue ! » Le grand pommier se mit à trembler : <b>FRRRRR</b>…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 30, 110) +
+        pommier(130, 40, 300, false, true) +
+        pommes([[150, 170, 42, -20], [230, 230, 40, 15], [330, 180, 44, 25], [390, 260, 40, -10], [180, 300, 38, 10], [460, 200, 40, -25], [290, 310, 36, -15]]) +
+        chute(172, 160) + chute(252, 220) + chute(352, 170) + chute(482, 190) +
+        u('bottefoin', 420, 420, 180) +
+        u('caramel', 430, 350, 190) + choc(600, 340, .7) + choc(560, 320, .5) + titre('BONK !', 640, 300, 40, '#E8553E', 10) +
+        pommes([[580, 470, 34, 10], [440, 480, 30, -20], [650, 480, 32, 30]]) +
+        u('poupououps', 20, 340, 130) +
+        titre('PLOC ! PLOC ! PLOC !', 380, 110, 46, '#E8553E', -4) +
+        bulle(510, 200, 'Il pleut des pommes !', 270),
+      texte: "Et soudain… <b>PLOC ! PLOC ! PLOC !</b> Pas une pomme… <b>TOUTES</b> les pommes tombèrent d’un coup ! Caramel, qui faisait la sieste dans la paille, reçut <b>BONK, BONK, BONK</b> sur la tête. « Groin ! Il pleut des pommes ! » Mais la plus belle pomme, elle, restait tout en haut…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) +
+        pommier(-60, 30, 260, false, true) +
+        caramelJ(250, 250, 300) +
+        parTerre(120, 700, 450, 9) +
+        u('poupou', 620, 340, 130, { flip: true }) + surprise(640, 340) +
+        titre('1… 2… 3…', 220, 150, 40, '#E39A1C', -6) + titre('… DIX !', 590, 150, 48, '#E8553E', 6) +
+        bulle(420, 200, 'Mmmfff !', 140),
+      texte: "Caramel, le gourmand, n’en revenait pas. « Des pommes pour moi ! » Il en mit une dans sa bouche… puis deux… puis <b>DIX</b> ! Ses joues devinrent toutes rondes, comme deux ballons. « <b>Mmmfff</b> ! » Ça voulait dire : « C’est délicieux ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        `<path d="M0 360 C200 360 500 470 800 500" fill="none" stroke="#6FAE45" stroke-width="10" stroke-linecap="round" opacity=".6"/>` +
+        pommes([[160, 368, 36, 0], [220, 378, 36, 60], [280, 392, 36, 120], [600, 450, 38, 40], [660, 466, 38, 120], [720, 478, 38, 220]]) +
+        pommes([[340, 408, 40, 30], [380, 414, 40, 90], [420, 422, 40, 150], [460, 430, 40, 210], [500, 438, 40, 270]]) +
+        u('coincoin', 380, 316, 110) + mouvement(370, 340, 70) +
+        u('poupou', 20, 340, 120) + surprise(50, 340) +
+        titre('ROULI-ROULA !', 520, 140, 52, '#E8553E', 5) +
+        bulle(470, 240, 'Tchou-tchou !', 190),
+      texte: "Mais la ferme est en pente… Les pommes se mirent à <b>rouler</b> : ROULI-ROULA ! Coin-Coin, qui passait par là, se retrouva assis dessus… et partit comme sur un <b>petit train</b> ! « Coin-coin ! Tchou-tchou ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) + u('nuage', 560, 40, 110) +
+        u('marguerite', 220, 250, 300, { rot: -14 }) +
+        u('pomme', 450, 210, 44, { rot: 15 }) +
+        etourdi(470, 180) +
+        pommes([[240, 470, 40, 20], [300, 480, 38, -40], [400, 476, 40, 80], [480, 470, 38, -10], [540, 480, 36, 40]]) +
+        choc(310, 470, .8) +
+        titre('BADABOUM !', 400, 120, 60, '#E8553E', -5) +
+        u('coincoin', 650, 400, 90, { flip: true }) + u('pomme', 600, 470, 36) + u('pomme', 680, 486, 32) +
+        bulle(120, 200, 'Meuh-ouh-ouh !', 200),
+      texte: "ROULI-ROULA… les pommes roulèrent sous les pattes de Marguerite. « Meuh… meuh-ouh-ouh ! » Elle glissa à droite, elle glissa à gauche… et <b>BADABOUM</b> ! La voilà assise sur son derrière, avec une <b>pomme</b> sur la tête."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('buisson', 20, 330, 160) +
+        u('mare', 120, 360, 460) +
+        pommes([[180, 390, 40, 10], [260, 404, 38, -30], [380, 410, 40, 40], [470, 392, 38, -10], [520, 410, 34, 60], [220, 420, 34, 0]]) +
+        u('coincoin', 300, 352, 100) +
+        plouf(200, 400, .7) + plouf(470, 396, .8) +
+        titre('PLOUF ! PLOUF ! PLOUF !', 340, 110, 44, '#3F8EDB', -4) +
+        u('ecureuil', 610, 330, 130) + u('pomme', 600, 270, 90, { rot: -12 }) +
+        `<g fill="none" stroke="#6B3A1E" stroke-width="4" stroke-linecap="round"><path d="M592 330 q-8 -10 0 -20 M760 330 q8 -10 0 -20"/></g>` +
+        bulle(540, 160, 'Un gland GÉANT !', 230),
+      texte: "Et les pommes finirent leur course dans la mare : <b>PLOUF ! PLOUF ! PLOUF !</b> Coin-Coin aussi : PLOUF ! Pirouette l’écureuil arriva en courant : « Oh ! Un <b>gland géant</b> ! » Il essaya d’en porter un… mais c’était bien trop lourd !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 30, 110) +
+        pommier(260, 40, 300, false, true) +
+        u('poupou', 160, 340, 130) + u('pomme', 228, 300, 46, { rot: -15 }) + choc(280, 320, .6) +
+        `<path d="M300 300 Q360 140 420 220" fill="none" stroke="#E39A1C" stroke-width="4" stroke-dasharray="10 10" stroke-linecap="round"/>` +
+        u('pomme', 400, 210, 40, { rot: 20 }) +
+        caramelJ(560, 340, 170, { flip: true }) +
+        parTerre(40, 520, 470, 6) +
+        titre('HOP !', 330, 180, 40, '#E39A1C', -8) + titre('PLOC !', 120, 300, 50, '#E8553E', -6) +
+        bulle(20, 90, 'Remonte, la pomme !', 250),
+      texte: "« Oh oh… » dit Poupou. « Vite, il faut <b>remettre</b> les pommes sur l’arbre ! » Elle lança une pomme : HOP ! … <b>PLOC</b> ! Sur sa tête. Elle recommença : HOP ! … <b>PLOC</b> ! Encore sur sa tête !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        papi('hamidsurpris', 20, 170, 150) + surprise(70, 160) +
+        pommier(250, 40, 260, false, true) +
+        u('marguerite', 470, 250, 220, { rot: -10 }) + u('pomme', 640, 230, 36) +
+        u('mare', 560, 440, 240) + u('coincoin', 650, 420, 70) + u('pomme', 620, 450, 28) + u('pomme', 720, 456, 28) +
+        caramelJ(300, 380, 150) +
+        u('poupououps', 180, 400, 100) +
+        parTerre(160, 560, 480, 7) +
+        titre('Oh oh…', 640, 150, 44, '#E8553E', 6) +
+        bulle(150, 80, 'Mes pommes ?!', 200),
+      texte: "C’est alors que Papi Hamid revint du marché. Il ouvrit de <b>très grands yeux</b> : un pommier tout vide, des pommes partout, un cochon aux joues de ballon, une vache assise sur son derrière… et un canard dans une <b>mare aux pommes</b> ! « Mais… où sont passées mes pommes ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 30, 110) +
+        papi('hamid', 40, 170, 150) + bulle(170, 90, 'Ho ho ho !', 160) +
+        u('poupou', 220, 330, 130, { flip: true }) +
+        u('caramel', 420, 340, 190) +
+        pommes([[612, 410, 32, 20], [600, 330, 36, 10], [640, 280, 34, -20], [690, 240, 36, 30], [660, 360, 32, 50], [720, 310, 34, -30]]) +
+        titre('PLOP ! PLOP ! PLOP !', 590, 200, 40, '#E8553E', 6) +
+        parTerre(60, 700, 480, 6) +
+        bulle(230, 255, 'Pardon, Papi…', 200),
+      texte: "Poupou baissa la tête : « <b>Pardon</b>, Papi… Je voulais juste la plus belle pomme, alors j’ai secoué l’arbre. » Caramel voulut dire pardon lui aussi : « Mmmff… » et <b>PLOP ! PLOP ! PLOP !</b> toutes les pommes sortirent de sa bouche. Papi éclata de rire : « Ho ho ho ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) +
+        pommier(250, 40, 300, false, false) +
+        u('pomme', 330, 300, 56, { rot: 10 }) + chute(352, 290) +
+        `<g fill="#FFE066" stroke="#E39A1C" stroke-width="1.5"><path d="M310 290 l3 -8 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3Z"/><path d="M400 300 l3 -8 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3Z"/></g>` +
+        u('poupou', 290, 360, 120) +
+        papi('hamid', 40, 170, 140) + u('panier', 150, 400, 110) +
+        pommes([[175, 386, 30, 10], [200, 380, 30, -20], [225, 388, 30, 30]]) +
+        u('caramel', 520, 380, 150, { flip: true }) + u('pomme', 500, 440, 36) +
+        u('coincoin', 680, 450, 80, { flip: true }) + u('pomme', 650, 480, 34) +
+        u('ecureuil', 450, 450, 70) +
+        titre('PLOC !', 470, 290, 52, '#C9427F', 8) +
+        bulle(30, 60, 'On demande à un grand !', 320),
+      texte: "« Quand c’est trop haut, on demande à un grand ! » dit Papi. Alors tout le monde aida à <b>ramasser</b> les pommes. Et quand le panier fut plein… <b>PLOC</b> ! La plus belle pomme tomba toute seule, pile dans les ailes de Poupou ! Le soir, on la partagea avec une grande <b>tarte aux pommes</b>."
+    }
+  ]
+});
+</script>
+</body>
+</html>

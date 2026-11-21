@@ -38,7 +38,8 @@
     feuillejaune: 1, rateau: 200 / 80, sacfeuilles: 140 / 120, poupoufeuilles: 1, caramelfeuilles: 180 / 220, margueritefeuilles: 240 / 300,
     herissonfeuilles: 120 / 160, hamidfeuilles: 256 / 160, tasgeant: 220 / 400,
     casserole: 110 / 220, couvercle: 0.5, cuillerebois: 4, passoire: 100 / 160, marmite: 0.8,
-    caramelcasserole: 180 / 220, coincoinpassoire: 1, flaquelait: 0.25, seaulait: 1, caramelendormi: 180 / 220
+    caramelcasserole: 180 / 220, coincoinpassoire: 1, flaquelait: 0.25, seaulait: 1, caramelendormi: 180 / 220,
+    pommiervide: 280 / 240, pommesarbre: 280 / 240, bellepomme: 280 / 240, carameljoues: 180 / 220, tartepommes: 120 / 220
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

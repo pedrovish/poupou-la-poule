@@ -217,5 +217,14 @@
     "fichier": "/histoires/24-le-concert-de-casseroles.html",
     "couleur": "#E3ECF6",
     "objet": "marmite"
+  },
+  {
+    "numero": 25,
+    "titre": "Poupou et la pluie de pommes",
+    "resume": "PLOC ! PLOC ! Poupou veut LA plus belle pomme, tout en haut… alors elle secoue le pommier ! Un cochon aux joues-ballons, un canard-petit-train, une vache BADABOUM, une mare aux pommes… Que va dire Papi Hamid ?",
+    "date": "2026-11-21",
+    "fichier": "/histoires/25-la-pluie-de-pommes.html",
+    "couleur": "#FFE3DE",
+    "objet": "pomme"
   }
 ]

@@ -226,5 +226,14 @@
     "fichier": "/histoires/25-la-pluie-de-pommes.html",
     "couleur": "#FFE3DE",
     "objet": "pomme"
+  },
+  {
+    "numero": 26,
+    "titre": "Poupou et le pull de Papi",
+    "resume": "ZIP ! ZIP ! Poupou tire sur un petit fil qui dépasse du pull tout neuf de Papi Hamid… Un cochon-saucisson, une vache frisée, un canard-pelote, une ferme en toile d’araignée… Que va dire Papi Hamid ?",
+    "date": "2026-11-22",
+    "fichier": "/histoires/26-le-pull-de-papi.html",
+    "couleur": "#EFE3FA",
+    "objet": "pullviolet"
   }
 ]

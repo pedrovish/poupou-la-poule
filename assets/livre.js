@@ -39,7 +39,9 @@
     herissonfeuilles: 120 / 160, hamidfeuilles: 256 / 160, tasgeant: 220 / 400,
     casserole: 110 / 220, couvercle: 0.5, cuillerebois: 4, passoire: 100 / 160, marmite: 0.8,
     caramelcasserole: 180 / 220, coincoinpassoire: 1, flaquelait: 0.25, seaulait: 1, caramelendormi: 180 / 220,
-    pommiervide: 280 / 240, pommesarbre: 280 / 240, bellepomme: 280 / 240, carameljoues: 180 / 220, tartepommes: 120 / 220
+    pommiervide: 280 / 240, pommesarbre: 280 / 240, bellepomme: 280 / 240, carameljoues: 180 / 220, tartepommes: 120 / 220,
+    pullviolet: 180 / 200, pulldefait: 180 / 200, hamidminipull: 256 / 160, hamidpullneuf: 256 / 160, caramellaine: 180 / 220, margueritelaine: 240 / 300,
+    pelotevio: 1, coincoinpelote: 1, poupoupelote: 1, moutonlaine: 170 / 200, poupouecharpe: 1
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

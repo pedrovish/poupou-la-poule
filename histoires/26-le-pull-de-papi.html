@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le pull de Papi</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// les amis emmêlés dans la laine
+const caramelL = (x, y, w, o = {}) => avec('caramel', ['caramellaine'], x, y, w, o);
+const margueriteL = (x, y, w, o = {}) => avec('marguerite', ['margueritelaine'], x, y, w, o);
+const floconL = (x, y, w, o = {}) => avec('mouton', ['moutonlaine'], x, y, w, o);
+// le fil de laine violet
+const fil = (d, w = 6) => `<path d="${d}" fill="none" stroke="#5B3A8A" stroke-width="${w + 3.5}" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<path d="${d}" fill="none" stroke="#9B6BD9" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+// des boucles de laine par terre autour de (x, y)
+const boucles = (x, y, k = 1) => fil(`M${x - 50 * k} ${y} q${12 * k} ${-24 * k} ${24 * k} 0 q${12 * k} ${24 * k} ${24 * k} 0 a${12 * k} ${12 * k} 0 1 1 ${8 * k} ${14 * k} q${16 * k} ${10 * k} ${40 * k} ${-6 * k}`, 5 * k);
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des petits traits de mouvement (vers la gauche)
+const mouvement = (x, y, l = 60) => `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M${x} ${y} h-${l} M${x + 10} ${y + 24} h-${l + 20} M${x} ${y + 48} h-${l}"/></g>`;
+// un tourbillon pointillé (ça tourne !)
+const tourne = (cx, cy, rx, ry) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="#E39A1C" stroke-width="4" stroke-dasharray="12 10" stroke-linecap="round"/>` +
+  `<path d="M${cx + rx - 10} ${cy - 14} l12 14 l14 -10" fill="none" stroke="#E39A1C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+// des petites étoiles qui tournent (la tête qui tourne !)
+const etourdi = (x, y) => u('etoile', x - 40, y, 26, { rot: -20 }) + u('etoile', x, y - 18, 22) + u('etoile', x + 34, y + 2, 24, { rot: 20 });
+// ce qui reste du pull : juste le col !
+const col = (x, y) => `<ellipse cx="${x}" cy="${y}" rx="34" ry="13" fill="#7D4FC0" stroke="#5B3A8A" stroke-width="4"/><ellipse cx="${x}" cy="${y + 1}" rx="22" ry="6" fill="#4A2D73"/>` +
+  fil(`M${x + 20} ${y + 10} q6 16 -4 26 q-10 10 4 22`, 4);
+
+lancerHistoire({
+  numero: 26,
+  titre: "Poupou et le pull de Papi",
+  morale: "Avant de tirer sur ce qui n’est pas à nous, on demande ! Et après une bêtise, on dit pardon… et on répare ensemble.",
+  couverture: () => decor('jour') + u('soleil', 660, 30, 90) + u('nuage', 40, 40, 120) + u('nuage', 420, 60, 100) +
+    u('barriere', 20, 330, 260) + u('pulldefait', 60, 250, 190) +
+    fil('M250 362 C320 300 330 470 400 440 S 520 330 590 380 S 640 440 668 432') +
+    boucles(140, 470, 1) +
+    caramelL(300, 340, 190) +
+    u('poupou', 600, 330, 150) + mouvement(600, 360, 50) +
+    titre('ZIP ! ZIP !', 400, 200, 60, '#9B6BD9', -6),
+  fin: () => decor('coucher', u('soleil', 650, 235, 100)) + u('nuage', 60, 40, 120) + u('nuage', 600, 50, 110) +
+    u('grange', 20, 150, 220) +
+    papi('hamid', 300, 150, 160) + u('hamidpullneuf', 300, 150, 160) +
+    avec('poupou', ['poupouecharpe'], 170, 360, 130) +
+    u('marguerite', 520, 230, 250, { flip: true }) +
+    u('caramel', 470, 390, 160, { flip: true }) + u('coincoin', 660, 450, 80, { flip: true }) +
+    u('mouton', 40, 390, 130) + u('pelotevio', 140, 470, 50) +
+    u('coeur', 220, 150, 40, { rot: -12 }) + u('coeur', 540, 160, 36, { rot: 12 }) +
+    titre('Tout doux !', 400, 110, 58, '#9B6BD9', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 670, 30, 80) + u('nuage', 40, 40, 120) + u('nuage', 360, 30, 110) +
+        u('arbrenu', -40, 120, 200) +
+        u('barriere', 260, 330, 300) + u('pullviolet', 320, 280, 180) +
+        papi('hamid', 620, 160, 140) + u('brouette', 600, 380, 110, { flip: true }) +
+        bulle(470, 70, 'On ne touche pas !', 250) +
+        u('poupou', 90, 360, 140) +
+        titre('Qu’il est beau !', 200, 320, 34, '#C9427F', -4),
+      texte: "Brrr ! L’hiver arrive à la ferme. Papi Hamid a tricoté un <b>pull violet</b> tout neuf, tout doux, tout chaud. Il le pose sur la barrière : « Je vais chercher du foin pour Marguerite. Surtout, on ne touche pas : il est <b>tout neuf</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        u('barriere', 80, 360, 500) + u('pullviolet', 180, 240, 290) +
+        fil('M493 494 C520 470 500 420 524 392', 4) +
+        u('poupou', 520, 330, 150, { flip: true }) + surprise(560, 340) +
+        bulle(560, 220, 'Un fil perdu ?', 190) +
+        titre('ZIP !', 730, 520, 54, '#9B6BD9', 8),
+      texte: "Poupou s’approcha… Tout en bas du pull, il y avait un <b>petit fil</b> qui dépassait. « Oh ! Un fil tout seul. Il est peut-être perdu… » Elle le tira, juste un tout petit peu : <b>ZIP</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) + u('nuage', 620, 50, 100) +
+        u('barriere', 20, 340, 280) + u('pulldefait', 60, 250, 200) +
+        boucles(130, 480, 1.2) +
+        fil('M260 368 C330 290 370 450 440 390 S 520 350 566 386') +
+        u('poupou', 560, 330, 140, { flip: true }) + mouvement(780, 360, 50) +
+        titre('ZIP ! ZIP ! ZIP !', 400, 150, 54, '#9B6BD9', -4) +
+        bulle(520, 220, 'Il est long !', 170),
+      texte: "Le fil devint plus long. Poupou tira encore : <b>ZIP ! ZIP ! ZIP !</b> Le bas du pull disparaissait, rang après rang ! « Oh oh… ce fil n’en finit pas ! » Mais au lieu de s’arrêter, Poupou partit en courant pour trouver le <b>bout du fil</b>…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 560, 40, 110) +
+        u('bottefoin', 60, 330, 200) +
+        tourne(400, 440, 230, 70) +
+        fil('M0 300 C80 280 160 420 290 430') +
+        caramelL(270, 300, 250) +
+        fil('M600 470 C640 500 680 470 700 450', 5) +
+        u('poupou', 620, 340, 130) + mouvement(620, 370, 40) +
+        titre('ZIOUP !', 160, 200, 56, '#9B6BD9', -8) +
+        bulle(450, 190, 'Groin ?!', 140),
+      texte: "Poupou courut autour de Caramel, qui se roulait dans la paille. Une fois, deux fois, trois fois… <b>ZIOUP</b> ! Caramel devint un <b>saucisson</b> tout violet ! « Groin ? Je ne peux plus bouger les pattes ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) + u('soleil', 680, 30, 80) +
+        fil('M0 330 C60 300 100 460 190 440') +
+        margueriteL(220, 220, 320) +
+        fil('M290 432 C340 470 420 470 470 432', 5) +
+        u('poupou', 70, 380, 120) + surprise(90, 380) +
+        titre('FRISOTTI !', 150, 150, 48, '#9B6BD9', -6) +
+        bulle(520, 120, 'Une perruque ?', 230),
+      texte: "Puis Poupou passa entre les cornes de Marguerite… sous ses pattes… et encore entre ses cornes ! Marguerite se retrouva avec une <b>coiffure</b> géante, toute frisée, toute violette. « Meuh ! J’ai une <b>perruque</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('mare', 520, 420, 260) +
+        `<path d="M230 470 Q270 360 320 430 Q370 340 420 410" fill="none" stroke="#E39A1C" stroke-width="4" stroke-dasharray="10 10" stroke-linecap="round"/>` +
+        fil('M200 440 C260 470 330 470 410 452', 5) +
+        u('coincoinpelote', 400, 330, 150) + mouvement(400, 360, 50) +
+        u('poupou', 70, 350, 130) +
+        titre('BOING ! BOING !', 360, 170, 52, '#E8553E', -5) +
+        bulle(530, 230, 'Coin… coin ?', 180),
+      texte: "Coin-Coin voulut aider à attraper le fil. Il tourna, tourna, tourna sur lui-même… et devint une <b>pelote</b> avec un bec ! <b>BOING ! BOING !</b> La pelote-canard partit en rebondissant. « Coin… coin ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) + u('nuage', 600, 50, 100) +
+        u('buisson', 20, 340, 180) +
+        fil('M0 420 C80 470 200 380 290 430') +
+        floconL(260, 290, 280) +
+        u('poupou', 600, 360, 130, { flip: true }) + surprise(620, 360) +
+        bulle(330, 180, 'C’est moi ou le pull ?', 290) +
+        titre('Bêê ?', 690, 300, 44, '#9B6BD9', 8),
+      texte: "Flocon, le petit mouton, arriva tout étonné. « Oh ! De la <b>laine</b> ? Comme moi ! » Le fil se prit dans ses boucles. On ne savait plus où était le mouton, et où était le pull ! « Bêê… c’est moi, ou c’est le pull ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('grange', 10, 150, 250) +
+        u('arbreautomne', 570, 150, 200) +
+        u('brouette', 300, 410, 160) +
+        fil('M150 360 L660 340', 5) + fil('M200 300 L640 420', 5) + fil('M120 420 C300 380 500 470 680 380', 5) +
+        fil('M240 470 L720 300', 5) + fil('M180 340 C380 300 400 500 760 470', 5) + fil('M80 380 L380 460', 5) +
+        u('souris', 380, 300, 80) +
+        u('poupou', 520, 420, 110) + mouvement(520, 440, 40) +
+        titre('Une toile d’araignée !', 400, 110, 46, '#9B6BD9', -3) +
+        bulle(280, 210, 'Je suis une acrobate !', 290),
+      texte: "Poupou courait toujours : autour de l’arbre, autour de la brouette, autour de la grange… Bientôt, toute la ferme ressemblait à une grande <b>toile d’araignée</b> violette ! Noisette la souris s’amusait à marcher dessus : « Regardez, je suis une <b>acrobate</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 560, 30, 110) +
+        fil('M0 450 C120 400 200 500 320 470', 5) + boucles(620, 480, 1.1) +
+        u('poupoupelote', 290, 270, 230) +
+        etourdi(470, 260) + choc(250, 470, .8) +
+        titre('PATATRA !', 200, 170, 56, '#E8553E', -6) +
+        bulle(520, 150, 'Euh… à l’aide ?', 210),
+      texte: "Et Poupou ? Elle tourna une dernière fois… et s’emmêla toute seule ! <b>PATATRA</b> ! La voilà en pelote, avec juste sa crête et ses pattes qui dépassent. « Euh… quelqu’un peut m’aider ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        papi('hamidsurpris', 20, 150, 150) + surprise(70, 140) + u('bottefoin', 30, 420, 120) +
+        u('barriere', 200, 320, 200) + col(300, 340) +
+        margueriteL(440, 200, 260) +
+        caramelL(220, 400, 160) +
+        u('coincoinpelote', 400, 420, 100) +
+        u('poupoupelote', 640, 380, 120) +
+        fil('M380 470 C450 500 560 490 650 470', 5) +
+        titre('Oh oh…', 560, 120, 46, '#E8553E', 6) +
+        bulle(170, 70, 'Mon pull ?!', 170),
+      texte: "C’est alors que Papi Hamid revint avec son foin. Il ouvrit de <b>très grands yeux</b> : un cochon-saucisson, une vache frisée, un canard-pelote, une poule-pelote… et sur la barrière, il ne restait plus que le <b>col</b> de son pull ! « Mais… où est passé mon pull ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        papi('hamid', 310, 150, 160) + u('hamidminipull', 310, 150, 160) +
+        bulle(500, 120, 'Ho ho ho !', 160) +
+        titre('Tout petit !', 390, 120, 38, '#9B6BD9', -4) +
+        u('poupou', 140, 370, 130) + bulle(100, 280, 'Pardon, Papi…', 200) +
+        u('caramel', 530, 380, 170, { flip: true }) + titre('Hi hi !', 620, 350, 34, '#C9427F', 6) +
+        u('coincoin', 690, 460, 80, { flip: true }) +
+        boucles(140, 520, .9),
+      texte: "Papi libéra tout le monde, puis il enfila ce qui restait de son pull. Il était <b>tout petit</b>, tout petit… un pull pour Coin-Coin ! Poupou baissa la tête : « <b>Pardon</b>, Papi… J’ai tiré sur le fil sans demander. » Papi regarda son ventre qui dépassait… et éclata de rire : « Ho ho ho ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        papi('hamid', 20, 160, 140) + bulle(150, 80, 'On répare ensemble !', 270) +
+        margueriteL(470, 210, 280, { flip: true }) +
+        fil('M560 250 C480 300 500 380 450 410', 5) +
+        u('caramel', 610, 400, 150, { flip: true, rot: 20 }) + fil('M640 470 C580 500 520 460 460 440', 5) +
+        u('pelotevio', 300, 330, 160) +
+        u('poupou', 180, 380, 120) +
+        u('mouton', 40, 420, 110) +
+        titre('ROULE, ROULE !', 400, 540, 40, '#9B6BD9', -2),
+      texte: "« Ce n’est pas grave, on va <b>réparer ensemble</b> ! » dit Papi. Tout le monde aida à dérouler la laine, et Poupou roula une pelote <b>énorme</b>. Le soir, Papi retricota son pull… et avec le dernier bout de fil, une petite <b>écharpe</b> violette pour Poupou !"
+    }
+  ]
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et les lunettes de Papi</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// Papi Hamid avec ses lunettes… ou sans (il plisse les yeux)
+const papiL = (id, x, y, w, o = {}) => papi(id, x, y, w, o) + u('hamidlunettes', x, y, w, o);
+const papiFlou = (x, y, w, o = {}) => papi('hamid', x, y, w, o) + u('hamidplisse', x, y, w, o);
+// Poupou avec les lunettes de Papi sur le bec
+const poupouL = (x, y, w, o = {}) => avec('poupou', ['poupoulunettes'], x, y, w, o);
+// Caramel tout éclaboussé de lait
+const caramelLait = (x, y, w, o = {}) => avec('caramel', ['caramellait'], x, y, w, o);
+// Marguerite habillée comme une armoire
+const margueriteLinge = (x, y, w, o = {}) => avec('marguerite', ['margueritelinge'], x, y, w, o);
+// la citrouille avec la trace du bisou
+const citrouilleBisou = (x, y, w) => u('citrouille', x, y, w) +
+  `<path transform="translate(${x + w * 0.3} ${y + w * 0.42}) scale(${w / 200})" d="M0 14 C-20 0 -16 -16 -6 -14 C-2 -13 0 -10 0 -8 C0 -10 2 -13 6 -14 C16 -16 20 0 0 14Z" fill="#FF5C7A" stroke="#B8325A" stroke-width="2.5"/>`;
+// un petit verre de thé à la menthe (x, y = bas du verre)
+const the = (x, y) => `<path d="M${x - 11} ${y - 30} L${x + 11} ${y - 30} L${x + 8} ${y} L${x - 8} ${y}Z" fill="#E8A93C" fill-opacity=".85" stroke="#8A5A1E" stroke-width="2.5" stroke-linejoin="round"/>` +
+  `<path d="M${x - 2} ${y - 30} q-6 -12 4 -16 q4 10 -4 16Z" fill="#5BBF5B" stroke="#2E7A2E" stroke-width="2"/>` +
+  `<path d="M${x - 4} ${y - 40} q-4 -8 0 -14 M${x + 6} ${y - 40} q4 -8 0 -14" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>`;
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des petites étoiles qui tournent (la tête qui tourne !)
+const etourdi = (x, y) => u('etoile', x - 40, y, 26, { rot: -20 }) + u('etoile', x, y - 18, 22) + u('etoile', x + 34, y + 2, 24, { rot: 20 });
+// des pas en zigzag derrière quelqu'un
+const zigzag = (x, y, l = 120) => `<path d="M${x} ${y} l-${l / 6} -14 l-${l / 6} 14 l-${l / 6} -14 l-${l / 6} 14 l-${l / 6} -14 l-${l / 6} 14" fill="none" stroke="#E39A1C" stroke-width="4" stroke-dasharray="10 8" stroke-linecap="round" stroke-linejoin="round"/>`;
+// des points d'interrogation
+const quoi = (x, y, k = 1) => titre('?', x, y, 44 * k, '#3F8EDB', -10) + titre('?', x + 30 * k, y - 22 * k, 34 * k, '#E8553E', 12);
+// des éclaboussures de lait
+const splatch = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})" fill="#fff" stroke="#A9BBCB" stroke-width="3"><path d="M-30 0 q-10 -30 -24 -40 q22 6 30 34Z"/><path d="M30 0 q10 -30 24 -40 q-22 6 -30 34Z"/><path d="M-6 -4 q0 -36 6 -50 q6 14 6 50Z"/><circle cx="-44" cy="-52" r="6"/><circle cx="46" cy="-56" r="5"/><circle cx="2" cy="-66" r="5"/></g>`;
+// tout ce qui est dedans devient flou et tout mou (vu à travers les lunettes !)
+const flou = svg => `<defs><filter id="flou" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.03" numOctaves="2" seed="4"/>` +
+  `<feDisplacementMap in="SourceGraphic" scale="38" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="4.5"/></filter></defs><g filter="url(#flou)">${svg}</g>`;
+// des cœurs
+const coeurs = (x, y) => u('coeur', x, y, 34, { rot: -12 }) + u('coeur', x + 40, y - 26, 26, { rot: 10 });
+// des lunettes qui volent (avec des traits de mouvement)
+const lunettesVolent = (x, y, w = 90) => `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M${x - 20} ${y + 50} q-20 -30 -10 -60 M${x + w + 20} ${y + 50} q20 -30 10 -60"/></g>` + u('lunettes', x, y, w, { rot: -14 });
+
+lancerHistoire({
+  numero: 27,
+  titre: "Poupou et les lunettes de Papi",
+  morale: "Les affaires des autres, on demande avant de les prendre… surtout les lunettes de Papi : il en a besoin pour bien voir !",
+  couverture: () => decor('jour') + u('soleil', 660, 30, 90) + u('nuage', 40, 40, 120) + u('nuage', 420, 60, 100) +
+    u('seaulait', 40, 420, 90, { rot: -80 }) + u('flaquelait', 90, 480, 160) +
+    citrouilleBisou(40, 300, 150) +
+    u('moutonbouffant', 560, 300, 220) +
+    poupouL(270, 270, 250) +
+    titre('OUH LÀ LÀ !', 400, 190, 64, '#3F8EDB', -5) + quoi(560, 270),
+  fin: () => decor('coucher', u('soleil', 650, 235, 100)) + u('nuage', 60, 40, 120) + u('nuage', 600, 50, 110) +
+    u('grange', 10, 150, 220) +
+    papiL('hamid', 260, 150, 160) +
+    avec('poupou', ['poupoulunettesrouges'], 430, 370, 130, { flip: true }) +
+    u('marguerite', 520, 230, 250, { flip: true }) +
+    u('caramel', 600, 400, 150, { flip: true }) + u('coincoin', 160, 450, 80) +
+    u('mouton', 30, 400, 130) +
+    coeurs(440, 300) +
+    titre('Bien vu !', 400, 110, 60, '#3F8EDB', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('soleil', 670, 30, 80) + u('nuage', 40, 40, 120) + u('nuage', 360, 30, 110) +
+        u('arbrenu', -40, 120, 200) +
+        u('bottefoin', 130, 340, 220) +
+        papiL('hamid', 340, 150, 160) + the(478, 330) +
+        bulle(470, 70, 'Sans elles, tout est flou !', 320) +
+        u('poupou', 610, 370, 130, { flip: true }) + quoi(610, 380, .8) +
+        u('coincoin', 560, 460, 70, { flip: true }),
+      texte: "Brrr ! Ce matin, Papi Hamid buvait son thé à la menthe, avec ses <b>lunettes rondes</b> sur le nez. « Sans mes lunettes, je ne vois rien du tout : tout est <b>flou</b> ! » Puis il posa ses lunettes sur la botte de foin et partit chercher du sucre."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 560, 30, 110) +
+        u('bottefoin', 30, 340, 220) + u('hibou', 100, 252, 90) + bulle(20, 160, 'Hou ?', 110) +
+        poupouL(280, 220, 250) +
+        u('coincoin', 600, 410, 100, { flip: true }) + titre('Hi hi hi !', 650, 380, 36, '#C9427F', 6) +
+        titre('ÉNORME !', 420, 150, 60, '#E8553E', -6),
+      texte: "Poupou regarda les lunettes, toutes seules sur le foin. « Avec ses lunettes, Papi voit <b>tout</b>… Moi aussi, je veux voir comme Papi ! » Elle les mit sur son bec. Oh ! Son œil devint <b>ÉNORME</b> ! « Hi hi ! Tu as un œil de <b>hibou</b> ! » rigola Coin-Coin."
+    },
+    {
+      scene: () => decor('jour') + flou(decor('jour') + u('soleil', 640, 30, 100) + u('nuage', 60, 40, 140) + u('nuage', 380, 60, 130) +
+        u('grange', 20, 140, 260) + u('arbre', 560, 140, 200) +
+        u('marguerite', 300, 250, 220) + u('buisson', 620, 370, 160)) +
+        zigzag(400, 520, 180) +
+        poupouL(410, 360, 160) + etourdi(500, 350) +
+        titre('Tout est flou !', 400, 120, 58, '#3F8EDB', -4) +
+        bulle(170, 280, 'Ouh là là !', 170),
+      texte: "Mais avec les lunettes, tout était <b>flou</b> ! La grange faisait des vagues, l’arbre dansait, et Marguerite ressemblait à un gros nuage. « Ouh là là ! La ferme est toute <b>molle</b> ! » Poupou fit un pas… deux pas… en <b>zigzag</b>."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) + u('nuage', 620, 50, 100) +
+        u('flaquelait', 180, 470, 260) +
+        u('seaulait', 280, 400, 100, { rot: 70 }) + splatch(420, 470, 1) + choc(240, 420, .9) +
+        caramelLait(480, 320, 230) + bulle(500, 210, 'Cochon à la crème !', 270) +
+        poupouL(60, 340, 150) + bulle(40, 240, 'Pardon, madame !', 230) +
+        titre('SPLATCH !', 400, 140, 62, '#3F8EDB', -6),
+      texte: "<b>BOUM</b> ! Poupou se cogna dans le seau de lait. <b>SPLATCH</b> ! Caramel fut éclaboussé de la tête à la queue. Poupou fit une révérence au seau : « Oh, pardon, <b>madame</b> ! » Et Caramel, avec sa moustache blanche : « Groin ! Je suis un cochon à la <b>crème</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('soleil', 680, 30, 80) +
+        u('feuillerouge', 60, 470, 40, { rot: 20 }) + u('feuille', 700, 480, 36, { rot: -30 }) +
+        citrouilleBisou(290, 300, 220) + coeurs(330, 280) +
+        poupouL(168, 352, 150) + bulle(110, 260, 'Bonjour, Caramel !', 250) +
+        caramelLait(560, 360, 190, { rot: 160 }) + titre('Hi hi hi !', 660, 340, 36, '#C9427F', 8) +
+        titre('SMACK !', 560, 190, 62, '#FF5C7A', 6),
+      texte: "Un peu plus loin, Poupou vit une grosse boule <b>orange</b>. « Bonjour, Caramel ! Pourquoi tu es tout orange ? » Et elle lui fit un gros bisou : <b>SMACK</b> ! Mais c’était une <b>citrouille</b> ! Le vrai Caramel riait tellement qu’il roula sur le dos."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) + u('nuage', 600, 50, 100) +
+        u('moutonbouffant', 330, 230, 320) +
+        u('balai', 260, 240, 60, { rot: 35 }) +
+        poupouL(110, 350, 150) +
+        u('touffe', 290, 220, 50, { rot: 20 }) + u('touffe', 250, 300, 40) + u('touffe', 680, 250, 44, { rot: -10 }) +
+        titre('FROUTCH ! FROUTCH !', 300, 150, 50, '#3F8EDB', -5) +
+        bulle(560, 140, 'Bêêê ?!', 130),
+      texte: "Puis elle vit un gros <b>nuage</b> blanc, posé dans l’herbe. « Oh ! Un nuage est tombé du ciel ! Je vais le coiffer. » Elle prit le balai : <b>FROUTCH, FROUTCH</b> ! Mais c’était Flocon ! Le voilà tout gonflé, comme une <b>barbe à papa</b>. « Bêêê ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('potager', 380, 420, 400) +
+        u('epouvantail', 420, 140, 220) +
+        u('corbeau', 425, 182, 70) + u('corbeaurit', 572, 182, 70, { flip: false }) +
+        u('corbeauvole', 680, 120, 100, { flip: true }) + u('corbeauvole', 250, 90, 90) +
+        u('graines', 470, 430, 90) + u('sacgraines', 330, 380, 80) +
+        poupouL(150, 350, 150) + bulle(90, 250, 'Bon appétit, Papi !', 260) +
+        titre('CROA ! CROA !', 600, 90, 44, '#454D73', 4),
+      texte: "Près du potager, Poupou vit un chapeau et une chemise. « Papi ! Te voilà ! Tiens, ton <b>petit-déjeuner</b> ! » Et elle remplit ses poches de graines… Mais c’était l’<b>épouvantail</b> ! Les corbeaux arrivèrent de partout : « Croa ! Merci pour le festin ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) + u('nuage', 600, 50, 100) +
+        u('cordelinge', 0, 120, 300) +
+        margueriteLinge(300, 220, 300) +
+        u('panier', 210, 430, 100) +
+        poupouL(60, 360, 140) + bulle(30, 270, 'Une corde à linge ?', 260) +
+        bulle(560, 130, 'Meuh… ?!', 140) +
+        titre('Une vache-armoire !', 430, 530, 40, '#C9427F', -2),
+      texte: "Et voilà Poupou devant deux grandes cornes. « Tiens ? La corde à linge a des <b>cornes</b> ! » Elle y accrocha la <b>chemise</b> et les <b>chaussettes</b> de Papi. « Meuh… je ne suis pas une corde à linge, moi ! » soupira Marguerite, habillée comme une armoire."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 100) +
+        u('brouette', 590, 400, 190, { flip: true }) +
+        zigzag(270, 450, 160) +
+        poupouL(275, 300, 150) +
+        papiFlou(380, 190, 160, { flip: true }) + quoi(600, 200, .8) +
+        choc(424, 356, 1.2) + etourdi(420, 300) +
+        lunettesVolent(250, 100, 100) +
+        bulle(500, 250, 'Bonjour, Marguerite !', 285) +
+        titre('BOUM !', 130, 220, 64, '#E8553E', -8) +
+        titre('HOP !', 300, 80, 46, '#3F8EDB', 8),
+      texte: "Pendant ce temps, Papi Hamid revint. Sans ses lunettes, lui aussi voyait tout <b>flou</b> ! « Bonjour, Marguerite ! » dit-il… à la <b>brouette</b>. Puis, <b>BOUM</b> ! Poupou fonça dans son genou. Les lunettes sautèrent en l’air… <b>HOP</b> ! Papi les attrapa au vol."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 330, 30, 110) +
+        papiL('hamidsurpris', 320, 150, 160) + surprise(370, 140) +
+        u('epouvantail', 10, 150, 160) + u('corbeau', 14, 180, 52) + u('corbeau', 120, 180, 52) +
+        u('flaquelait', 170, 470, 200) + u('seaulait', 230, 430, 70, { rot: 70 }) +
+        caramelLait(20, 380, 170) +
+        citrouilleBisou(500, 400, 120) +
+        margueriteLinge(560, 200, 230, { flip: true }) +
+        u('moutonbouffant', 620, 390, 170) +
+        titre('Oh oh…', 160, 120, 50, '#E8553E', -6) +
+        bulle(480, 90, 'Mais… ?!', 140),
+      texte: "Papi remit ses lunettes… et ouvrit de <b>très grands yeux</b> : du lait partout, un cochon à moustache, un mouton barbe à papa, une vache-armoire, un épouvantail plein de corbeaux… et une citrouille avec un <b>bisou</b> ! « Mais… qu’est-ce qui s’est passé ici ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        papiL('hamid', 310, 150, 160) +
+        bulle(480, 110, 'Ho ho ho !', 160) +
+        u('poupou', 140, 370, 130) + bulle(90, 280, 'Pardon, Papi…', 200) +
+        caramelLait(540, 380, 170, { flip: true }) + titre('Hi hi !', 640, 350, 34, '#C9427F', 6) +
+        u('coincoin', 470, 460, 70, { flip: true }) +
+        u('brouette', 10, 450, 120),
+      texte: "Poupou baissa la tête : « <b>Pardon</b>, Papi… J’ai pris tes lunettes sans demander. Je voulais voir comme toi. » Papi éclata de rire : « Ho ho ho ! Et moi, sans lunettes, j’ai dit bonjour à une <b>brouette</b> ! » Et tout le monde rit avec eux."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) + u('soleil', 670, 30, 80) +
+        papiL('hamid', 30, 150, 160) + bulle(170, 70, 'On répare ensemble !', 270) +
+        u('seaulait', 220, 400, 80) + u('balai', 300, 270, 56, { rot: -15 }) +
+        u('mouton', 330, 370, 150) +
+        u('marguerite', 520, 240, 250, { flip: true }) + u('chemise', 470, 410, 90, { rot: -10 }) +
+        avec('poupou', ['poupoulunettesrouges'], 180, 400, 120) +
+        u('coincoin', 680, 460, 70, { flip: true }) + u('corbeauvole', 620, 80, 90) +
+        titre('Tout propre !', 560, 200, 40, '#3F8EDB', 4),
+      texte: "« Allez, on <b>répare ensemble</b> ! » Poupou essuya le lait, recoiffa Flocon, et Marguerite rendit la chemise. Le soir, Papi fabriqua pour Poupou de petites <b>lunettes rouges</b>, rien que pour elle… sans verre, pour bien voir !"
+    }
+  ]
+});
+</script>
+</body>
+</html>

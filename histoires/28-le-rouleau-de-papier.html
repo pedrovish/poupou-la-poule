@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le rouleau de papier</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// les personnages emballés de papier
+const momie = (x, y, w, o = {}) => avec('caramel', ['caramelmomie'], x, y, w, o);
+const mariee = (x, y, w, o = {}) => avec('marguerite', ['margueritevoile'], x, y, w, o);
+const bouleCoin = (x, y, w, o = {}) => avec('coincoin', ['coincoinpapier'], x, y, w, o);
+const poupouP = (x, y, w, o = {}) => avec('poupou', ['poupoupapier'], x, y, w, o);
+// un long ruban de papier qui suit le chemin d
+const ruban = (d, w = 16) =>
+  `<path d="${d}" fill="none" stroke="#9FB0C0" stroke-width="${w + 6}" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<path d="${d}" fill="none" stroke="#fff" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<path d="${d}" fill="none" stroke="#D5DFE9" stroke-width="${w - 3}" stroke-dasharray="2 22"/>`;
+// une guirlande de papier qui pend entre deux points
+const guirlande = (x1, y1, x2, y2, creux = 40) => ruban(`M${x1} ${y1} Q${(x1 + x2) / 2} ${Math.max(y1, y2) + creux} ${x2} ${y2}`, 12);
+// un petit rouleau couché, vu de côté
+const roule = (x, y, r = 30) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="#7E8FA0" stroke-width="3.5"/>` +
+  `<circle cx="${x}" cy="${y}" r="${r * 0.36}" fill="#C99B62" stroke="#8A5A33" stroke-width="2.5"/><circle cx="${x}" cy="${y}" r="${r * 0.2}" fill="#6B4423"/>`;
+// des petits papiers qui tombent comme de la neige
+const pluiePapier = (n = 24, y0 = 20, h = 300) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = (i * 137) % 770 + 15, y = (i * 89) % h + y0, r = (i * 47) % 180;
+    s += `<rect x="${x}" y="${y}" width="15" height="11" rx="2" fill="#fff" stroke="#8FA2B4" stroke-width="2" transform="rotate(${r} ${x + 7} ${y + 5})"/>`;
+  }
+  return s;
+};
+// de la vraie neige par terre
+const neige = () => `<path d="M0 384 C150 334 300 366 420 346 C560 320 680 354 800 334 L800 560 L0 560Z" fill="#F4F8FC"/>` +
+  `<path d="M0 436 C200 406 400 446 800 416 L800 560 L0 560Z" fill="#E3EEF7"/>` +
+  `<g fill="#fff"><ellipse cx="120" cy="470" rx="60" ry="14"/><ellipse cx="520" cy="500" rx="80" ry="16"/><ellipse cx="700" cy="450" rx="50" ry="10"/></g>`;
+const flocons = (k = 1) => [[60, 60, 34], [200, 140, 26], [330, 40, 30], [470, 120, 24], [600, 50, 34], [720, 170, 26], [120, 250, 22], [680, 280, 22], [400, 220, 20]]
+  .map(([x, y, w], i) => u('flocon', x, y, w * k, { rot: i * 17 })).join('');
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des points d'interrogation
+const quoi = (x, y, k = 1) => titre('?', x, y, 44 * k, '#3F8EDB', -10) + titre('?', x + 30 * k, y - 22 * k, 34 * k, '#E8553E', 12);
+// des traits de vitesse
+const vite = (x, y, l = 90) => `<g stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"><path d="M${x} ${y} h-${l} M${x - 10} ${y + 26} h-${l * 0.7} M${x} ${y + 52} h-${l * 0.85}"/></g>`;
+// une ampoule d'idée… en forme d'étoile qui brille
+const idee = (x, y) => u('etoile', x, y, 50) + `<g stroke="#FFD43B" stroke-width="5" stroke-linecap="round"><path d="M${x + 25} ${y - 10} v-14 M${x - 8} ${y + 4} l-12 -8 M${x + 58} ${y + 4} l12 -8"/></g>`;
+// des cercles qui tournent (on enroule !)
+const tourne = (cx, cy, rx, ry) => `<g fill="none" stroke="#E39A1C" stroke-width="4" stroke-dasharray="12 10" stroke-linecap="round"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/><ellipse cx="${cx}" cy="${cy}" rx="${rx + 22}" ry="${ry + 14}" opacity=".6"/></g>`;
+const coeurs = (x, y) => u('coeur', x, y, 34, { rot: -12 }) + u('coeur', x + 40, y - 26, 26, { rot: 10 });
+
+lancerHistoire({
+  numero: 28,
+  titre: "Poupou et le rouleau de papier",
+  morale: "La neige, on ne peut pas la fabriquer : il faut savoir l’attendre… Et le papier de Papi, ce n’est pas un jouet !",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 120) + u('nuage', 560, 50, 110) + u('soleil', 680, 30, 80) +
+    pluiePapier(14, 30, 160) +
+    ruban('M-10 470 C120 420 200 520 330 480 S560 420 640 470', 16) + roule(660, 462, 34) +
+    momie(20, 330, 200) +
+    poupouP(290, 270, 230) +
+    bouleCoin(560, 360, 120) +
+    u('papiers', 400, 490, 180) +
+    titre('FRRRRRT !', 400, 190, 66, '#3F8EDB', -5),
+  fin: () => decor('nuit') + u('lune', 640, 40, 80) + neige() + flocons(.9) +
+    u('grange', 20, 150, 230) +
+    u('bonhommeneige', 560, 200, 170) +
+    papi('hamid', 270, 150, 160) +
+    u('poupou', 420, 330, 130, { flip: true }) +
+    u('caramel', 100, 400, 160) + u('coincoin', 300, 450, 80) +
+    coeurs(430, 300) +
+    titre('Il neige !', 400, 110, 60, '#FFFFFF', -3),
+  pages: [
+    {
+      scene: () => decor('pluie') + u('nuage', 40, 40, 130) + u('nuage', 330, 20, 140) + u('nuage', 600, 50, 120) +
+        u('grange', 10, 150, 220) +
+        papi('hamid', 430, 150, 160) + u('brouette', 590, 330, 190) +
+        bulle(520, 60, 'Il faut attendre !', 240) +
+        u('poupou', 240, 370, 130) + bulle(230, 290, 'Il va neiger ?', 200) +
+        u('feuillerouge', 120, 480, 40, { rot: 20 }) + u('feuille', 380, 500, 34, { rot: -30 }) +
+        u('coincoin', 40, 460, 70),
+      texte: "Brrr ! Ce matin, il faisait tout <b>froid</b> à la ferme. Poupou regardait le ciel gris : « Papi, quand est-ce qu’il va <b>neiger</b> ? » « Bientôt, ma Poupou. Il faut <b>attendre</b> ! » Et Papi Hamid partit au marché avec sa brouette."
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 300, 30, 120) + u('nuage', 600, 50, 110) +
+        u('cabane', 0, 130, 280) +
+        u('paquetrouleaux', 250, 330, 110) +
+        u('poupou', 340, 320, 150) +
+        ruban('M488 394 C500 420 470 440 480 460 C540 500 600 440 680 470', 14) + roule(706, 462, 32) +
+        `<g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M690 410 q20 -12 40 0 M744 430 q10 10 6 26"/></g>` +
+        titre('FRRRRRT !', 560, 230, 60, '#3F8EDB', -6),
+      texte: "Attendre ? Poupou n’aimait pas du tout attendre. Dans la cabane, elle trouva un gros <b>paquet</b> de rouleaux de papier, tout blancs. Elle tira sur un petit bout… et le rouleau se mit à rouler, rouler ! <b>FRRRRRT</b> !"
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 40, 40, 110) + u('nuage', 480, 30, 120) +
+        u('arbrenu', 540, 90, 200) +
+        ruban('M180 420 C260 380 300 500 420 460 S600 380 700 500', 16) + roule(712, 506, 30) +
+        u('poupou', 50, 320, 150) + idee(150, 230) +
+        bulle(230, 150, 'Je vais faire neiger !', 280) +
+        u('coincoin', 380, 480, 60, { flip: true }) + quoi(370, 470, .7) +
+        titre('Tout blanc !', 560, 80, 44, '#3F8EDB', 4),
+      texte: "Le rouleau roula jusqu’en bas de la colline. Un long <b>ruban blanc</b> traversait toute la ferme. « Oh ! C’est blanc comme la neige ! » Et Poupou eut une idée farfelue : « Je vais faire <b>neiger</b>… moi-même ! »"
+    },
+    {
+      scene: () => decor('pluie') + u('nuage', 40, 40, 110) + u('nuage', 560, 30, 120) +
+        pluiePapier(26, 30, 330) +
+        u('barriere', 430, 320, 340) +
+        u('poupou', 160, 300, 160, { rot: -8 }) + u('rouleau', 330, 420, 60, { rot: 30 }) +
+        u('papiers', 60, 470, 200) + u('papiers', 430, 470, 180) +
+        u('coincoin', 560, 400, 110, { flip: true }) + `<rect x="548" y="424" width="16" height="12" rx="2" fill="#fff" stroke="#8FA2B4" stroke-width="2" transform="rotate(-20 556 430)"/>`.replace('x="548" y="424"','x="556" y="440"') +
+        bulle(560, 320, 'Atchoum !', 160) +
+        titre('CRIC ! CRAC ! CROC !', 400, 90, 48, '#E8553E', -4),
+      texte: "Elle déchira le papier en mille petits morceaux : <b>CRIC, CRAC, CROC</b> ! Puis elle les lança en l’air : « Il neige ! Il neige ! » Les flocons de papier tombèrent sur la barrière, sur l’herbe… et sur le bec de Coin-Coin. « <b>Atchoum</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        tourne(470, 420, 150, 70) +
+        momie(350, 300, 250) +
+        u('poupou', 110, 360, 140) + u('rouleau', 250, 440, 50, { rot: -20 }) +
+        ruban('M284 448 C320 470 340 430 372 420', 10) +
+        bulle(460, 170, 'Groin ? Je ne vois rien !', 300) +
+        titre('Une momie !', 230, 130, 54, '#C9427F', -5) +
+        u('coincoin', 40, 470, 60),
+      texte: "Caramel arriva en courant. « Moi aussi, je veux être tout blanc ! » Alors Poupou fit tourner le papier autour de lui : un tour, deux tours… <b>dix tours</b> ! « Groin ? Je ne vois plus rien ! » Caramel était devenu une <b>momie</b> de cochon !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 30, 110) + u('nuage', 330, 40, 100) +
+        mariee(260, 210, 300, { rot: 10 }) + choc(470, 450, 1.3) + choc(330, 470, .9) +
+        u('poupou', 70, 380, 130) + u('fleur', 190, 420, 34, { rot: 15 }) + u('fleur', 214, 430, 30, { rot: -10 }) +
+        bulle(540, 70, 'Meuh ! Une mariée !', 250) +
+        momie(630, 420, 150, { flip: true }) + titre('Hi hi !', 720, 400, 32, '#C9427F', 6) +
+        titre('PATATRA !', 230, 140, 60, '#E8553E', -8),
+      texte: "Ensuite, Poupou décora Marguerite : un grand <b>voile</b> sur la tête, une longue <b>traîne</b> derrière, et un nœud tout rose. « Meuh ! Je suis une <b>mariée</b> ! » Elle fit trois pas… et se prit les pattes dans la traîne. <b>PATATRA</b> !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 110) + u('nuage', 600, 50, 100) +
+        vite(330, 400, 120) +
+        bouleCoin(360, 360, 150, { rot: 60 }) +
+        `<g fill="none" stroke="#E39A1C" stroke-width="4" stroke-linecap="round"><path d="M520 380 q30 30 0 70 M540 360 q50 50 0 110"/></g>` +
+        bulle(250, 250, 'Coin ! Arrêtez-moi !', 260) +
+        u('poupou', 50, 370, 130) + titre('Oh oh…', 120, 340, 36, '#E8553E', -6) +
+        mariee(570, 250, 220, { flip: true }) +
+        titre('ROULI-ROULA !', 400, 120, 58, '#3F8EDB', -4),
+      texte: "Coin-Coin voulut jouer aussi. Poupou l’enroula, l’enroula… et Coin-Coin devint une petite <b>boule de neige</b> avec un bec ! Il roula dans l’herbe : <b>ROULI-ROULA</b> ! « Coin ! Coin ! Arrêtez-moi ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) +
+        u('grange', 10, 150, 230) + guirlande(20, 230, 125, 170, 30) + guirlande(125, 170, 230, 230, 30) + guirlande(40, 300, 220, 300, 30) +
+        u('arbrenu', 560, 80, 210) + guirlande(590, 170, 760, 170, 40) + guirlande(600, 240, 750, 240, 40) + ruban('M640 150 q-10 60 6 110', 10) +
+        u('barriere', 230, 340, 300) + guirlande(240, 360, 520, 360, 34) +
+        u('mouton', 560, 380, 170) + ruban('M600 400 Q640 470 700 420', 10) + ruban('M620 450 l-10 60', 9) +
+        u('papiers', 30, 470, 180) + u('papiers', 380, 490, 160) +
+        u('rouleauvide', 230, 460, 40, { rot: 70 }) + u('rouleauvide', 290, 480, 38, { rot: -20 }) + u('rouleauvide', 340, 450, 36, { rot: 100 }) +
+        poupouP(330, 300, 150) +
+        bulle(300, 200, 'Tout est blanc !', 210) +
+        titre('Oh oh…', 400, 80, 48, '#E8553E', -6),
+      texte: "Puis Poupou mit du papier <b>partout</b> : sur la grange, sur l’arbre, sur la barrière, et même sur Flocon le mouton. « Regardez ! La ferme est toute blanche ! » Mais dans le paquet, il ne restait <b>plus un seul</b> rouleau. Oh oh…"
+    },
+    {
+      scene: () => decor('jour') + vent(30, 70, 1.1) + vent(480, 150, .9) +
+        pluiePapier(20, 30, 260) +
+        ruban('M60 260 C160 180 240 300 340 220 S520 140 600 210', 12) + ruban('M420 90 C500 40 560 120 660 70 S760 60 790 100', 11) +
+        u('marguerite', 20, 230, 250) + ruban('M240 260 C200 200 160 240 120 170', 11) +
+        u('poupou', 330, 360, 130, { rot: -12 }) +
+        u('caramel', 520, 370, 190, { rot: 6 }) + ruban('M600 400 C620 330 700 360 720 280 S760 220 790 230', 12) +
+        bulle(560, 250, 'Ma momie !', 170) +
+        titre('WOUUUH !', 400, 130, 66, '#3F8EDB', -6),
+      texte: "Soudain, le vent se leva : <b>WOUUUH</b> ! Tous les papiers s’envolèrent ! Les rubans dansaient dans le ciel comme des serpentins. « Mon voile ! » cria Marguerite. « Ma <b>momie</b> ! » cria Caramel, qui tournait comme une toupie en se déroulant."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 100) +
+        pluiePapier(10, 30, 120) +
+        papi('hamidsurpris', 320, 150, 160) + u('hamidpapier', 320, 150, 160) +
+        ruban('M352 120 Q400 86 452 122 Q468 160 456 200', 12) + surprise(378, 100) +
+        u('brouette', 600, 430, 160) +
+        momie(10, 390, 170) +
+        mariee(530, 220, 240, { flip: true }) +
+        bouleCoin(200, 450, 80) +
+        u('papiers', 160, 500, 160) + u('papiers', 500, 490, 150) +
+        bulle(480, 150, 'Il a neigé ?!', 200) +
+        titre('FLOP !', 170, 140, 60, '#E8553E', -8),
+      texte: "<b>FLOP</b> ! Un grand ruban tomba sur le chapeau de Papi Hamid, qui revenait du marché. Il ouvrit de <b>très grands yeux</b> : « Il a <b>neigé</b> ?! » Partout des papiers, un cochon-momie, une vache mariée, un canard-boule… « Mais… qu’est-ce qui s’est passé ici ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        papi('hamid', 320, 150, 160) +
+        bulle(490, 100, 'Ho ho ho !', 160) +
+        u('poupou', 140, 370, 130) + bulle(70, 280, 'Pardon, Papi…', 200) +
+        momie(540, 380, 170, { flip: true }) + titre('Hi hi !', 640, 350, 34, '#C9427F', 6) +
+        bouleCoin(460, 460, 70, { flip: true }) +
+        u('papiers', 20, 490, 140) + u('rouleauvide', 300, 470, 40, { rot: 80 }),
+      texte: "Poupou baissa la tête : « <b>Pardon</b>, Papi… Je ne voulais plus attendre la neige, alors j’ai fait de la neige en papier. Avec <b>tous</b> tes rouleaux. » Papi éclata de rire : « Ho ho ho ! Un cochon-momie, ça, je n’en avais <b>jamais</b> vu ! » Et tout le monde rit avec lui."
+    },
+    {
+      scene: () => decor('pluie') + neige() + flocons() +
+        u('grange', 10, 140, 220) +
+        papi('hamid', 230, 150, 160) + bulle(340, 70, 'Il suffisait d’attendre !', 300) +
+        u('panier', 50, 420, 110) + u('papiers', 60, 400, 90) + u('oeuf', 88, 400, 26) +
+        u('poupou', 430, 340, 150) + coeurs(470, 300) +
+        u('caramel', 600, 400, 160, { flip: true }) + u('coincoin', 380, 460, 70) +
+        titre('De la vraie neige !', 580, 200, 40, '#3F8EDB', 4),
+      texte: "« Allez, on <b>répare ensemble</b> ! » Poupou ramassa tous les papiers, et Papi en fit un <b>nid</b> tout doux pour le poulailler. Et le lendemain matin… de <b>vrais flocons</b> tombèrent du ciel ! « Tu vois, ma Poupou ? Il suffisait d’attendre ! »"
+    }
+  ]
+});
+</script>
+</body>
+</html>

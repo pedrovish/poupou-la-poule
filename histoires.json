@@ -244,5 +244,14 @@
     "fichier": "/histoires/27-les-lunettes-de-papi.html",
     "couleur": "#E2F1FB",
     "objet": "lunettes"
+  },
+  {
+    "numero": 28,
+    "titre": "Poupou et le rouleau de papier",
+    "resume": "FRRRRRT ! Poupou ne veut plus attendre la neige… alors elle la fabrique avec tous les rouleaux de papier de Papi Hamid ! Un cochon-momie, une vache mariée, un canard-boule, une ferme toute blanche… Que va dire Papi Hamid ?",
+    "date": "2026-11-24",
+    "fichier": "/histoires/28-le-rouleau-de-papier.html",
+    "couleur": "#E9F1F8",
+    "objet": "rouleau"
   }
 ]

@@ -42,7 +42,9 @@
     pommiervide: 280 / 240, pommesarbre: 280 / 240, bellepomme: 280 / 240, carameljoues: 180 / 220, tartepommes: 120 / 220,
     pullviolet: 180 / 200, pulldefait: 180 / 200, hamidminipull: 256 / 160, hamidpullneuf: 256 / 160, caramellaine: 180 / 220, margueritelaine: 240 / 300,
     pelotevio: 1, coincoinpelote: 1, poupoupelote: 1, moutonlaine: 170 / 200, poupouecharpe: 1,
-    lunettes: 50 / 120, hamidlunettes: 256 / 160, hamidplisse: 256 / 160, poupoulunettes: 1, poupoulunettesrouges: 1, caramellait: 180 / 220
+    lunettes: 50 / 120, hamidlunettes: 256 / 160, hamidplisse: 256 / 160, poupoulunettes: 1, poupoulunettesrouges: 1, caramellait: 180 / 220,
+    rouleau: 1.1, rouleauvide: 1.25, rouleaurond: 0.3, paquetrouleaux: 0.875, papiers: 0.5, caramelmomie: 180 / 220, coincoinpapier: 1,
+    margueritevoile: 240 / 300, hamidpapier: 256 / 160, poupoupapier: 1
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

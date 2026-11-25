@@ -253,5 +253,14 @@
     "fichier": "/histoires/28-le-rouleau-de-papier.html",
     "couleur": "#E9F1F8",
     "objet": "rouleau"
+  },
+  {
+    "numero": 29,
+    "titre": "Poupou et les paillettes dorées",
+    "resume": "POUF ! Poupou trouve qu’une pincée de paillettes, c’est bien trop petit… alors elle renverse tout le pot ! Un cochon en or, une vache disco, un mouton à paillettes, des œufs dorés… Que va dire Papi Hamid ?",
+    "date": "2026-11-25",
+    "fichier": "/histoires/29-les-paillettes-dorees.html",
+    "couleur": "#FFF4CC",
+    "objet": "potpaillettes"
   }
 ]

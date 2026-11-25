@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et les paillettes dorées</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// tout le monde en or !
+const poupouOr = (x, y, w, o = {}) => avec('poupou', ['poupouor'], x, y, w, o);
+const caramelOr = (x, y, w, o = {}) => avec('caramel', ['caramelor'], x, y, w, o);
+const coinOr = (x, y, w, o = {}) => avec('coincoin', ['coincoinor'], x, y, w, o);
+const vacheOr = (x, y, w, o = {}) => avec('marguerite', ['margueriteor'], x, y, w, o);
+const moutonOr = (x, y, w, o = {}) => avec('mouton', ['moutonor'], x, y, w, o);
+// une petite étoile qui scintille
+const scintille = (x, y, s = 10, c = '#FFD43B') =>
+  `<path d="M${x} ${y - s} Q${x} ${y} ${x + s} ${y} Q${x} ${y} ${x} ${y + s} Q${x} ${y} ${x - s} ${y} Q${x} ${y} ${x} ${y - s}Z" fill="${c}" stroke="#D99A00" stroke-width="1.8" stroke-linejoin="round"/>`;
+// des paillettes qui volent dans un rectangle (x, y, largeur, hauteur)
+const paillettes = (n, x0 = 0, y0 = 20, w = 800, h = 320, g = 1) => {
+  const cols = ['#FFD43B', '#FFB020', '#FFF3B0', '#FF8FAB'];
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137 + g * 53) % 997) / 997 * w, y = y0 + ((i * 89 + g * 31) % 613) / 613 * h;
+    s += i % 3 === 0 ? scintille(x, y, 7 + (i % 4) * 2, i % 2 ? '#FFD43B' : '#FFF6C8')
+      : `<circle cx="${x}" cy="${y}" r="${2.5 + (i % 3)}" fill="${cols[i % 4]}" stroke="#C98A00" stroke-width="1"/>`;
+  }
+  return s;
+};
+// un ruisseau de paillettes qui suit le chemin d
+const coulee = (d) => `<path d="${d}" fill="none" stroke="#FFD43B" stroke-width="14" stroke-linecap="round" stroke-dasharray="3 12" opacity=".95"/>` +
+  `<path d="${d}" fill="none" stroke="#FFB020" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 16"/>`;
+// des rayons qui éblouissent
+const eclat = (cx, cy, r1, r2, n = 14) => {
+  let s = '<g stroke="#FFE27A" stroke-width="10" stroke-linecap="round" opacity=".9">';
+  for (let i = 0; i < n; i++) {
+    const a = i * 2 * Math.PI / n;
+    s += `<path d="M${cx + r1 * Math.cos(a)} ${cy + r1 * Math.sin(a)} L${cx + r2 * Math.cos(a)} ${cy + r2 * Math.sin(a)}"/>`;
+  }
+  return s + '</g>';
+};
+// le couvercle rose du pot
+const couvercle = (x, y, rot = 0) => `<g transform="rotate(${rot} ${x + 36} ${y + 12})"><rect x="${x}" y="${y}" width="72" height="24" rx="7" fill="#C9427F" stroke="#6B3A1E" stroke-width="4"/>` +
+  `<path d="M${x + 14} ${y + 4} v16 M${x + 28} ${y + 4} v16 M${x + 42} ${y + 4} v16 M${x + 56} ${y + 4} v16" stroke="#A8326A" stroke-width="3" stroke-linecap="round"/></g>`;
+// le sapin décoré
+const sapinDeco = (x, y, w, plein = true) => {
+  const k = w / 200;
+  let s = u('sapin', x, y, w);
+  const pp = [[62, 112], [118, 128], [44, 176], [140, 182], [92, 160]];
+  pp.forEach(([px, py]) => { s += u(plein ? 'pommepinor' : 'pommepin', x + px * k - 3 * k, y + py * k - 4 * k, 30 * k); });
+  const bb = [[96, 96, '#E8483F'], [72, 140, '#3F8EDB'], [128, 104, '#FF8FAB'], [120, 196, '#E8483F'], [70, 206, '#FFD43B']];
+  bb.forEach(([bx, by, c]) => { s += `<circle cx="${x + bx * k}" cy="${y + by * k}" r="${8 * k}" fill="${c}" stroke="#6B3A1E" stroke-width="2.5"/>`; });
+  return s + scintille(x + 100 * k, y + 22 * k, 22 * k, '#FFD43B');
+};
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des points d'interrogation
+const quoi = (x, y, k = 1) => titre('?', x, y, 44 * k, '#3F8EDB', -10) + titre('?', x + 30 * k, y - 22 * k, 34 * k, '#E8553E', 12);
+// des traits qui secouent
+const secoue = (cx, cy, r = 50) => `<g fill="none" stroke="#E39A1C" stroke-width="5" stroke-linecap="round"><path d="M${cx - r} ${cy - 20} q-14 20 0 40 M${cx - r - 16} ${cy - 30} q-20 30 0 60 M${cx + r} ${cy - 20} q14 20 0 40 M${cx + r + 16} ${cy - 30} q20 30 0 60"/></g>`;
+// une idée qui brille
+const idee = (x, y) => u('etoile', x, y, 50) + `<g stroke="#FFD43B" stroke-width="5" stroke-linecap="round"><path d="M${x + 25} ${y - 10} v-14 M${x - 8} ${y + 4} l-12 -8 M${x + 58} ${y + 4} l12 -8"/></g>`;
+const coeurs = (x, y) => u('coeur', x, y, 34, { rot: -12 }) + u('coeur', x + 40, y - 26, 26, { rot: 10 });
+// de l'herbe toute dorée
+const herbeOr = (x, y, w) => paillettes(Math.round(w / 14), x, y, w, 40, 7);
+
+lancerHistoire({
+  numero: 29,
+  titre: "Poupou et les paillettes dorées",
+  morale: "Les paillettes, c’est joli… mais juste une toute petite pincée ! Et quand on fait une bêtise, on dit pardon et on aide à réparer.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 120) + u('soleil', 680, 30, 80) +
+    u('nuageor', 200, 110, 400) +
+    paillettes(40, 20, 30, 760, 420, 2) +
+    caramelOr(20, 360, 190) +
+    poupouOr(300, 270, 220) + u('potpaillettesouvert', 500, 380, 70, { rot: 20 }) +
+    coinOr(620, 410, 120, { flip: true }) +
+    titre('POUF !', 400, 110, 70, '#E39A1C', -5),
+  fin: () => decor('nuit') + u('lune', 640, 40, 80) +
+    u('grange', 10, 150, 230) +
+    sapinDeco(300, 130, 200) + paillettes(10, 300, 90, 200, 60, 5) +
+    papi('hamid', 540, 150, 160) + u('hamidor', 540, 150, 160) +
+    u('poupou', 230, 400, 110) + coeurs(250, 380) +
+    caramelOr(30, 400, 170) + u('coincoin', 470, 460, 70, { flip: true }) +
+    titre('Que ça brille !', 400, 100, 54, '#FFD43B', -3),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) + u('nuage', 420, 30, 110) +
+        u('sapin', 10, 120, 200) +
+        u('table', 250, 300, 260) +
+        u('pommepin', 275, 264, 50) + u('pommepin', 330, 264, 50, { rot: 10 }) +
+        u('potpaillettes', 395, 256, 56) +
+        u('pommepinor', 455, 264, 50) + scintille(470, 250, 9) + scintille(500, 238, 6) + scintille(456, 230, 5) +
+        papi('hamid', 560, 150, 160) +
+        bulle(470, 50, 'Juste une pincée !', 250) +
+        u('poupou', 110, 390, 130) +
+        u('coincoin', 20, 460, 70),
+      texte: "Bientôt la <b>fête</b> ! Papi Hamid décorait des pommes de pin pour le sapin. Il prit une toute petite <b>pincée</b> de paillettes dorées : « Juste une pincée, c’est magique ! Mais attention : les paillettes, ça s’envole <b>partout</b> ! » Puis il partit au bois chercher d’autres pommes de pin."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) +
+        u('table', 20, 300, 230) + u('pommepin', 40, 268, 44) + u('pommepinor', 150, 268, 44) +
+        u('poupou', 300, 320, 180) +
+        u('potpaillettes', 500, 320, 70, { rot: -25 }) + secoue(535, 362, 46) +
+        bulle(200, 180, 'Une pincée ? C’est tout petit !', 360) +
+        u('coincoin', 650, 440, 90, { flip: true }) + quoi(650, 430, .7) +
+        titre('Secoue ! Secoue !', 400, 110, 54, '#C9427F', -4),
+      texte: "« Une pincée ? C’est <b>tout petit</b>, une pincée ! » Poupou prit le gros pot. Elle le secoua… rien. Elle le secoua plus fort… <b>encore rien</b> ! Alors elle le secoua de <b>toutes</b> ses forces…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) +
+        u('nuageor', 170, 140, 440) +
+        paillettes(46, 20, 40, 760, 440, 3) +
+        couvercle(620, 70, 30) + `<g stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M600 150 l-30 40 M630 160 l-14 44"/></g>` +
+        poupouOr(300, 300, 200) +
+        u('potpaillettesouvert', 520, 440, 64, { rot: 80 }) +
+        bulle(400, 250, 'Je suis une poule en or !', 310) +
+        u('coincoin', 650, 440, 90, { flip: true }) +
+        titre('POUF !', 400, 110, 76, '#E39A1C', -6),
+      texte: "<b>POUF</b> ! Le couvercle sauta jusqu’au ciel ! Un gros <b>nuage doré</b> retomba sur Poupou. Elle brillait de la crête jusqu’aux pattes. « Oh ! Je suis une <b>poule en or</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 20, 20, 100) + u('nuage', 660, 160, 100) +
+        herbeOr(300, 480, 480) + coulee('M330 500 C420 520 520 480 620 510 S740 500 790 490') +
+        poupouOr(30, 340, 150) + idee(110, 250) +
+        u('potpaillettesouvert', 160, 380, 56, { rot: 50 }) +
+        coulee('M220 400 C280 360 330 360 370 400') +
+        caramelOr(370, 330, 240, { rot: 175 }) + paillettes(14, 360, 300, 260, 160, 4) +
+        bulle(520, 220, 'Groin ! Je brille !', 240) +
+        titre('ROULI-ROULA !', 400, 110, 58, '#3F8EDB', -4),
+      texte: "Et Poupou eut une idée farfelue : « Toute la ferme va <b>briller</b> ! » Elle versa des paillettes sur Caramel. « Groin ! Un cochon en or ! » Il était si content qu’il se roula dans l’herbe : <b>ROULI-ROULA</b> ! Et l’herbe aussi devint toute dorée."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 100) +
+        poupouOr(20, 380, 130) +
+        coinOr(170, 390, 120) +
+        `<g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><path d="M300 420 h60 M296 446 h80 M300 472 h56"/></g>` +
+        u('nuageor', 340, 230, 200, { rot: -8 }) + paillettes(20, 300, 220, 300, 160, 6) +
+        moutonOr(520, 340, 220) +
+        bulle(560, 240, 'Bêêê ?!', 130) +
+        titre('ATCHOUM !', 300, 150, 66, '#E8553E', -6),
+      texte: "Puis ce fut le tour de Coin-Coin. Mais une paillette lui chatouilla le bec… « A… a… <b>ATCHOUM</b> ! » Un nuage doré s’envola… et retomba sur <b>Flocon</b> le mouton. « Bêêê ?! » Le voilà tout rose et tout pailleté !"
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 660, 20, 100) + u('nuage', 40, 40, 110) +
+        eclat(410, 340, 160, 230, 16) +
+        vacheOr(250, 220, 320, { rot: -6 }) +
+        poupouOr(30, 390, 120) + choc(100, 390, .8) +
+        caramelOr(610, 400, 170, { flip: true }) + choc(640, 410, .8) +
+        bulle(400, 170, 'Meuh ! Je suis une boule disco !', 380) +
+        titre('SCHLING !', 210, 190, 62, '#E39A1C', -6),
+      texte: "Pour Marguerite, Poupou fit des <b>étoiles</b> partout : « Une vache à étoiles ! » Juste à ce moment, le soleil sortit… <b>SCHLING</b> ! Marguerite brillait si fort que tout le monde ferma les yeux. « Meuh ! Je suis une <b>boule disco</b> ! » Et elle se mit à danser."
+    },
+    {
+      scene: () => decor('jour') + vent(20, 50, 1.1) + vent(470, 130, .9) +
+        u('grange', 10, 150, 230) + paillettes(16, 30, 170, 200, 200, 8) +
+        u('barriere', 240, 350, 250) + paillettes(8, 250, 360, 240, 60, 9) +
+        u('potpaillettesouvert', 420, 170, 60, { rot: 130 }) +
+        paillettes(50, 0, 30, 800, 330, 10) +
+        u('panier', 540, 400, 140) + u('oeufor', 565, 410, 34, { rot: -10 }) + u('oeufor', 600, 404, 36) + u('oeufor', 638, 412, 32, { rot: 12 }) +
+        poupouOr(380, 400, 120, { rot: -10 }) +
+        bulle(560, 300, 'Des œufs en or !', 220) +
+        titre('WOUUUH !', 400, 110, 66, '#3F8EDB', -6),
+      texte: "Soudain, le vent se leva : <b>WOUUUH</b> ! Le pot s’envola, et toutes les paillettes avec ! Il y en avait sur la grange, sur la barrière… et même sur les œufs du poulailler. « Oh ! Des <b>œufs en or</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 650, 40, 110) +
+        caramelOr(40, 360, 180) + secoue(130, 432, 86) +
+        coulee('M200 380 Q260 300 320 380') +
+        coinOr(320, 400, 110) + secoue(375, 460, 50) +
+        coulee('M430 400 Q490 320 560 380') +
+        poupouOr(560, 360, 150) +
+        u('nuageor', 680, 330, 90, { flip: true }) + paillettes(12, 640, 320, 140, 100, 11) +
+        titre('FROUTCH !', 120, 300, 40, '#C9427F', -8) + titre('FROUTCH !', 380, 330, 40, '#C9427F', 6) + titre('PFFFF !', 700, 300, 44, '#3F8EDB', 8) +
+        titre('Ça colle partout !', 400, 120, 54, '#E8553E', -4),
+      texte: "« Ça <b>colle</b> partout ! » Caramel se secoua : <b>FROUTCH</b> ! Tout sauta sur Coin-Coin, qui se secoua : <b>FROUTCH</b> ! Tout sauta sur Poupou. Elle souffla : <b>PFFFF</b> !… et tout lui revint sur le bec. Oh oh…"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) +
+        u('grange', 0, 140, 200) + paillettes(12, 10, 160, 180, 180, 12) +
+        papi('hamidsurpris', 300, 150, 160) + surprise(350, 136) +
+        u('brouette', 440, 330, 170) + u('pommepin', 490, 312, 40, { rot: -10 }) + u('pommepin', 525, 308, 40, { rot: 14 }) + u('pommepin', 558, 314, 36) +
+        vacheOr(560, 190, 230, { flip: true }) +
+        caramelOr(10, 400, 170) + moutonOr(620, 400, 160) +
+        u('oeufor', 220, 470, 34) + u('oeufor', 254, 476, 30, { rot: 15 }) +
+        coinOr(440, 470, 70) +
+        bulle(110, 60, 'Mais… pourquoi tout brille ?!', 370) +
+        herbeOr(200, 500, 400),
+      texte: "C’est alors que Papi Hamid revint du bois avec sa brouette. Il ouvrit de <b>très grands yeux</b> : un cochon en or, une vache disco, un mouton à paillettes, des œufs dorés… « Mais… pourquoi tout <b>brille</b> comme ça ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + u('nuage', 600, 30, 110) +
+        papi('hamid', 320, 150, 160) + u('hamidor', 320, 150, 160) + paillettes(14, 300, 170, 200, 80, 13) +
+        bulle(490, 90, 'Ho ho ho !', 160) +
+        titre('ATCHOUM !', 180, 190, 52, '#E8553E', -8) +
+        poupouOr(130, 380, 130) + bulle(60, 290, 'Pardon, Papi…', 200) +
+        caramelOr(540, 390, 170, { flip: true }) + titre('Hi hi !', 640, 360, 34, '#C9427F', 6) +
+        coinOr(480, 470, 70, { flip: true }),
+      texte: "Poupou s’avança : « <b>Pardon</b>, Papi… Je voulais que tout soit beau, alors j’ai versé <b>tout</b> le pot. » Une paillette chatouilla le nez de Papi : « <b>ATCHOUM</b> ! » Et sa moustache devint toute dorée ! « Ho ho ho ! Me voilà Papi <b>Moustache d’or</b> ! » Tout le monde éclata de rire."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) + u('soleil', 680, 30, 80) +
+        u('marguerite', 0, 230, 260, { flip: true }) + papi('hamid', 250, 150, 150) + u('balai', 180, 222, 50, { rot: 80 }) +
+        u('bassine', 450, 410, 200) + u('caramel', 485, 360, 130) + u('mousse', 440, 380, 140) + u('mousse', 560, 380, 110) +
+        u('poupou', 300, 410, 120) + u('balai', 390, 380, 46, { rot: 25 }) + paillettes(8, 300, 520, 160, 20, 14) +
+        u('potpaillettes', 690, 460, 50) +
+        titre('PLOUF !', 560, 330, 46, '#3F8EDB', 6) +
+        bulle(380, 60, 'On répare ensemble !', 270),
+      texte: "« Allez, on <b>répare ensemble</b> ! » Poupou balaya, balaya, et remit les paillettes dans le pot. Papi brossa Marguerite. Et Caramel prit un bon <b>bain</b> tout moussant : <b>PLOUF</b> !"
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 40, 230, 140)) +
+        sapinDeco(300, 130, 200) +
+        papi('hamid', 560, 150, 160) + bulle(590, 60, 'C’est magique !', 200) +
+        u('potpaillettes', 220, 420, 50) +
+        u('poupou', 100, 400, 130) + scintille(250, 390, 8) + scintille(270, 370, 6) +
+        u('caramel', 430, 400, 150) + u('coincoin', 680, 460, 70, { flip: true }) +
+        coeurs(140, 370),
+      texte: "Le soir, ils accrochèrent les pommes de pin dorées dans le <b>sapin</b>. Et cette fois, Poupou ajouta juste une <b>toute petite pincée</b> de paillettes. Le sapin scintillait comme une étoile ! « Tu vois, ma Poupou ? Une pincée, c’est <b>magique</b> ! »"
+    }
+  ]
+});
+</script>
+</body>
+</html>

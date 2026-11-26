@@ -262,5 +262,15 @@
     "fichier": "/histoires/29-les-paillettes-dorees.html",
     "couleur": "#FFF4CC",
     "objet": "potpaillettes"
+  },
+  {
+    "numero": 30,
+    "titre": "Poupou et le cocorico de minuit",
+    "resume": "COCORICOOOT ! En pleine nuit, Poupou prend la grosse lune ronde pour le soleil… et réveille toute la ferme ! Un Papi en pyjama, un cochon qu’on veut traire, une pluie de graines, une vache en brouette… Que va dire Papi Hamid ?",
+    "date": "2026-11-26",
+    "fichier": "/histoires/30-le-cocorico-de-minuit.html",
+    "couleur": "#DDE3F7",
+    "objet": "pleinelune",
+    "nuit": true
   }
 ]

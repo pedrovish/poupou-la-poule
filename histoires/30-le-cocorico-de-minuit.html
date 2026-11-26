@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et le cocorico de minuit</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// tout le monde fait dodo
+const dodo = {
+  poupou: (x, y, w, o = {}) => avec('poupou', ['poupoudort'], x, y, w, o),
+  caramel: (x, y, w, o = {}) => avec('caramel', ['caramelendormi'], x, y, w, o),
+  vache: (x, y, w, o = {}) => avec('marguerite', ['margueritedort'], x, y, w, o),
+  coin: (x, y, w, o = {}) => avec('coincoin', ['coincoindort'], x, y, w, o)
+};
+// des Z qui s'envolent
+const zzz = (x, y, k = 1) => titre('Z', x, y, 34 * k, '#8FB8FF', -10) + titre('z', x + 24 * k, y - 26 * k, 28 * k, '#8FB8FF', 8) + titre('z', x + 44 * k, y - 50 * k, 22 * k, '#8FB8FF', -6);
+// la pleine lune, basse derrière la colline (on dirait le soleil qui se lève !)
+const luneBasse = (x = 520, y = 190, w = 240) => u('pleinelune', x, y, w);
+// la petite maison de Papi Hamid
+const maison = (x, y, k = 1, allumee = false) => {
+  const v = allumee ? '#FFE27A' : '#2E3A6B';
+  return `<g transform="translate(${x} ${y}) scale(${k})">` +
+    (allumee ? '<circle cx="64" cy="120" r="60" fill="#FFE27A" opacity=".25"/><circle cx="150" cy="120" r="50" fill="#FFE27A" opacity=".2"/>' : '') +
+    '<rect x="10" y="80" width="190" height="130" rx="8" fill="#F3E2C3" stroke="#6B3A1E" stroke-width="5"/>' +
+    '<path d="M0 92 L105 14 L210 92Z" fill="#B5503A" stroke="#6B3A1E" stroke-width="5" stroke-linejoin="round"/>' +
+    '<rect x="150" y="22" width="24" height="44" fill="#B5793F" stroke="#6B3A1E" stroke-width="4"/>' +
+    `<rect x="36" y="104" width="54" height="46" rx="6" fill="${v}" stroke="#6B3A1E" stroke-width="5"/><path d="M63 104 V150 M36 127 H90" stroke="#6B3A1E" stroke-width="4"/>` +
+    `<rect x="124" y="104" width="54" height="46" rx="6" fill="${v}" stroke="#6B3A1E" stroke-width="5"/><path d="M151 104 V150 M124 127 H178" stroke="#6B3A1E" stroke-width="4"/>` +
+    '<rect x="88" y="150" width="40" height="60" rx="6" fill="#8A5A33" stroke="#6B3A1E" stroke-width="4"/><circle cx="120" cy="182" r="3.5" fill="#FFD43B"/>' +
+    '</g>';
+};
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des points d'interrogation
+const quoi = (x, y, k = 1) => titre('?', x, y, 44 * k, '#3F8EDB', -10) + titre('?', x + 30 * k, y - 22 * k, 34 * k, '#E8553E', 12);
+// le cri qui fait trembler l'air
+const ondes = (cx, cy, k = 1) => `<g fill="none" stroke="#FFE27A" stroke-width="${6 * k}" stroke-linecap="round"><path d="M${cx} ${cy - 30 * k} q${22 * k} ${30 * k} 0 ${60 * k} M${cx + 24 * k} ${cy - 50 * k} q${34 * k} ${50 * k} 0 ${100 * k} M${cx + 50 * k} ${cy - 70 * k} q${46 * k} ${70 * k} 0 ${140 * k}"/></g>`;
+// des traits de saut
+const saut = (x, y) => `<g stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"><path d="M${x} ${y} v26 M${x + 22} ${y + 8} v26 M${x + 44} ${y} v26"/></g>`;
+// une pluie de graines (x, y, largeur, hauteur)
+const pluieGraines = (n, x0, y0, w, h) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137) % 97) / 97 * w, y = y0 + ((i * 59) % 89) / 89 * h;
+    s += `<ellipse cx="${x}" cy="${y}" rx="6" ry="3.6" transform="rotate(${(i * 47) % 180} ${x} ${y})" fill="#F2C84B" stroke="#B38F00" stroke-width="1.5"/>`;
+  }
+  return s;
+};
+// des éclaboussures de boue
+const boue = (pts) => pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#7A4E2D" opacity=".9"/>`).join('');
+// des notes de berceuse
+const notes = (x, y) => u('note', x, y, 34, { rot: -10 }) + u('note', x + 40, y - 30, 28, { rot: 12 }) + u('note', x + 76, y - 8, 24, { rot: -6 });
+const coeurs = (x, y) => u('coeur', x, y, 34, { rot: -12 }) + u('coeur', x + 40, y - 26, 26, { rot: 10 });
+
+lancerHistoire({
+  numero: 30,
+  titre: "Poupou et le cocorico de minuit",
+  morale: "La lune, c’est pour faire dodo, et le soleil, c’est pour se lever ! Avant de crier, on regarde bien… et quand on fait une bêtise, on dit pardon et on aide à réparer.",
+  couverture: () => decor('nuit', luneBasse(540, 170, 250)) +
+    u('poulailler', 10, 200, 220) +
+    maison(600, 250, .8, true) +
+    u('bottefoin', 300, 410, 170) +
+    u('poupoucocorico', 290, 250, 180) + ondes(480, 300, 1.1) +
+    dodo.caramel(30, 420, 160) + quoi(150, 400, .7) +
+    u('coincoin', 520, 440, 90, { rot: 160 }) + choc(540, 440, .7) +
+    titre('COCORICOOOT !', 400, 110, 66, '#FFD43B', -5),
+  fin: () => decor('nuit') + u('pleinelune', 600, 40, 150) +
+    u('poulailler', 20, 190, 230) +
+    maison(560, 270, .7) +
+    dodo.caramel(250, 420, 150) + zzz(395, 440, .7) +
+    dodo.vache(400, 270, 200, { flip: true }) +
+    dodo.coin(620, 450, 70, { flip: true }) +
+    u('poupou', 120, 410, 110) + coeurs(110, 380) +
+    bulle(140, 318, 'Bonne nuit, la lune !', 280),
+  pages: [
+    {
+      scene: () => decor('nuit', luneBasse()) +
+        u('poulailler', 20, 190, 240) +
+        u('poupou', 300, 380, 130) + titre('!', 420, 380, 50, '#FFD43B', 10) +
+        bulle(270, 290, 'Le soleil ! Déjà ?', 230) +
+        dodo.caramel(570, 420, 170) + zzz(700, 410) +
+        titre('RRRON… PSSSH…', 590, 120, 34, '#8FB8FF', -4),
+      texte: "Cette nuit-là, toute la ferme dormait. Caramel ronflait : « <b>RRRON… PSSSH…</b> » Soudain, Poupou ouvrit un œil. Derrière la colline, il y avait une grosse boule toute ronde et toute claire. « Oh ! Le <b>soleil</b> est déjà levé ! »"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(560, 200, 220)) +
+        u('poulailler', 10, 200, 200) +
+        u('bottefoin', 280, 420, 180) +
+        u('poupoucocorico', 270, 262, 180) + ondes(462, 312, 1.2) +
+        titre('COCORI…', 380, 120, 52, '#FFD43B', -6) + titre('…COOOOT !', 560, 180, 62, '#FFB020', 6) +
+        dodo.caramel(600, 430, 160) + zzz(720, 420, .8),
+      texte: "« Il faut réveiller tout le monde ! » Poupou monta sur la petite botte de foin, prit une grande inspiration et cria : « <b>COCORI… COCORICOOOOT !</b> » Bon… une poule, normalement, ça ne fait pas cocorico. Mais Poupou criait très, très fort !"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(560, 220, 200)) +
+        maison(20, 180, .9, true) + titre('CLIC !', 120, 150, 40, '#FFD43B', -6) +
+        u('caramel', 260, 260, 160, { rot: -12 }) + saut(300, 400) + titre('BOING !', 340, 240, 44, '#FF8FAB', -8) +
+        u('marguerite', 480, 230, 250) + surprise(678, 230) + bulle(560, 140, 'Meuh ?!', 120) +
+        u('panier', 280, 450, 110, { rot: 20 }) + u('coincoin', 400, 450, 80, { rot: 150 }) + choc(420, 450, .6) +
+        titre('PATATRA !', 600, 500, 40, '#E8553E', -4) +
+        u('poupou', 160, 420, 110),
+      texte: "Caramel sauta en l’air : <b>BOING</b> ! Coin-Coin dégringola de son panier : <b>PATATRA</b> ! Marguerite ouvrit de grands yeux : « Meuh ?! » Et dans la maison de Papi Hamid, la lumière s’alluma : <b>CLIC</b> !"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(580, 210, 200)) +
+        maison(10, 160, .85, true) +
+        u('hamidpyjama', 250, 150, 160) + u('seau', 370, 330, 60) +
+        titre('HAAAAAA…', 330, 120, 46, '#8FB8FF', -4) +
+        bulle(425, 170, 'Quel drôle de matin tout noir…', 365) +
+        u('poupou', 560, 400, 120, { flip: true }) + titre('?', 590, 390, 40, '#FFD43B', 10),
+      texte: "Papi Hamid sortit en <b>pyjama</b>, avec son bonnet de nuit et ses bottes à l’envers. Il avait encore les yeux tout fermés. « <b>HAAAAAA</b>… Bonjour mes amis… Quel drôle de matin tout <b>noir</b>… »"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(580, 220, 180)) +
+        u('marguerite', 20, 230, 230) + titre('Hi hi !', 140, 200, 36, '#FF8FAB', -6) +
+        u('hamidpyjama', 270, 150, 160) +
+        u('caramel', 450, 330, 220) + surprise(620, 330) + u('seau', 520, 440, 70) +
+        bulle(130, 50, 'Un bon seau de lait, ma Marguerite…', 450) +
+        bulle(540, 230, 'GROIN ?!', 140),
+      texte: "Comme chaque matin, Papi alla traire la vache. Mais avec les yeux fermés… il posa son seau sous <b>Caramel</b> ! « Allons, ma Marguerite, un bon seau de lait… » « <b>GROIN ?!</b> Mais Papi, je suis un <b>cochon</b> ! »"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(600, 220, 170)) +
+        u('mangeoire', 30, 250, 150) + u('sacgraines', 60, 420, 110, { rot: -20 }) +
+        papi('hamidpyjama', 300, 160, 160) +
+        pluieGraines(60, 270, 160, 230, 300) +
+        u('mesange', 330, 100, 56) + u('mesange', 410, 92, 52, { flip: true }) +
+        titre('CRITCH CRATCH !', 400, 60, 48, '#FFB020', -4) +
+        u('coincoin', 520, 420, 100, { flip: true }) + pluieGraines(12, 530, 430, 80, 60) +
+        titre('toc ! toc !', 560, 140, 34, '#3F8EDB', 8) +
+        u('poupououps', 640, 400, 130, { flip: true }),
+      texte: "Ensuite, Papi donna les <b>graines</b> du petit-déjeuner… mais il les versa toutes dans son <b>chapeau</b> ! Puis il remit son chapeau sur sa tête. <b>CRITCH CRATCH</b> ! Une pluie de graines ! Et les mésanges vinrent picorer : toc ! toc ! toc !"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(600, 220, 160)) +
+        u('flaqueboue', 360, 440, 360) +
+        avec('caramel', ['tachesboue'], 430, 330, 210, { rot: 170 }) +
+        boue([[300, 260, 9], [330, 220, 7], [270, 300, 6], [380, 250, 8], [560, 330, 7], [610, 300, 6]]) +
+        u('hamidpyjama', 120, 150, 160) +
+        boue([[170, 260, 7], [205, 290, 9], [240, 250, 6], [190, 330, 8], [230, 360, 6], [160, 200, 5], [220, 205, 6], [250, 310, 7]]) +
+        bulle(20, 60, 'Tiens… il pleut du chocolat ?', 380) +
+        titre('SPLATCH !', 560, 230, 64, '#8A5A33', -6) +
+        u('poupou', 640, 420, 100, { flip: true }) + titre('Oh oh…', 690, 390, 34, '#FFD43B', 6),
+      texte: "Caramel, lui, fit sa roulade du matin dans la boue. GLOUP… GLOUP… <b>SPLATCH</b> ! Des taches partout sur le joli pyjama de Papi ! « Tiens… il pleut du <b>chocolat</b> ? » Oh oh…"
+    },
+    {
+      scene: () => decor('nuit', luneBasse(600, 220, 160)) +
+        `<g stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".8"><path d="M20 400 h80 M40 430 h70 M10 460 h90"/></g>` +
+        dodo.vache(140, 236, 230, { rot: -6 }) + u('brouette', 110, 340, 300) + zzz(370, 260) +
+        titre('BRINGUEBALI-BRINGUEBALA !', 400, 120, 36, '#FFB020', -4) +
+        u('coincoin', 560, 330, 110, { rot: -15 }) + `<g stroke="#FFE27A" stroke-width="5" stroke-linecap="round"><path d="M560 370 l-20 -16 M600 336 l-6 -22"/></g>` +
+        bulle(560, 230, 'Une, deux !', 160) +
+        u('seau', 680, 430, 70, { rot: 80 }) + u('flaquelait', 600, 500, 160) + choc(700, 430, .6) +
+        titre('PATATRA !', 520, 535, 36, '#E8553E', -4),
+      texte: "Marguerite voulut aller au pré… en dormant. Elle se coucha dans la <b>brouette</b> de Papi, comme dans un lit. Et la brouette se mit à rouler toute seule : <b>BRINGUEBALI-BRINGUEBALA</b> ! Pendant ce temps, Coin-Coin faisait sa gymnastique : « Une, deux ! » <b>PATATRA</b> ! Le seau se renversa."
+    },
+    {
+      scene: () => decor('nuit', luneBasse(520, 190, 250)) +
+        u('vieilarbre', -60, 60, 300) +
+        u('hibou', 120, 150, 110) + bulle(200, 60, 'C’est la NUIT !', 200) +
+        u('luciole', 420, 150, 70) +
+        `<g stroke="#FFE27A" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 12" fill="none"><path d="M480 200 Q560 220 600 260"/></g>` +
+        titre('La LUNE !', 640, 160, 50, '#FFF1B8', -4) +
+        u('poupououps', 260, 380, 130) +
+        u('hamidpyjama', 420, 270, 110) +
+        u('caramel', 560, 410, 140, { flip: true }) + u('coincoin', 700, 470, 70, { flip: true }) +
+        titre('Ohhhh…', 400, 540, 40, '#FFD43B', -3),
+      texte: "Soudain, Plume le petit hibou se posa sur sa branche : « <b>Pouêt ?!</b> Mais qu’est-ce que vous faites ? C’est la <b>nuit</b> ! » Lumi la luciole montra la grosse boule claire. « Ça, ce n’est pas le soleil… c’est la <b>pleine lune</b> ! » « Ohhhh… », fit tout le monde. « Oh oh… », fit Poupou."
+    },
+    {
+      scene: () => decor('coucher', u('soleil', 320, 240, 160)) +
+        u('bottefoin', 20, 400, 300) + u('hamidpyjama', 60, 250, 160, { rot: -80 }) + zzz(220, 330) +
+        u('flaqueboue', 330, 470, 230) + avec('caramel', ['caramelendormi', 'tachesboue'], 350, 400, 170) +
+        dodo.vache(560, 220, 230, { flip: true }) + zzz(560, 220, .8) +
+        u('panier', 670, 440, 110) + dodo.coin(690, 400, 60) +
+        titre('RONN… PSSSH…', 400, 80, 48, '#B5503A', -3) +
+        u('poupououps', 520, 430, 100),
+      texte: "Tout le monde retourna au lit… mais personne n’arrivait plus à dormir ! Et quand le <b>vrai soleil</b> se leva… <b>RONN… PSSSH…</b> Toute la ferme ronflait ! Papi dans le foin, Marguerite debout, et Caramel dans la boue."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 660, 20, 100) + u('nuage', 40, 40, 110) +
+        u('bottefoin', 20, 400, 300) + u('hamidpyjama', 60, 250, 160, { rot: -80 }) + u('plaid', 70, 350, 220, { rot: -6 }) + zzz(250, 320, .8) +
+        u('poupou', 300, 330, 130, { flip: true }) + bulle(270, 230, 'Pardon, Papi…', 200) +
+        u('sacgraines', 480, 400, 100) + pluieGraines(8, 470, 490, 110, 16) +
+        u('coincoin', 600, 440, 80, { flip: true }) + u('seau', 560, 450, 50) +
+        notes(400, 180),
+      texte: "Poupou chuchota : « <b>Pardon</b>, Papi… J’ai confondu la lune et le soleil. » Puis elle aida à <b>réparer</b>, tout doucement : elle ramassa les graines, releva le seau avec Coin-Coin et posa une couverture sur Papi. Et elle chanta une petite berceuse."
+    },
+    {
+      scene: () => decor('jour') + u('soleil', 660, 20, 100) + u('nuage', 300, 30, 110) +
+        u('marguerite', 10, 230, 230) + titre('Meuh ha ha !', 120, 200, 34, '#FF8FAB', -6) +
+        papi('hamidpyjamarit', 300, 150, 160) + pluieGraines(30, 290, 120, 200, 130) +
+        titre('CRITCH !', 540, 210, 40, '#FFB020', 8) +
+        bulle(480, 50, 'Ho ho ho !', 160) +
+        u('poupou', 500, 390, 120) + coeurs(520, 360) +
+        u('caramel', 620, 400, 160, { flip: true }) + titre('Hi hi !', 700, 380, 34, '#FF8FAB', 6) +
+        u('coincoin', 220, 460, 70),
+      texte: "À midi, Papi se réveilla et souleva son chapeau… <b>CRITCH</b> ! Encore des graines ! « Ho ho ho ! Ma Poupou, le soleil est jaune et chaud, la lune est blanche et douce… et une poule, ça ne fait pas cocorico ! » « Promis, Papi ! Demain, je ferai <b>cot-cot-codet</b> ! » Et tout le monde éclata de rire."
+    }
+  ]
+});
+</script>
+</body>
+</html>

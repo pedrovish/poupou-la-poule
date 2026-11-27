@@ -48,7 +48,8 @@
     potpaillettes: 1.2, potpaillettesouvert: 1.2, nuageor: 0.6, poupouor: 1, caramelor: 180 / 220, coincoinor: 1, margueriteor: 240 / 300,
     moutonor: 170 / 200, hamidor: 256 / 160, pommepin: 1.2, pommepinor: 1.2, oeufor: 1.25, sapin: 1.3,
     hamidpyjama: 256 / 160, hamidpyjamarit: 256 / 160, poupoucocorico: 1, poupoudort: 1, margueritedort: 240 / 300, coincoindort: 1,
-    pleinelune: 1, poulailler: 220 / 240, plaid: 110 / 200
+    pleinelune: 1, poulailler: 220 / 240, plaid: 110 / 200,
+    grosseboule: 1, boulepaille: 1, boulepois: 1, pfouf: 160 / 240, hamidneige: 256 / 160, caramelneige: 180 / 220, coincoinneige: 1
   };
 
   /* u(id, x, y, largeur, {flip, rot, op}) — place un dessin de la planche dans la scène 800×560 */

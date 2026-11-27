@@ -272,5 +272,14 @@
     "couleur": "#DDE3F7",
     "objet": "pleinelune",
     "nuit": true
+  },
+  {
+    "numero": 31,
+    "titre": "Poupou et la boule de neige géante",
+    "resume": "BRROUMMM ! Poupou veut rouler la plus GROSSE boule de neige du monde… mais la boule part toute seule dans la pente ! Un cochon-manège, un canard de cirque, une perruque de foin, un Papi tout blanc… Que va dire Papi Hamid ?",
+    "date": "2026-11-27",
+    "fichier": "/histoires/31-la-boule-de-neige.html",
+    "couleur": "#DDEFFC",
+    "objet": "grosseboule"
   }
 ]

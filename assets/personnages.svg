@@ -2481,4 +2481,62 @@
   <g fill="none" stroke="#FFD43B" stroke-width="3"><path d="M74 16 V101 M154 16 V100 M11 58 Q100 46 189 58"/></g>
   <path d="M10 20 Q100 6 190 20 Q196 60 186 96 Q100 108 14 96 Q4 60 10 20Z" fill="none" stroke="#8A2A22" stroke-width="4" stroke-linejoin="round"/>
   <path d="M20 98 v8 M36 100 v8 M52 101 v8 M68 102 v8 M84 102 v8 M100 102 v8 M116 102 v8 M132 102 v8 M148 101 v8 M164 100 v8 M180 98 v8" stroke="#8A2A22" stroke-width="3" stroke-linecap="round"/></symbol>
+
+<!-- n°31 : la boule de neige géante -->
+<symbol id="grosseboule" viewBox="0 0 200 200">
+  <ellipse cx="100" cy="191" rx="84" ry="8" fill="#5C7A99" opacity=".18"/>
+  <g fill="#fff" stroke="#6B3A1E" stroke-width="4"><circle cx="26" cy="74" r="13"/><circle cx="172" cy="66" r="12"/><circle cx="180" cy="124" r="11"/><circle cx="62" cy="176" r="12"/><circle cx="98" cy="13" r="11"/></g>
+  <circle cx="100" cy="100" r="87" fill="#fff" stroke="#6B3A1E" stroke-width="4"/>
+  <g fill="#fff"><circle cx="26" cy="74" r="10.5"/><circle cx="172" cy="66" r="9.5"/><circle cx="180" cy="124" r="8.5"/><circle cx="62" cy="176" r="9.5"/><circle cx="98" cy="13" r="8.5"/></g>
+  <path d="M22 128 C46 184 156 186 180 126 C150 166 54 166 22 128Z" fill="#D6E8F5"/>
+  <ellipse cx="62" cy="58" rx="20" ry="12" fill="#fff" stroke="#D6E8F5" stroke-width="3" transform="rotate(-30 62 58)"/>
+  <g fill="#D6E8F5"><circle cx="128" cy="74" r="6"/><circle cx="96" cy="112" r="5"/><circle cx="146" cy="120" r="4"/><circle cx="58" cy="110" r="4"/><circle cx="118" cy="42" r="3.5"/></g>
+  <g fill="none" stroke="#C9DDEE" stroke-width="4" stroke-linecap="round"><path d="M40 92 q8 -6 16 0 M136 150 q8 -6 16 0 M118 100 q6 -5 12 0 M150 44 q6 -4 12 2"/></g>
+</symbol>
+<symbol id="boulepaille" viewBox="0 0 200 200">
+  <g stroke="#E0B030" stroke-width="5" stroke-linecap="round"><path d="M50 40 L32 22 M68 28 L58 6 M86 22 L80 2 M100 20 L100 0 M116 22 L122 2 M132 28 L142 6 M150 40 L168 22"/></g>
+  <path d="M38 50 C56 8 144 8 162 50 C140 36 60 36 38 50Z" fill="#F2C84B" stroke="#B38F00" stroke-width="3" stroke-linejoin="round"/>
+  <g stroke="#B38F00" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M60 38 Q70 30 82 34 M108 30 Q122 26 136 36 M90 24 Q98 20 106 24"/></g>
+  <g stroke="#E0B030" stroke-width="4" stroke-linecap="round"><path d="M22 118 l-16 6 M178 98 l18 -4 M62 170 l-8 16 M140 168 l8 16 M30 150 l-14 10"/></g>
+</symbol>
+<symbol id="boulepois" viewBox="0 0 200 200">
+  <g fill="#F2C84B" stroke="#B38F00" stroke-width="1.5">
+    <ellipse cx="50" cy="80" rx="6" ry="3.6" transform="rotate(30 50 80)"/><ellipse cx="80" cy="60" rx="6" ry="3.6" transform="rotate(-20 80 60)"/><ellipse cx="120" cy="90" rx="6" ry="3.6" transform="rotate(60 120 90)"/>
+    <ellipse cx="150" cy="70" rx="6" ry="3.6" transform="rotate(10 150 70)"/><ellipse cx="70" cy="130" rx="6" ry="3.6" transform="rotate(-40 70 130)"/><ellipse cx="110" cy="140" rx="6" ry="3.6" transform="rotate(20 110 140)"/>
+    <ellipse cx="160" cy="120" rx="6" ry="3.6" transform="rotate(-60 160 120)"/><ellipse cx="40" cy="110" rx="6" ry="3.6" transform="rotate(80 40 110)"/><ellipse cx="96" cy="100" rx="6" ry="3.6" transform="rotate(-10 96 100)"/>
+    <ellipse cx="130" cy="160" rx="6" ry="3.6" transform="rotate(40 130 160)"/><ellipse cx="88" cy="168" rx="6" ry="3.6" transform="rotate(-30 88 168)"/><ellipse cx="140" cy="44" rx="6" ry="3.6" transform="rotate(50 140 44)"/>
+    <ellipse cx="60" cy="40" rx="6" ry="3.6" transform="rotate(-50 60 40)"/><ellipse cx="176" cy="96" rx="6" ry="3.6" transform="rotate(20 176 96)"/><ellipse cx="28" cy="140" rx="6" ry="3.6" transform="rotate(-20 28 140)"/>
+  </g>
+</symbol>
+<symbol id="pfouf" viewBox="0 0 240 160">
+  <g fill="#fff" stroke="#9FC3E0" stroke-width="4"><circle cx="50" cy="100" r="34"/><circle cx="96" cy="64" r="42"/><circle cx="150" cy="66" r="38"/><circle cx="192" cy="100" r="32"/><circle cx="120" cy="112" r="40"/></g>
+  <g fill="#fff"><circle cx="50" cy="100" r="31"/><circle cx="96" cy="64" r="39"/><circle cx="150" cy="66" r="35"/><circle cx="192" cy="100" r="29"/><circle cx="120" cy="112" r="37"/><rect x="50" y="80" width="140" height="50"/></g>
+  <g fill="#D6E8F5"><circle cx="80" cy="96" r="5"/><circle cx="140" cy="88" r="4"/><circle cx="176" cy="110" r="4"/><circle cx="110" cy="58" r="3.5"/></g>
+  <g fill="#fff" stroke="#9FC3E0" stroke-width="3"><circle cx="16" cy="54" r="8"/><circle cx="226" cy="48" r="7"/><circle cx="30" cy="150" r="6"/><circle cx="214" cy="148" r="6"/><circle cx="120" cy="10" r="7"/></g>
+</symbol>
+<symbol id="hamidneige" viewBox="0 0 160 256">
+  <g fill="#fff" stroke="#9FC3E0" stroke-width="3" stroke-linejoin="round">
+    <path d="M42 44 C34 8 126 8 118 44 C110 32 98 38 92 30 C84 40 72 30 66 38 C58 30 50 40 42 44Z"/>
+    <path d="M34 108 C30 92 54 88 58 100 C52 110 42 104 34 108Z"/><path d="M126 108 C130 92 106 88 102 100 C108 110 118 104 126 108Z"/>
+    <path d="M6 34 C6 22 26 22 26 32 C20 30 12 36 6 34Z"/><path d="M134 32 C134 22 154 22 154 34 C148 36 140 30 134 32Z"/>
+    <path d="M58 82 Q70 74 80 80 Q90 74 102 82 Q92 92 80 86 Q68 92 58 82Z"/>
+    <path d="M58 150 C60 138 78 138 80 148 C72 154 64 148 58 150Z"/><path d="M94 166 C96 156 112 156 114 166 C106 170 100 164 94 166Z"/>
+    <path d="M44 232 C46 222 62 222 64 230 C58 234 50 230 44 232Z"/><path d="M96 232 C98 222 114 222 116 230 C110 234 102 230 96 232Z"/>
+  </g>
+  <g fill="#fff"><circle cx="30" cy="140" r="4"/><circle cx="136" cy="150" r="4"/><circle cx="20" cy="190" r="3"/><circle cx="146" cy="200" r="3.5"/><circle cx="24" cy="94" r="3"/></g>
+</symbol>
+<symbol id="caramelneige" viewBox="0 0 220 180">
+  <g fill="#fff" stroke="#9FC3E0" stroke-width="3" stroke-linejoin="round">
+    <path d="M136 52 C136 30 200 28 204 56 C194 50 186 56 178 48 C170 56 160 48 152 54 C146 48 140 54 136 52Z"/>
+    <path d="M52 70 C60 50 120 46 132 60 C120 62 112 70 104 62 C94 70 82 62 74 70 C66 64 58 72 52 70Z"/>
+    <path d="M60 122 C64 112 80 112 82 122 C74 126 66 120 60 122Z"/><path d="M120 128 C124 118 140 118 142 128 C134 132 126 126 120 128Z"/>
+    <path d="M186 84 C190 76 206 76 210 86 C202 88 194 82 186 84Z"/>
+  </g>
+</symbol>
+<symbol id="coincoinneige" viewBox="0 0 120 120">
+  <g fill="#fff" stroke="#9FC3E0" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M62 34 C62 16 102 14 104 36 C96 32 92 38 86 32 C80 38 72 32 62 34Z"/>
+    <path d="M22 66 C28 54 66 52 74 62 C66 64 60 68 54 62 C46 68 36 62 22 66Z"/>
+  </g>
+</symbol>
 </svg>

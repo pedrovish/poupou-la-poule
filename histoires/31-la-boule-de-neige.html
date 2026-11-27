@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la boule de neige géante</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// Poupou avec son écharpe d'hiver
+const poupou = (id, x, y, w, o = {}) => avec(id, ['poupouecharpe'], x, y, w, o);
+// les collines toutes blanches de neige (par-dessus le décor)
+const neige = () =>
+  `<path d="M0 380 C150 330 300 362 420 342 C560 316 680 350 800 330 L800 560 L0 560Z" fill="#F4FAFF"/>` +
+  `<path d="M0 380 C150 330 300 362 420 342 C560 316 680 350 800 330" fill="none" stroke="#D6E8F5" stroke-width="4"/>` +
+  `<path d="M0 432 C200 402 400 442 800 412 L800 560 L0 560Z" fill="#E6F1FA"/>` +
+  `<g fill="#C9DDEE"><ellipse cx="120" cy="490" rx="40" ry="5"/><ellipse cx="420" cy="520" rx="56" ry="6"/><ellipse cx="680" cy="480" rx="44" ry="5"/></g>`;
+// la petite pente toute blanche (en haut à gauche, en bas à droite)
+const pente = () =>
+  `<path d="M0 250 C120 240 220 250 300 280 C420 330 560 400 800 430 L800 560 L0 560Z" fill="#FFFFFF"/>` +
+  `<path d="M0 250 C120 240 220 250 300 280 C420 330 560 400 800 430" fill="none" stroke="#C9DDEE" stroke-width="5"/>` +
+  `<g fill="#D6E8F5"><ellipse cx="120" cy="300" rx="40" ry="5"/><ellipse cx="520" cy="470" rx="60" ry="6"/></g>`;
+// des flocons qui tombent doucement
+const flocons = (n = 22, gros = true) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = (i * 149) % 780 + 10, y = (i * 83) % 300 + 10;
+    s += `<circle cx="${x}" cy="${y}" r="${i % 3 ? 3.5 : 5}" fill="#fff" opacity=".95"/>`;
+  }
+  if (gros) s += u('flocon', 40, 230, 30, { rot: 10 }) + u('flocon', 330, 170, 26) + u('flocon', 720, 250, 28, { rot: 20 });
+  return s;
+};
+// la trace de la boule dans la neige
+const trace = (x1, y1, x2, y2, l = 60) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="#D6E8F5" stroke-width="${l}" stroke-linecap="round"/>`;
+// des traits de vitesse derrière la boule
+const roule = (x, y, k = 1) => `<g fill="none" stroke="#9FC3E0" stroke-width="${6 * k}" stroke-linecap="round" opacity=".9"><path d="M${x} ${y} h${-70 * k} M${x + 10 * k} ${y + 40 * k} h${-90 * k} M${x} ${y + 80 * k} h${-60 * k}"/></g>`;
+// des petites flèches qui tournent (la boule roule !)
+const tourne = (cx, cy, r) => `<g fill="none" stroke="#3F8EDB" stroke-width="6" stroke-linecap="round"><path d="M${cx - r} ${cy - r * .3} A${r} ${r} 0 0 1 ${cx + r * .3} ${cy - r}"/><path d="M${cx + r * .3} ${cy - r} l-16 -8 M${cx + r * .3} ${cy - r} l-8 16"/></g>`;
+// LA boule géante et tout ce qui s'y est collé
+const boule = (x, y, w, o = {}) => {
+  let s = '';
+  if (o.bottes) s += u('botte', x + 0.12 * w, y + 0.8 * w, 0.24 * w, { rot: 10 }) + u('botte', x + 0.6 * w, y + 0.8 * w, 0.24 * w, { rot: -10 });
+  s += u('grosseboule', x, y, w);
+  if (o.paille) s += u('boulepaille', x, y, w);
+  if (o.pois) s += u('boulepois', x, y, w);
+  if (o.caramel) s += avec('caramel', ['caramelneige'], x + 0.52 * w, y + 0.18 * w, 0.62 * w, { flip: true, rot: 150 });
+  if (o.coin) s += avec('coincoin', o.chapeau ? [] : ['coincoinneige'], x + 0.3 * w, y - 0.33 * w, 0.38 * w);
+  if (o.chapeau) s += o.coin ? u('chapeau', x + 0.37 * w, y - 0.3 * w, 0.3 * w, { rot: 8 }) : u('chapeau', x + 0.22 * w, y - 0.18 * w, 0.56 * w, { rot: -4 });
+  return s;
+};
+// la petite maison de Papi Hamid, avec de la neige sur le toit
+const maison = (x, y, k = 1) =>
+  `<g transform="translate(${x} ${y}) scale(${k})">` +
+  '<rect x="10" y="80" width="190" height="130" rx="8" fill="#F3E2C3" stroke="#6B3A1E" stroke-width="5"/>' +
+  '<path d="M0 92 L105 14 L210 92Z" fill="#B5503A" stroke="#6B3A1E" stroke-width="5" stroke-linejoin="round"/>' +
+  '<path d="M-2 92 L105 12 L212 92 C200 100 192 88 180 90 L105 34 L30 90 C18 88 10 100 -2 92Z" fill="#fff" stroke="#C9DDEE" stroke-width="3" stroke-linejoin="round"/>' +
+  '<rect x="150" y="22" width="24" height="44" fill="#B5793F" stroke="#6B3A1E" stroke-width="4"/><path d="M146 22 C150 10 174 10 178 22Z" fill="#fff" stroke="#C9DDEE" stroke-width="3"/>' +
+  '<rect x="36" y="104" width="54" height="46" rx="6" fill="#BFE6FF" stroke="#6B3A1E" stroke-width="5"/><path d="M63 104 V150 M36 127 H90" stroke="#6B3A1E" stroke-width="4"/>' +
+  '<rect x="124" y="104" width="54" height="46" rx="6" fill="#BFE6FF" stroke="#6B3A1E" stroke-width="5"/><path d="M151 104 V150 M124 127 H178" stroke="#6B3A1E" stroke-width="4"/>' +
+  '<rect x="88" y="150" width="40" height="60" rx="6" fill="#8A5A33" stroke="#6B3A1E" stroke-width="4"/><circle cx="120" cy="182" r="3.5" fill="#FFD43B"/>' +
+  '</g>';
+// un toit de neige sur la grange (x, y, largeur)
+const toitNeige = (x, y, w) => { const k = w / 260;
+  return `<path d="M${x + 4 * k} ${y + 92 * k} L${x + 130 * k} ${y + 2 * k} L${x + 256 * k} ${y + 92 * k} C${x + 240 * k} ${y + 102 * k} ${x + 230 * k} ${y + 86 * k} ${x + 214 * k} ${y + 84 * k} L${x + 130 * k} ${y + 22 * k} L${x + 46 * k} ${y + 84 * k} C${x + 30 * k} ${y + 90 * k} ${x + 20 * k} ${y + 102 * k} ${x + 4 * k} ${y + 92 * k}Z" fill="#fff" stroke="#C9DDEE" stroke-width="3" stroke-linejoin="round"/>`; };
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des brins de paille qui volent
+const brins = (pts) => `<g stroke="#E0B030" stroke-width="5" stroke-linecap="round">${pts.map(([x, y, r]) => `<path d="M${x} ${y} l${18 * Math.cos(r)} ${18 * Math.sin(r)}"/>`).join('')}</g>`;
+// une pluie de graines (x, y, largeur, hauteur)
+const pluieGraines = (n, x0, y0, w, h) => {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + ((i * 137) % 97) / 97 * w, y = y0 + ((i * 59) % 89) / 89 * h;
+    s += `<ellipse cx="${x}" cy="${y}" rx="6" ry="3.6" transform="rotate(${(i * 47) % 180} ${x} ${y})" fill="#F2C84B" stroke="#B38F00" stroke-width="1.5"/>`;
+  }
+  return s;
+};
+// l'empreinte d'un « ange » dans la neige
+const ange = (x, y) => `<g fill="#D6E8F5"><ellipse cx="${x}" cy="${y}" rx="70" ry="22"/><ellipse cx="${x - 40}" cy="${y - 14}" rx="34" ry="12" transform="rotate(-20 ${x - 40} ${y - 14})"/><ellipse cx="${x + 40}" cy="${y - 14}" rx="34" ry="12" transform="rotate(20 ${x + 40} ${y - 14})"/></g>`;
+const coeurs = (x, y) => u('coeur', x, y, 34, { rot: -12 }) + u('coeur', x + 40, y - 26, 26, { rot: 10 });
+
+lancerHistoire({
+  numero: 31,
+  titre: "Poupou et la boule de neige géante",
+  morale: "Une grosse boule, c’est rigolo… mais une petite boule, ça ne s’enfuit pas ! Et quand on fait une bêtise, on dit pardon et on aide à réparer.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 600, 50, 140) + pente() + flocons(18, false) +
+    trace(60, 300, 330, 400, 50) +
+    poupou('poupououps', 30, 230, 150) +
+    roule(330, 300) +
+    boule(340, 250, 220, { caramel: true, coin: true, paille: true }) + tourne(450, 360, 70) +
+    titre('BRROUMMM !', 400, 120, 70, '#3F8EDB', -5),
+  fin: () => decor('coucher', u('soleil', 40, 250, 140)) + u('nuage', 30, 40, 120) + neige() + flocons(10, false) +
+    u('bonhommeneige', 300, 120, 210) + u('chapeau', 360, 112, 95, { rot: -6 }) +
+    avec('marguerite', [], 520, 240, 230, { flip: true }) +
+    poupou('poupou', 170, 360, 140) + u('caramel', 10, 390, 150) +
+    u('coincoin', 500, 450, 80, { flip: true }) + u('hamid', 680, 250, 110, { flip: true }) +
+    coeurs(240, 330) +
+    bulle(60, 40, 'Le plus grand bonhomme du monde !', 480),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 300, 40, 130) + neige() + flocons(22) +
+        maison(20, 160, .95) +
+        papi('hamid', 250, 170, 130) + bulle(330, 100, 'Un bonhomme de neige !', 320) +
+        poupou('poupou', 450, 330, 170) + u('bouleneige', 640, 460, 50) +
+        titre('Moi, je fais la boule !', 560, 300, 36, '#E8553E', -4),
+      texte: "Ce matin, toute la ferme est <b>blanche</b> ! « De la neige ! s’écrie Papi Hamid. On va faire un <b>bonhomme de neige</b>. Je vais chercher une carotte pour son nez. » Poupou sautille : « Et moi, je fais la boule ! La plus <b>GROSSE</b> boule du monde ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) + neige() + flocons(14, false) +
+        trace(40, 470, 560, 470, 30) +
+        u('bouleneige', 40, 450, 30) + u('pomme', 42, 400, 26) +
+        u('bouleneige', 110, 430, 55) + u('ballonrouge', 120, 330, 36) +
+        u('bouleneige', 210, 395, 95) +
+        poupou('poupou', 300, 380, 120) +
+        u('grosseboule', 400, 330, 160) + tourne(480, 410, 55) +
+        u('caramel', 600, 380, 180, { flip: true }) + surprise(620, 380) +
+        titre('Encore ! Encore !', 400, 120, 50, '#E8553E', -4) +
+        titre('pomme…', 70, 380, 26, '#3F8EDB', -6) + titre('ballon…', 140, 310, 26, '#3F8EDB', -6) + titre('Caramel !', 680, 330, 34, '#3F8EDB', 6),
+      texte: "Poupou roule une petite boule. Elle roule, elle roule… La boule devient grosse comme une <b>pomme</b>. Puis grosse comme un <b>ballon</b>. Puis grosse comme <b>Caramel</b> ! « Oh ! », fait Caramel. « Encore ! Encore ! », crie Poupou."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) + pente() + flocons(12, false) +
+        trace(20, 290, 200, 300, 50) +
+        poupou('poupououps', 40, 160, 150) + titre('Oh oh…', 120, 140, 40, '#E8553E', -6) +
+        boule(220, 120, 210) + roule(260, 200) +
+        titre('BRROUMMM !', 570, 300, 56, '#3F8EDB', 12),
+      texte: "Maintenant, la boule est grosse comme une <b>botte de foin</b> ! Poupou ne voit même plus devant elle. « Hop ! Encore un petit coup ! » Mais la boule arrive en haut de la petite pente… et elle part toute seule : <b>BRROUMMM</b> ! « Oh oh… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 120) + neige() + flocons(10, false) +
+        ange(620, 470) +
+        trace(0, 440, 300, 450, 60) + roule(250, 300) +
+        boule(280, 200, 230, { caramel: true }) + tourne(395, 315, 75) +
+        titre('SCHLOUF !', 620, 160, 66, '#3F8EDB', 8) +
+        bulle(520, 260, 'Wiiiii !', 140),
+      texte: "En bas, Caramel faisait l’<b>ange</b> dans la neige, les pattes en l’air. <b>SCHLOUF</b> ! La boule l’attrape au passage ! Voilà Caramel collé sur la boule, qui tourne, tourne… « <b>Wiiiii</b> ! Je suis un cochon-manège ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 120) + neige() + flocons(10, false) +
+        trace(0, 450, 260, 460, 60) + roule(230, 320) +
+        boule(250, 220, 220, { caramel: true, coin: true }) +
+        u('carotte', 560, 250, 70, { rot: -40 }) + u('brindilles', 600, 320, 60, { rot: 30 }) + u('brindilles', 520, 190, 50, { rot: -60 }) +
+        u('bouleneige', 640, 420, 40) + u('bouleneige', 690, 450, 30) + choc(600, 430, .7) +
+        titre('SCHLOUF !', 160, 160, 56, '#3F8EDB', -8) +
+        bulle(470, 110, 'Coin ! Coin ! Pas si vite !', 300),
+      texte: "Coin-Coin faisait un tout petit bonhomme de neige. <b>SCHLOUF</b> ! La boule avale le petit bonhomme… et Coin-Coin se retrouve tout en haut ! Il court, il court sur la boule, comme au <b>cirque</b> : « Coin ! Coin ! Pas si vite ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) + neige() + flocons(10, false) +
+        u('marguerite', 10, 240, 240) + surprise(200, 240) +
+        bulle(20, 150, 'Meuh ?! Mon déjeuner !', 300) +
+        trace(240, 470, 400, 470, 60) + roule(390, 330) +
+        boule(410, 230, 220, { caramel: true, coin: true, paille: true }) +
+        brins([[300, 330, -0.5], [330, 380, 0.4], [360, 300, -1.2], [290, 420, 0.2], [380, 420, 1]]) +
+        titre('SCHLOUF !', 600, 120, 56, '#3F8EDB', 8),
+      texte: "Plus loin, Marguerite mangeait sa <b>botte de foin</b>. <b>SCHLOUF</b> ! La boule emporte le foin ! Maintenant, elle a une drôle de <b>perruque jaune</b>. « Meuh ?! Mon déjeuner s’en va tout seul ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) + neige() +
+        u('grange', 520, 110, 260) + toitNeige(520, 110, 260) + flocons(8, false) +
+        u('barriere', 20, 330, 220) +
+        trace(0, 480, 250, 480, 60) + roule(240, 330) +
+        boule(250, 230, 220, { caramel: true, coin: true, paille: true, bottes: true, chapeau: true }) +
+        titre('SCHLOUF ! SCHLOUF !', 320, 110, 50, '#3F8EDB', -4) +
+        bulle(520, 200, 'Coin ? Tout est noir !', 260),
+      texte: "Devant la grange, il y avait les <b>bottes</b> de Papi et son <b>chapeau</b> posé sur la barrière. <b>SCHLOUF, SCHLOUF</b> ! Maintenant, la boule a des bottes en bas… et un chapeau en haut ! Le chapeau tombe sur Coin-Coin : « Coin ? Qui a éteint la lumière ? »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 120) + neige() + flocons(8, false) +
+        poupou('poupou', 20, 380, 110) + u('marguerite', 110, 290, 190) +
+        bulle(30, 300, 'Arrête-toi !', 170) +
+        u('mangeoire', 300, 280, 110, { rot: -25 }) + pluieGraines(30, 290, 360, 200, 130) +
+        boule(420, 220, 220, { caramel: true, coin: true, paille: true, bottes: true, chapeau: true, pois: true }) +
+        u('mesange', 380, 160, 56) + u('mesange', 660, 170, 52, { flip: true }) + u('mesange', 700, 420, 50, { flip: true }) +
+        titre('CRITCH CRATCH !', 400, 110, 54, '#FFB020', -4) +
+        titre('toc ! toc !', 680, 360, 30, '#3F8EDB', 8),
+      texte: "La boule passe sous la <b>mangeoire</b> des mésanges. <b>CRITCH CRATCH</b> ! Des graines partout ! Voilà une boule <b>à pois</b>… et les mésanges lui courent après : toc ! toc ! toc ! Derrière, Poupou et Marguerite galopent : « Arrête-toi, la boule ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 110) + neige() +
+        maison(10, 160, .95) +
+        u('pfouf', 150, 160, 340) +
+        avec('hamidsurpris', ['hamidneige'], 230, 170, 130) + u('carotte', 340, 220, 60, { rot: -30 }) +
+        boule(420, 230, 220, { caramel: true, coin: true, paille: true, bottes: true, chapeau: true, pois: true }) +
+        choc(420, 420, .9) +
+        titre('BADABOUM !', 580, 120, 56, '#E8553E', 6) + titre('PFOUF !', 200, 140, 46, '#3F8EDB', -8),
+      texte: "Juste à ce moment-là, Papi Hamid sort de la maison avec sa carotte. « Voilà le nez du bonhomme ! » <b>BADABOUM</b> ! La boule s’arrête pile devant lui. <b>PFOUF</b> ! Un gros nuage de neige… et Papi est tout <b>blanc</b>, avec de grands yeux ronds."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 30, 110) + neige() + flocons(6, false) +
+        avec('hamidsurpris', ['hamidneige'], 40, 170, 130) +
+        bulle(130, 70, 'Qui porte MES bottes ?!', 290) +
+        boule(330, 230, 220, { paille: true, bottes: true, pois: true }) +
+        u('coincoin', 370, 160, 80) + u('chapeau', 330, 140, 110, { rot: -30 }) + bulle(440, 110, 'Coucou, Papi !', 190) +
+        avec('caramel', ['caramelneige'], 580, 360, 180, { rot: -10 }) + titre('POP !', 600, 340, 50, '#FF8FAB', -8) + choc(570, 360, .6),
+      texte: "« Mais… qui est ce gros bonhomme qui porte <b>mes bottes</b> et <b>mon chapeau</b> ?! » <b>POP</b> ! Caramel se décolle de la boule. Coin-Coin soulève le chapeau : « Coucou, Papi ! » Papi ouvre la bouche… mais aucun mot ne sort !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 110) + neige() + flocons(6, false) +
+        papi('hamid', 30, 170, 130) + u('botte', 50, 400, 40) + u('botte', 96, 404, 40) +
+        poupou('poupououps', 170, 360, 140, { flip: true }) + bulle(170, 260, 'Pardon, Papi…', 200) +
+        u('grosseboule', 360, 260, 180) +
+        u('marguerite', 520, 240, 230, { flip: true }) + u('bottefoin', 610, 430, 110) +
+        u('mangeoire', 680, 200, 90) + u('mesange', 700, 160, 46, { flip: true }) + pluieGraines(10, 660, 360, 100, 30) +
+        u('caramel', 340, 430, 130) + u('coincoin', 480, 470, 70),
+      texte: "Poupou arrive, toute essoufflée. « <b>Pardon</b>, Papi… Je voulais la plus grosse boule du monde. Elle est partie toute seule ! » Puis elle aide à <b>réparer</b> : elle rend ses bottes et son chapeau à Papi, rapporte le foin à Marguerite et remet des graines aux mésanges."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 600, 30, 110) + neige() + flocons(12) +
+        u('bonhommeneige', 290, 90, 230) + u('chapeau', 356, 82, 104, { rot: -6 }) +
+        u('hamid', 120, 170, 130) + bulle(20, 60, 'Ho ho ho !', 160) +
+        poupou('poupou', 520, 370, 130, { flip: true }) + coeurs(560, 340) +
+        u('marguerite', 560, 200, 220, { flip: true }) +
+        u('caramel', 10, 400, 150) + u('coincoin', 220, 460, 70) +
+        titre('On dirait Papi !', 600, 140, 40, '#E8553E', 6),
+      texte: "Papi regarde l’énorme boule… et il éclate de rire : « Ho ho ho ! On va faire le plus <b>GRAND</b> bonhomme de neige du monde ! » Tout le monde roule une petite tête, Papi la pose en haut, avec la carotte et son chapeau. « On dirait Papi ! », rit Poupou. Et toute la ferme éclate de rire."
+    }
+  ]
+});
+</script>
+</body>
+</html>

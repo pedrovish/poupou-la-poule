@@ -281,5 +281,14 @@
     "fichier": "/histoires/31-la-boule-de-neige.html",
     "couleur": "#DDEFFC",
     "objet": "grosseboule"
+  },
+  {
+    "numero": 32,
+    "titre": "Poupou et la cabane de couvertures",
+    "resume": "ZOUIP ! Poupou veut construire la plus grande cabane du monde… et prend tout sans demander ! Un canard-fantôme, une tartine sur la tête, une couette pleine de boue, une vache en chaussette… et une cabane qui marche ! Que va dire Papi Hamid ?",
+    "date": "2026-11-28",
+    "fichier": "/histoires/32-la-cabane-de-couvertures.html",
+    "couleur": "#FDE7E4",
+    "objet": "cabanegeante"
   }
 ]

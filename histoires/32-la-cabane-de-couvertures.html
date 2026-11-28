@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poupou et la cabane de couvertures</title>
+<link rel="icon" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="/assets/livre.js"></script>
+<script>
+// un mot écrit dans la scène, bien lisible
+const titre = (txt, x, y, taille = 40, couleur = '#3F8EDB', rot = 0) =>
+  `<text x="${x}" y="${y}" text-anchor="middle" fill="${couleur}" stroke="#fff" stroke-width="7" paint-order="stroke" stroke-linejoin="round" font-family="Fredoka, sans-serif" font-weight="700" font-size="${taille}"${rot ? ` transform="rotate(${rot} ${x} ${y})"` : ''}>${txt}</text>`;
+// un personnage + ses « costumes » (même x, y, largeur)
+const avec = (id, extras, x, y, w, o = {}) => u(id, x, y, w, o) + extras.map(e => u(e, x, y, w, o)).join('');
+// le chapeau de Papi Hamid sur sa tête
+const papi = (id, x, y, w, o = {}) => u(id, x, y, w, o) + u('chapeau', o.flip ? x + w - 0.093 * w - 0.81 * w : x + 0.093 * w, y - 0.133 * w, 0.81 * w);
+// une ombre douce sous quelque chose
+const ombre = (cx, cy, rx) => `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${rx * 0.06}" fill="#000" opacity=".12"/>`;
+// LA cabane géante (x, y, largeur) : yeux dans le noir, fesses de Marguerite, pattes qui marchent, couette pleine de boue
+const cabane = (x, y, w, o = {}) => {
+  const k = w / 400;
+  let s = o.pattes ? '' : ombre(x + 200 * k, y + 296 * k, 180 * k);
+  s += u('cabanegeante', x, y, w, o.rot ? { rot: o.rot } : {});
+  const p = o.rot ? { rot: o.rot } : {};
+  if (o.boue !== false) s += u('cabaneboue', x, y, w, p);
+  if (o.yeux) s += u('cabaneyeux', x, y, w, p);
+  if (o.fesses) s += u('cabanefesses', x, y, w, p);
+  if (o.pattes) s += u('cabanepattes', x, y, w, p);
+  return s;
+};
+// la corde à linge (x, y, largeur) avec ce qui reste dessus
+const corde = (x, y, w, o = {}) => {
+  const k = w / 420;
+  let s = u('cordelinge', x, y, w);
+  if (o.drap) s += u('drappendu', x + 50 * k, y + 16 * k, 150 * k);
+  if (o.couette) s += u('couettependue', x + 220 * k, y + 16 * k, 160 * k);
+  return s;
+};
+// la petite maison de Papi Hamid
+const maison = (x, y, k = 1) =>
+  `<g transform="translate(${x} ${y}) scale(${k})">` +
+  '<rect x="10" y="80" width="190" height="130" rx="8" fill="#F3E2C3" stroke="#6B3A1E" stroke-width="5"/>' +
+  '<path d="M0 92 L105 14 L210 92Z" fill="#B5503A" stroke="#6B3A1E" stroke-width="5" stroke-linejoin="round"/>' +
+  '<rect x="150" y="22" width="24" height="44" fill="#B5793F" stroke="#6B3A1E" stroke-width="4"/>' +
+  '<rect x="36" y="104" width="54" height="46" rx="6" fill="#BFE6FF" stroke="#6B3A1E" stroke-width="5"/><path d="M63 104 V150 M36 127 H90" stroke="#6B3A1E" stroke-width="4"/>' +
+  '<rect x="124" y="104" width="54" height="46" rx="6" fill="#BFE6FF" stroke="#6B3A1E" stroke-width="5"/><path d="M151 104 V150 M124 127 H178" stroke="#6B3A1E" stroke-width="4"/>' +
+  '<rect x="88" y="150" width="40" height="60" rx="6" fill="#8A5A33" stroke="#6B3A1E" stroke-width="4"/><circle cx="120" cy="182" r="3.5" fill="#FFD43B"/>' +
+  '</g>';
+// la table du jardin… sans sa nappe !
+const tableNue = (x, y, w) => { const k = w / 240;
+  return `<g transform="translate(${x} ${y}) scale(${k})">` +
+    '<ellipse cx="120" cy="144" rx="104" ry="6" fill="#000" opacity=".12"/>' +
+    '<g fill="#C98A44" stroke="#6B3A1E" stroke-width="3.5" stroke-linejoin="round"><rect x="30" y="30" width="16" height="112" rx="4"/><rect x="194" y="30" width="16" height="112" rx="4"/><rect x="6" y="16" width="228" height="18" rx="5"/></g>' +
+    '<path d="M20 25 H120 M140 25 H220" stroke="#A8702F" stroke-width="3" stroke-linecap="round"/></g>'; };
+// des traits de surprise autour d'une tête
+const surprise = (x, y) => `<g stroke="#E8553E" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} l-10 -22 M${x + 22} ${y - 6} l0 -24 M${x + 44} ${y} l10 -22"/></g>`;
+// une petite étoile de choc
+const choc = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -26 L7 -9 L25 -12 L12 2 L22 18 L4 11 L-6 26 L-8 8 L-26 6 L-11 -5 L-18 -22 L-3 -11Z" fill="#FFD43B" stroke="#E39A1C" stroke-width="3" stroke-linejoin="round"/>`;
+// des points d'interrogation
+const quoi = (x, y, k = 1) => titre('?', x, y, 44 * k, '#3F8EDB', -10) + titre('?', x + 30 * k, y - 22 * k, 34 * k, '#E8553E', 12);
+// des petits traits qui tremblent (brrr !)
+const brrr = (x, y) => `<g fill="none" stroke="#7FB8E8" stroke-width="5" stroke-linecap="round"><path d="M${x} ${y} q-8 10 0 20 q8 10 0 20 M${x - 18} ${y + 6} q-8 10 0 20 q8 10 0 20"/></g>`;
+// des traits de mouvement (ça bouge !)
+const bouge = (x, y, k = 1) => `<g fill="none" stroke="#fff" stroke-width="${6 * k}" stroke-linecap="round" opacity=".95"><path d="M${x} ${y} q-14 20 0 40 M${x - 20 * k} ${y - 10 * k} q-16 30 0 60"/></g>`;
+// une flèche courbe pour montrer le chemin
+const fleche = (d, bout) => `<g fill="none" stroke="#E8553E" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"><path d="${d}"/></g><path d="${bout}" fill="#E8553E"/>`;
+const coeurs = (x, y) => u('coeur', x, y, 34, { rot: -12 }) + u('coeur', x + 40, y - 26, 26, { rot: 10 });
+
+lancerHistoire({
+  numero: 32,
+  titre: "Poupou et la cabane de couvertures",
+  morale: "Avant de prendre les affaires des autres, on demande ! Et quand on fait une bêtise, on dit pardon et on aide à réparer.",
+  couverture: () => decor('jour') + u('nuage', 40, 40, 130) + u('nuage', 620, 60, 130) +
+    u('grange', 560, 120, 230) +
+    cabane(170, 150, 400, { yeux: true, pattes: true, rot: -4 }) + bouge(160, 330) + bouge(660, 330, -1) +
+    papi('hamidsurpris', 620, 210, 120, { flip: true }) + surprise(650, 175) +
+    titre('HI HI HI !', 370, 120, 60, '#E8553E', -5),
+  fin: () => decor('coucher', u('soleil', 520, 240, 130)) + u('nuage', 30, 40, 120) +
+    u('grange', 20, 130, 240) +
+    cabane(270, 140, 360, { yeux: true, boue: false }) +
+    papi('hamid', 660, 206, 120, { flip: true }) +
+    bulle(280, 40, 'Il était une fois… une petite poule !', 450) +
+    u('marguerite', 90, 300, 200) + coeurs(560, 180),
+  pages: [
+    {
+      scene: () => decor('jour') + u('nuage', 240, 30, 130) + u('nuage', 560, 50, 110) +
+        maison(10, 150, .95) +
+        corde(250, 190, 330, { drap: true, couette: true }) +
+        papi('hamid', 610, 190, 120, { flip: true }) + bulle(560, 90, 'Soyez sages !', 200) +
+        u('poupou', 220, 380, 130) + u('plaid', 340, 440, 110, { rot: -8 }) +
+        titre('Une cabane !', 270, 360, 40, '#E8553E', -5),
+      texte: "<b>Brrr</b> ! Ce matin, il fait tout froid sur la ferme. Papi Hamid a étendu son <b>drap</b> et sa grosse <b>couette</b> sur la corde, pour qu’ils prennent l’air. « Je vais ranger la grange. Soyez sages ! » Poupou a une idée : « Moi, je vais construire une <b>cabane</b> ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 120) + u('nuage', 560, 30, 130) +
+        u('arbre', 30, 150, 190) +
+        u('petitecabane', 230, 250, 300) +
+        bulle(380, 140, 'Elle est trop petite !', 260) +
+        u('caramel', 560, 330, 170, { flip: true }) + u('coincoin', 500, 430, 80) +
+        titre('Hi hi !', 660, 300, 40, '#FF8FAB', 6),
+      texte: "Poupou pose son petit <b>plaid</b> sur un bâton. Voilà une cabane… grande comme un chapeau ! Poupou entre dedans, mais sa <b>queue</b> dépasse derrière. Caramel pouffe : « On voit tes plumes ! » « Elle est trop petite ! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 130) +
+        corde(30, 190, 330, { couette: true }) +
+        u('poupououps', 80, 360, 140) + titre('Oh oh…', 150, 350, 34, '#E8553E', -6) +
+        u('coincoindrap', 380, 330, 150) + bulle(420, 230, 'Coin-HOUUU !', 210) +
+        u('caramel', 580, 370, 170, { flip: true, rot: 18 }) + surprise(600, 370) +
+        titre('FLOUP !', 330, 150, 60, '#3F8EDB', -6),
+      texte: "Poupou court à la corde à linge et tire sur le grand <b>drap</b> bleu. <b>FLOUP</b> ! Le drap s’envole… et retombe sur Coin-Coin, qui passait par là. « Coin-HOUUU ! Je suis un <b>fantôme</b> ! » Caramel en tombe sur les fesses."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) +
+        tableNue(300, 290, 240) +
+        u('poupou', 40, 350, 140) + u('nappe', 175, 290, 150, { rot: -15 }) + titre('ZOUIP !', 160, 260, 50, '#3F8EDB', -8) +
+        u('tartine', 380, 160, 60, { rot: -30 }) + u('tartine', 470, 200, 50, { rot: 40 }) +
+        u('pomme', 330, 470, 40) + u('pomme', 520, 490, 36) + u('pomme', 260, 500, 34) +
+        u('caramel', 580, 330, 180, { flip: true }) + u('tartine', 604, 318, 58, { rot: -20 }) +
+        titre('SPLATCH !', 650, 270, 44, '#E8483F', 8) + bulle(500, 60, 'Mon goûter !', 190),
+      texte: "Il faut plus de tissu ! Sur la table du jardin, Caramel prépare son goûter. Poupou attrape la <b>nappe</b>… et tire d’un coup, comme une magicienne : <b>ZOUIP</b> ! Les pommes roulent, les tartines s’envolent… <b>SPLATCH</b> ! Une tartine de confiture atterrit sur la tête de Caramel."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 130) +
+        corde(20, 190, 300) +
+        u('flaqueboue', 40, 470, 280) +
+        u('couettesale', 200, 370, 300, { rot: -6 }) +
+        u('poupou', 530, 350, 140) +
+        u('coincoin', 680, 430, 70, { flip: true }) + surprise(690, 420) +
+        titre('FLITCH ! FLATCH !', 400, 150, 52, '#8A5A33', -4),
+      texte: "« La grosse <b>couette</b> de Papi, c’est la plus grande ! » Poupou la tire, la tire… à travers la <b>flaque de boue</b>. <b>FLITCH, FLATCH</b> ! Maintenant, la belle couette blanche est pleine de petites <b>pattes de poule</b> marron. « Oh oh… »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 30, 120) + u('nuage', 600, 40, 120) +
+        u('bottefoin', 30, 300, 140) +
+        u('marguerite', 200, 230, 260) + u('chaussette', 404, 214, 46, { rot: -70 }) + brrr(500, 290) + brrr(210, 330) +
+        bulle(120, 120, 'Meuh… brrr !', 200) +
+        u('couverturevache', 610, 420, 160, { rot: 10 }) + u('poupou', 500, 370, 130) +
+        titre('Un bonnet !', 620, 300, 40, '#E8553E', 6),
+      texte: "Marguerite fait la sieste sous sa <b>couverture</b> verte. Poupou la prend tout doucement… « Meuh… brrr ! » Marguerite se réveille et grelotte. « Tiens, voilà un <b>bonnet</b> ! » dit Poupou. Et elle lui met… une <b>chaussette</b> de Papi sur la tête !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) + u('nuage', 620, 30, 120) +
+        cabane(230, 120, 420, { yeux: true, fesses: true }) +
+        u('poupou', 40, 360, 150) + titre('Bravo !', 120, 340, 36, '#E8553E', -6) +
+        titre('GÉANTE !', 160, 150, 56, '#3F8EDB', -8) +
+        bulle(420, 60, 'Meuh ! J’ai froid aux fesses !', 360),
+      texte: "Avec le drap, la nappe, la couette, la couverture et le <b>parapluie</b> de Papi tout en haut… voilà une cabane <b>GÉANTE</b> ! L’autre chaussette fait un joli drapeau. Tout le monde entre dedans… mais Marguerite est trop grande : ses <b>fesses</b> dépassent !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 120) +
+        u('grange', 560, 110, 240) +
+        cabane(60, 120, 400, { yeux: true, pattes: true, rot: -5 }) + bouge(60, 300) +
+        titre('HI HI HI !', 260, 110, 52, '#FF8FAB', -6) +
+        papi('hamidsurpris', 610, 210, 120, { flip: true }) + surprise(640, 175) + quoi(560, 220),
+      texte: "Dans la cabane, Coin-Coin <b>chatouille</b> Caramel. Hi hi hi ! Tout le monde rit si fort qu’ils se lèvent tous en même temps… et la cabane se met à <b>marcher</b> ! Papi Hamid sort de la grange et ouvre de grands yeux : « Une cabane… avec des <b>pattes</b> ?! »"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 60, 40, 120) +
+        cabane(250, 130, 380, { yeux: true, pattes: true, rot: 8 }) + bouge(250, 280) +
+        bulle(20, 40, 'Par ici !', 150) + bulle(190, 70, 'Non, par là !', 190) + bulle(420, 40, 'Meuh, tout droit !', 230) + bouge(700, 280, -1) +
+        papi('hamidsurpris', 650, 210, 120, { flip: true }) + choc(630, 300, .8),
+      texte: "« Par ici ! » crie Poupou. « Non, par là ! » dit Caramel. « Meuh, tout droit ! » La cabane part à gauche, puis à droite, puis elle tourne en rond… et elle fonce droit sur Papi Hamid !"
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 560, 40, 120) +
+        u('marguerite', 530, 236, 200, { flip: true }) +
+        u('hamidsurpris', 370, 240, 120) + u('nappe', 368, 206, 124, { rot: -10 }) +
+        u('caramel', 120, 292, 140) +
+        u('poupououps', 6, 326, 120) + u('plume', 20, 300, 24, { rot: -30 }) + u('plume', 96, 290, 22, { rot: 30 }) +
+        u('tasdraps', 20, 250, 760) +
+        u('coincoin', 268, 318, 70) +
+        titre('BRAOUF !', 400, 120, 70, '#E8553E', -5),
+      texte: "<b>BRAOUF</b> ! Toute la cabane s’écroule… sur Papi ! Une tête sort du tas : c’est Papi, avec la <b>nappe</b> sur la tête, comme un drôle de chapeau. Puis Marguerite, Caramel, Coin-Coin… et enfin Poupou, toute ébouriffée."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 300, 30, 120) +
+        corde(20, 190, 320, { drap: true }) +
+        papi('hamid', 360, 200, 120) +
+        u('poupououps', 470, 330, 130, { flip: true }) + bulle(440, 230, 'Pardon, Papi…', 200) +
+        u('couette', 630, 400, 130, { rot: -25 }) + u('bassine', 600, 420, 170) + u('bulles', 620, 330, 80) + u('bulles', 700, 350, 60) +
+        u('marguerite', 120, 350, 190) + u('couverturevache', 160, 350, 110, { rot: -6 }) +
+        u('chaussette', 470, 470, 40, { rot: 60 }),
+      texte: "Poupou baisse la tête : « <b>Pardon</b>, Papi… J’ai pris toutes tes affaires <b>sans demander</b>. » Puis elle aide à <b>réparer</b> : elle lave la couette dans la bassine, remet la nappe sur la table, rend sa couverture à Marguerite et ses chaussettes à Papi."
+    },
+    {
+      scene: () => decor('jour') + u('nuage', 40, 40, 120) + u('nuage', 600, 30, 120) +
+        u('grange', 540, 110, 240) +
+        papi('hamid', 420, 200, 120, { flip: true }) + u('couverturevache', 405, 262, 120, { rot: 4 }) + u('plaid', 400, 300, 128, { rot: -3 }) + bulle(300, 60, 'Ho ho ho !', 170) +
+                u('poupou', 200, 370, 140) + coeurs(250, 340) +
+        u('caramel', 20, 380, 170) + u('coincoin', 330, 460, 70) +
+        u('marguerite', 580, 320, 200, { flip: true }),
+      texte: "Papi regarde la couette, puis Poupou… et il éclate de rire : « Ho ho ho ! Une cabane, c’est une super idée… avec des choses qu’on a le droit de prendre ! » Il sort de la grange des <b>vieilles couvertures</b>, et tous ensemble, ils construisent une vraie cabane. Et toute la ferme éclate de rire."
+    }
+  ]
+});
+</script>
+</body>
+</html>
